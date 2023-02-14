@@ -96,29 +96,34 @@ public class AutheticateController {
 	public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
 //		if (userService.loginUser(loginRequest) != CommonUtils.LOGIN_FAIL) {
 		String auth;
+		LoginResponse loginResponse = new LoginResponse();
+		loginResponse.setErrorCode("00");
 		try {
 			auth = commonUtils.createToken(loginRequest.getUsername(), loginRequest.getPassword(), "0");
 			Authentication authentication = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			User user = (User) authentication.getPrincipal();
 
-			userDetails.getAuthorities();
-//				final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, grantedAuthorityList);
-//				if(authentication!= null) {
-//					UserDetails userDetails =  (UserDetails) authentication.getPrincipal();
-//					System.out.println(userDetails.getAuthorities());
-//					if(userDetails != null) {
-//						
-//					}
-//				}
+			List<String> permissions = new ArrayList<>();
+			for (GrantedAuthority role : user.getAuthorities()) {
+				permissions.add(role.getAuthority());
+			}
+			UserDetail userDetail = new UserDetail();
+			userDetail.setTokenId(auth);
+			userDetail.setUsername(user.getUsername());
+			userDetail.setId(user.getUserID());
+			userDetail.setPermissions(permissions);
+			
+			loginResponse.setUserDetail(userDetail);
+			loginResponse.setAuthorization(auth);
+			loginResponse.setAuthenticated(true);
 		} catch (Exception e) {
 			return new ResponseEntity<LoginResponse>(new LoginResponse("false", ""), HttpStatus.OK);
 		}
-		return new ResponseEntity<LoginResponse>(new LoginResponse(auth, loginRequest.getUsername()), HttpStatus.OK);
+		return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
 //		}
 //		return new ResponseEntity<LoginResponse>(new LoginResponse("false", ""), HttpStatus.OK);
-
 	}
 	
 	@RequestMapping(path = "/userdetail", method = RequestMethod.GET)

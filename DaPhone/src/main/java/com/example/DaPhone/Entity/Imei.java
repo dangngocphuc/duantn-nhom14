@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -31,7 +32,7 @@ public class Imei implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "product_detail_id")
-	@JsonManagedReference
+	@JsonBackReference
 	private ProductDetail productDetail;
 
 	private String imei;

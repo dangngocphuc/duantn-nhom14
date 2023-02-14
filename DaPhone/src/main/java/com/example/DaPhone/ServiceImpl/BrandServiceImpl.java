@@ -23,13 +23,17 @@ public class BrandServiceImpl implements BrandService{
 	
 	@Autowired
 	private BrandRepo brandRepo;
+	
 	@Override
 	public Page<Brand> findBrand(BrandRequest brandParam, Pageable pageable) {
-
 		Page<Brand> listPage = brandRepo.findAll(new Specification<Brand>() {
 			@Override
 			public Predicate toPredicate(Root<Brand> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> predicates = new ArrayList<>();
+				if (brandParam.getBrandName() != null && !brandParam.getBrandName().equals("")) {
+					predicates.add(cb.and(cb.like(cb.upper(root.<String>get("tenHang")),
+							"%" + brandParam.getBrandName().trim().toUpperCase() + "%")));
+				}
 				return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 		}, pageable);
@@ -47,6 +51,12 @@ public class BrandServiceImpl implements BrandService{
 	@Override
 	public void deleteBrand(Long id) {
 		brandRepo.deleteById(id);
+	}
+
+	@Override
+	public Brand findById(Long id) {
+		// TODO Auto-generated method stub
+		return brandRepo.findById(id).get();
 	}
 	
 }

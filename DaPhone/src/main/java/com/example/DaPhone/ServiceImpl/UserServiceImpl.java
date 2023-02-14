@@ -187,6 +187,15 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 		if (!user.isPresent()) {
 			throw new UsernameNotFoundException("Could not find user");
 		}
+		User newUser = new User();
+		newUser.setUserEmail(user.get().getUserEmail());
+		newUser.setUserID(user.get().getUserID());
+		newUser.setUserName(user.get().getUsername());
+		newUser.setUserPhone(user.get().getUserPhone());
+		newUser.setRoles(user.get().getRoles());
+		for(Role role: user.get().getRoles()) {
+			role.setUsers(null);
+		}
 		return user.get();
 	}
 

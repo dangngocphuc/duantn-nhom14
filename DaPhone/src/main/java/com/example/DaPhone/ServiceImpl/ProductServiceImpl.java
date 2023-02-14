@@ -107,6 +107,7 @@ public class ProductServiceImpl implements ProductService{
 			products.setTenSanPham(product.getTenSanPham());
 			products.getListProductOption().clear();
 			products.getListProductOption().addAll(product.getListProductOption());
+			products.setBrand(product.getBrand());
 			for(ProductOption po : product.getListProductOption()) {
 				po.setProduct(products);
 			}

@@ -17,7 +17,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.example.DaPhone.Common.CommonUtils;
-import com.example.DaPhone.Entity.Imei;
+import com.example.DaPhone.Entity.Brand;
+import com.example.DaPhone.Entity.Product;
 import com.example.DaPhone.Entity.ProductDetail;
 import com.example.DaPhone.Entity.ProductDetailValue;
 import com.example.DaPhone.Repository.ProductDetailRepo;
@@ -39,7 +40,12 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 			@Override
 			public Predicate toPredicate(Root<ProductDetail> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				query.distinct(true);
+				Join<ProductDetail, Product> joinProduct = root.join("product",JoinType.LEFT);
+				Join<Product, Brand> joinBrand = joinProduct.join("brand",JoinType.LEFT);
 				List<Predicate> predicates = new ArrayList<>();
+				if(productParam.getBrandID()!=null) {
+					predicates.add(cb.and(cb.equal(joinBrand.get("id"), productParam.getBrandID())));
+				}
 				return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 		}, pageable);

@@ -8,4 +8,5 @@ public class BaseRequest {
 	private int pageSize;
 	private String sortField;
 	private String sortOrder;
+//	public Long brandID;
 }

@@ -33,6 +33,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.DaPhone.Common.AuthenticationProvider;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -87,7 +88,7 @@ public class User implements UserDetails {
 //	@Column(name = "auth_povider")
 //	private AuthenticationProvider authPovider;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 

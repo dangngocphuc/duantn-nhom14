@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.NaturalId;
 
 import com.example.DaPhone.Model.RoleName;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.Getter;
@@ -37,6 +39,7 @@ public class Role {
 	@Column(name = "name")
 	private String name;
 
+	@JsonIgnore
 	@ManyToMany(mappedBy = "roles")
 	private List<User> users = new ArrayList<>();
 	

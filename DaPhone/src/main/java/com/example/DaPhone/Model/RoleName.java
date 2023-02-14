@@ -1,7 +1,7 @@
 package com.example.DaPhone.Model;
 
 public enum RoleName {
-	USER(1L), STAFF(3L), ADMIN(2L);
+	USER(2L), STAFF(3L), ADMIN(1L);
 
 	private final Long role;
 

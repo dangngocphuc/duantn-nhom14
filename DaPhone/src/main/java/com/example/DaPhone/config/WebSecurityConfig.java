@@ -99,11 +99,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		httpSecurity.cors().and().csrf().disable().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				.antMatchers("/api/authenticate/**", "/api/authenticate/user/login", "/api/getsession", "/api/option/**","/api/productVariant/**","/api/imei/**",
-						"/api/user/save", "/api/brand/all", "/rest-service/*", "/api/product/**", "/api/category/**" ,"/api/oauth2/google")
+						"/api/user/save", "/api/brand/**", "/rest-service/*", "/api/product/**", "/api/category/**" ,"/api/oauth2/google")
 				.permitAll().antMatchers("/admin").hasAuthority("ADMIN").anyRequest().authenticated();
 
 	}
-
 	public class TokenAuthenticationFilter implements Filter {
 		private CommonUtils commonUtils;
 
@@ -111,11 +110,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			super();
 			this.commonUtils = commonUtils;
 		}
-
 		@Override
 		public void init(FilterConfig filterConfig) throws ServletException {
 		}
-
 		@Override
 		public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
 				throws IOException, ServletException {
@@ -151,8 +148,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					
 				}
 			}
-			
-
 			/*
 			 * if (accessToken != null && accessToken.isEmpty() == false) { try {
 			 * UserDetailPrincipal userDetail = this.commonUtils.getUserInfo(accessToken);
@@ -178,7 +173,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		@SuppressWarnings("unused")
 		private String getJwt(HttpServletRequest request) {
 			String accessToken = request.getHeader("Authorization");
-
 //			if (authHeader != null && authHeader.startsWith("Bearer ")) {
 //				return authHeader.replace("Bearer ", "");
 //			}

@@ -15,5 +15,6 @@ public interface BrandService {
 	public Page<Brand> findBrand(BrandRequest brandParam, Pageable pageable);
 	public List<Brand> findAll();
 	public Brand saveBrand(Brand brand);
+	public Brand findById(Long id);
 	public void deleteBrand(Long id);
 }

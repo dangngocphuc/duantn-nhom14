@@ -34,7 +34,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIdentityInfo(scope = Product.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Product implements Serializable{
+public class Product implements Serializable{ 
 	
 	private static final long serialVersionUID = 1L;
 

@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,10 +47,16 @@ public class ProductDetail implements Serializable{
 	@Column(name = "product_name")
 	private String productName;
 	
+	@Column(name = "product_price")
+	private String productPrice;
+	
+	@Column(name = "product_marketprice")
+	private String productMarketprice;
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "productDetail",  cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<ProductDetailValue> listProductDetailValue;
 	
-	@JsonBackReference
+	@JsonManagedReference
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "productDetail",  cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Imei> listImei;
 	

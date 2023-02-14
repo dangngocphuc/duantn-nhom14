@@ -29,32 +29,35 @@ public class BrandController {
 	private BrandService brandService;
 	
 	@GetMapping(value = "")
-	public ResponseEntity<Response<Brand>> getBrands(BrandRequest brandParam) {
-		int page = brandParam.getPageIndex() - 1;
-		int size = brandParam.getPageSize();
-		Sort sortable = null;
-		if (brandParam.getSortField() != null && !brandParam.getSortField().equalsIgnoreCase("null")) {
-			if (brandParam.getSortOrder().equals("ascend")) {
-				sortable = Sort.by(brandParam.getSortField()).ascending();
-			}
-			if (brandParam.getSortOrder().equals("descend")) {
-				sortable = Sort.by(brandParam.getSortField()).descending();
-			}
-		} else {
-			sortable = Sort.by("brandID").descending();
-		}
-		Pageable pageable = PageRequest.of(page, size, sortable);
-		Page<Brand> pageBrandPage = brandService.findBrand(null, pageable);
-		List<Brand> list = pageBrandPage.toList();
-		Long count = (long) pageBrandPage.getTotalElements();
-		return new ResponseEntity<Response<Brand>>(new Response<Brand>(count, list), HttpStatus.OK);
+	public ResponseEntity<Page<Brand>> getBrands(Pageable pageable, BrandRequest brandParam) {
+//		int page = brandParam.getPageIndex() - 1;
+//		int size = brandParam.getPageSize();
+//		Sort sortable = null;
+//		if (brandParam.getSortField() != null && ! brandParam.getSortField().equalsIgnoreCase("null")) {
+//			if (brandParam.getSortOrder().equals("ascend")) {
+//				sortable = Sort.by(brandParam.getSortField()).ascending();
+//			}
+//			if (brandParam.getSortOrder().equals("descend")) {
+//				sortable = Sort.by(brandParam.getSortField()).descending();
+//			}
+//		} else {
+//			sortable = Sort.by("brandID").descending();
+//		}
+//		Pageable pageable = PageRequest.of(page, size, sortable);
+		Page<Brand> pageBrandPage = brandService.findBrand(brandParam, pageable);
+		return new ResponseEntity<Page<Brand>>(pageBrandPage, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/all")
-	public ResponseEntity<Response<Brand>> getBrandAll() {
+	@GetMapping(value = "/list")
+	public ResponseEntity<List<Brand>> getBrandAll() {
 		List<Brand> list = brandService.findAll();
-		Long count = (long) list.size();
-		return new ResponseEntity<Response<Brand>>(new Response<Brand>(count, list), HttpStatus.OK);
+//		Long count = (long) list.size();
+		return new ResponseEntity<List<Brand>>(list, HttpStatus.OK);
+	}
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<Brand> getBrandById(@PathVariable(name = "id") Long id) {
+	    Brand brand = brandService.findById(id);
+		return new ResponseEntity<Brand>(brand, HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/save")
@@ -71,7 +74,4 @@ public class BrandController {
 		brandService.deleteBrand(id);
 		return new ResponseEntity<Response<Brand>>(new Response<Brand>("xoa thanh cong", "200"), HttpStatus.OK);
 	}
-	
-	
-	
 }
