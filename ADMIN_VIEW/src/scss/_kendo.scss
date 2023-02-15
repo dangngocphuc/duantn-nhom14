@@ -1,0 +1,42 @@
+.k-button-primary, .k-button.k-primary {
+    border-color: #20a8d8;
+    color: #ffffff;
+    background-color: #20a8d8;
+    background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.04));
+
+    &:hover{
+        background-color: #428bca!important;
+        color: #fff;
+        border-color: #428bca;
+    }
+}
+
+.k-grid th{
+    font-weight : bold;
+}
+
+.k-grid{
+    max-height:calc(100vh - 252px);
+}
+
+
+.k-textbox-container.k-state-empty > .k-label, .k-floating-label-container.k-state-empty > .k-label {
+    top: 0px;
+    left: 0px;
+}
+
+.k-form-control{
+    & .k-input{
+        // height: calc(1.5em + 0.75rem + 2px)!important;
+        height: calc(1.5em + 0.75rem + 0px)!important;
+        background-color: #fff!important;
+    }
+
+    & span{
+        border-radius: 0.25rem
+    }
+
+    &.k-dropdown .k-dropdown-wrap .k-select, .k-dropdowntree .k-dropdown-wrap .k-select{
+        background-color: #fff!important;
+    }
+}

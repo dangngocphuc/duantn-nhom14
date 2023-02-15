@@ -1,0 +1,201 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+  <div class="container-fluid">
+    <div class="header-body">
+      <!-- Card stats -->
+      <div class="row">
+        <div class="col-xl-12 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <form class="form-search">
+                <!-- hàng 1 -->
+
+                <!-- hàng 2 -->
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                  <button type="button" class="btn btn-bidv btn-search mt-2"><i class="fa fa-search fa-btn"></i>
+                    Tìm kiếm</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--7">
+  <!-- Table -->
+  <div class="row">
+    <div class="col">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <div>
+            <h3 class="mb-0">Danh sách sản phẩm</h3>
+          </div>
+          <div style="float: right;"><button (click)="openModal(Action.THEMMOI,myModal)"
+              class="btn btn-sm btn-success">Thêm
+              mới</button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">STT</th>
+                <th scope="col">Tên</th>
+                <th scope="col">Số lượng</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let item of pageProductDetail?.content | paginate: { id: 'lst-option',
+                itemsPerPage: pageProductDetail?.size,
+                currentPage: pageProductDetail?.number,
+                totalItems: pageProductDetail?.totalElements }; index as i">
+              <tr>
+                <td>{{i+1}}</td>
+                <td><span class="link-text" (click)="view(item,myModal)">{{item?.productName}}</span></td>
+                <td>{{item?.quantity}}</td>
+                <td>
+                  <span class="badge badge-dot mr-4">
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!--Thêm mới--->
+<!-- <ng-template #modalThemMoi let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Thêm mới sản phẩm</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        Hello world
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-primary" aria-label="Close" (click)="modal.dismiss()">Đóng</button>
+    </div>
+  </ng-template> -->
+<modal #myModal>
+  <modal-header>
+    <h4 *ngIf="action == Action.THEMMOI">Thêm mới sản phẩm</h4>
+    <h4 *ngIf="action == Action.CAPNHAT">Cập nhật cập nhật sản phẩm</h4>
+    <!-- <h4 *ngIf="action === 2">Thông Tin danh mục thông tin đại diện kho bạc đơn vị</h4> -->
+  </modal-header>
+  <modal-content>
+    <form [formGroup]="formGroup">
+      <fieldset formGroupName="productDetail">
+        <div class="row">
+          <div class="col-4">
+            <div class="form-group">
+              <label for="danhMuc">Sản phẩm</label>
+              <ng-select [items]="lstProduct | async" class="custom-ng-select" bindLabel="tenSanPham"
+                [hideSelected]="true" [loading]="loadlstProduct" [typeahead]=" textInput_tenProduct$"
+                formControlName="product" [(ngModel)]="productDetail.product"
+                (change)="onSelect(productDetail.product)">
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label for="ma">Mã sản phẩm</label>
+              <input type="text" class="form-control">
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label for="ten">Tên sản phẩm</label>
+              <input type="text" class="form-control" [(ngModel)]="productDetail.productName" formControlName="name">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <div class="form-group">
+              <label for="screen">CPU</label>
+              <input type="text" class="form-control">
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label for="screen">GPU</label>
+              <input type="text" class="form-control">
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label for="screen">RAM</label>
+              <input type="text" class="form-control">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <div class="form-group">
+              <label for="screen">Công nghệ màn hình</label>
+              <input type="text" class="form-control">
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label for="screen">Độ phân giải màn hình</label>
+              <input type="text" class="form-control">
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label for="screen">Độ phân giải Camera</label>
+              <input type="text" class="form-control">
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label for="screen">Giá bán</label>
+              <input type="text" class="form-control">
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label for="screen">Số lượng</label>
+              <input type="text" class="form-control">
+            </div>
+          </div>
+        </div>
+      </fieldset>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col" width="10px">#</th>
+            <th scope="col" width="40px">Thuộc tính</th>
+            <th scope="col">Giá trị</th>
+          </tr>
+        </thead>
+        <tbody formArrayName="listProductDetailValue"
+          *ngFor="let item of productDetail?.listProductDetailValue, index as i">
+          <tr [formGroupName]="i">
+            <td>{{i+1}}</td>
+            <td>{{item?.option?.optionName}}</td>
+            <!-- <td>{{item?.optionValue?.optionValue}}</td> -->
+            <td>
+              <ng-select formControlName="optionValue" [items]="item?.listOptionValue" bindLabel="optionValue"
+                [(ngModel)]="item.optionValue"></ng-select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-primary" (click)="save()">Lưu</button>
+    <button class="btn btn-primary" (click)="closeModal()"><i class="fa fa-times" aria-hidden="true"></i>
+      Close</button>
+  </modal-footer>
+</modal>

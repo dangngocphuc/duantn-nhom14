@@ -1,0 +1,148 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row">
+                <div class="col-xl-12 col-lg-6">
+                    <div class="card card-stats mb-4 mb-xl-0">
+                        <div class="card-body">
+                            <form class="form-search">
+                                <!-- hàng 1 -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group align-self-center">
+                                            <span>Imei</span>
+                                            <input type="text" name="ma" class="form-control"
+                                                [(ngModel)]="imeiRequest.imei">
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-md-6">
+                                        <div class="form-group align-self-center">
+                                            <span>Sản phẩm chi tiết</span>
+                                            <input type="text" name="ten" class="form-control"
+                                                [(ngModel)]="optionRequest.optionTen">
+                                        </div>
+                                    </div> -->
+                                </div>
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                                    <button type="button" class="btn btn-bidv btn-search mt-2" (click)="search()"><i
+                                            class="fa fa-search fa-btn"></i>
+                                        Tìm kiếm</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--7">
+    <!-- Table -->
+    <div class="row">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-header border-0">
+                    <div>
+                        <h3 class="mb-0">Danh sách sản phẩm</h3>
+                    </div>
+                    <!-- <div style="float: right;"><button (click)="openModal(Action.THEMMOI)"
+                            class="btn btn-sm btn-success"><i class="fa fa-plus" aria-hidden="true"></i> Thêm
+                            mới</button>
+                    </div> -->
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-items-center table-flush">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">STT</th>
+                                <th scope="col">Imei</th>
+                                <th scope="col">Tên chi tiết sản phẩm</th>
+                                <th scope="col">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let item of pageImei?.content | paginate: { id: 'lst-option',
+                            itemsPerPage: pageImei?.size,
+                            currentPage: pageImei?.number,
+                            totalItems: pageImei?.totalElements }; index as i">
+                            <tr>
+                                <td>{{i+1}}</td>
+                                <td><span class="link-text" (click)="view(item?.id)">{{item?.imei}}</span></td>
+                                <td>{{item?.productDetail?.productName}}</td>
+                                <td>
+                                    <span class="badge badge-dot mr-4">
+                                        {{setStatus(item?.status)}}
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer py-4">
+                    <div class="text-left col-6 ">{{'Tổng số bản ghi: '+ (pageImei?.totalElements ?
+                        pageImei?.totalElements : 0)}}
+                        &nbsp;&nbsp;&nbsp;&nbsp;Số bản ghi hiển thị:
+                        <select class="custom-select " style="width: 60px; " (change)="handlePageSizeChange($event) ">
+                            <option *ngFor="let pageSize of pageSizes " [ngValue]="pagesRequest?.size ">
+                                {{ pageSize }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="text-right">
+                        <pagination-controls id="lst-option" previousLabel="Prev " nextLabel="Next "
+                            screenReaderPaginationLabel="Pagination" screenReaderPageLabel="page"
+                            (pageChange)="handlePageChange($event) ">
+                        </pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<modal #myModal>
+    <modal-header>
+        <h4 *ngIf="action == Action.THEMMOI">Thêm mới Option</h4>
+        <h4 *ngIf="action == Action.CAPNHAT">Cập nhật Option</h4>
+    </modal-header>
+    <modal-content>
+        <form [formGroup]="formGroup">
+            <fieldset formGroupName="imei">
+                <div class="form-group">
+                    <label for="ma">Imei</label>
+                    <input type="text" class="form-control" [(ngModel)]="imei.imei" formControlName="imei">
+                    <div class="validation-alert"
+                        *ngIf="isFormSubmit && formGroup.get('imei')['controls']['imei'].errors?.['required']">
+                        Không được để trống!
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ten">Tên Chi tiết sản phẩm</label>
+                    <!-- <input type="text" class="form-control" [(ngModel)]="imei.productDetail" formControlName="productDetail"> -->
+                    <ng-select [items]="lstProductDetail" [(ngModel)]="imei.productDetail" bindLabel="productName"
+                        formControlName="productDetail">
+                    </ng-select>
+                    <div class="validation-alert"
+                        *ngIf="isFormSubmit &&  formGroup.get('imei')['controls']['productDetail'].errors?.['required']">
+                        Không được để trống!
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="trangThai">Trạng Thái</label>
+                    <ng-select [items]="lstTrangThai" formControlName="status" [(ngModel)]="imei.status" bindLabel="name" bindValue="value">
+                    </ng-select>
+                    <div class="validation-alert"
+                        *ngIf="isFormSubmit &&  formGroup.get('imei')['controls']['status'].errors?.['required']">
+                        Không được để trống!
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </modal-content>
+    <modal-footer>
+        <!-- <button class="btn btn-primary" (click)="save()"><i class="fa fa-file" aria-hidden="true"></i> Save</button> -->
+        <!-- <button class="btn btn-primary" (click)="delete()"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button> -->
+        <button class="btn btn-primary" (click)="closeModal()"><i class="fa fa-times" aria-hidden="true"></i>
+            Close</button>
+    </modal-footer>
+</modal>
