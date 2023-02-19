@@ -148,23 +148,20 @@ public class OptionServiceImpl implements OptionService {
 
 		return item;
 	}
-	
-	
+
 	@Override
 	public List<Option> ngSelect(Pageable pageable, OptionRequest optionRequest) {
 		Page<Option> page = optionRepo.findAll(new Specification<Option>() {
 			@Override
-			public Predicate toPredicate(Root<Option> root, CriteriaQuery<?> query,
-					CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(Root<Option> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicates = new ArrayList<>();
 				if (optionRequest != null) {
-					if (optionRequest.getOptionTen() != null && !optionRequest.getOptionTen() .equals("")) {
+					if (optionRequest.getOptionTen() != null && !optionRequest.getOptionTen().equals("")) {
 						predicates.add(criteriaBuilder.or(
 								criteriaBuilder.like(criteriaBuilder.upper(root.<String>get("optionName")),
-												"%" + optionRequest.getOptionTen().trim().toUpperCase() + "%"),
+										"%" + optionRequest.getOptionTen().trim().toUpperCase() + "%"),
 								criteriaBuilder.like(root.<String>get("optionCode"),
-												"%" + optionRequest.getOptionTen()+ "%")
-						));
+										"%" + optionRequest.getOptionTen() + "%")));
 					}
 				}
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
@@ -175,5 +172,18 @@ public class OptionServiceImpl implements OptionService {
 			pro.setListOptionValue(null);
 		}
 		return page.getContent();
+	}
+
+	@Override
+	public List<Option> getListOption() {
+		List<Option> page =  optionRepo.findAll();
+		for (Option pro : page) {
+			if(!pro.getListOptionValue().isEmpty()) {
+				pro.getListOptionValue().forEach(e->{
+					e.setOption(null);
+				});
+			}
+		}
+		return page;
 	}
 }

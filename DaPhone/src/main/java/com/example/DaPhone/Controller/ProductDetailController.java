@@ -78,4 +78,6 @@ public class ProductDetailController {
 		List<ProductDetail> pageBrandPage = productService.getListProduct();
 		return new ResponseEntity<List<ProductDetail>>(pageBrandPage, HttpStatus.OK);
 	}
+	
+	
 }

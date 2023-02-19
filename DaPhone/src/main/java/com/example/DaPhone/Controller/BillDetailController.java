@@ -22,6 +22,16 @@ public class BillDetailController {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Response<BillDetail>> getBillDetail(@PathVariable(name = "id") Long id) {
 		List<BillDetail> billDetails = billDetailService.findByBill(id);
+		
+		billDetails.forEach(e->{
+			e.getBill().setListBillDetail(null);
+			e.getBill().setProducts(null);
+			e.getBill().getUser().setListBill(null);
+			e.getProductDetail().setListProductDetailValue(null);
+			e.getProductDetail().setProduct(null);
+			e.getProductDetail().setListImei(null);
+		});
+		
 		Long count = (long) billDetails.size();
 		return new ResponseEntity<Response<BillDetail>>(new Response<BillDetail>(count, billDetails), HttpStatus.OK);
 	}

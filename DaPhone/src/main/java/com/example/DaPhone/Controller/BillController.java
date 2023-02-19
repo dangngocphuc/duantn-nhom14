@@ -50,7 +50,7 @@ public class BillController {
 				sortable = Sort.by(billParam.getSortField()).descending();
 			}
 		} else {
-			sortable = Sort.by("billID").descending();
+			sortable = Sort.by("id").descending();
 		}
 		Pageable pageable = PageRequest.of(page, size, sortable);
 		Page<Bill> pageBrandPage = billService.findBill(billParam, pageable);
@@ -61,12 +61,12 @@ public class BillController {
 	
 	//Save bill
 	@PostMapping(value = "/save")
-	public ResponseEntity<Response<Bill>> saveBill(@RequestBody Bill bill) {
+	public ResponseEntity<Boolean> saveBill(@RequestBody Bill bill) {
 		if (bill != null) {
-			Bill billSave = billService.saveBill(bill);
-			return new ResponseEntity<Response<Bill>>(new Response<Bill>(billSave), HttpStatus.OK);
+			Boolean billSave = billService.saveBill(bill);
+			return new ResponseEntity<Boolean>(billSave, HttpStatus.OK);
 		}
-		return new ResponseEntity<Response<Bill>>(new Response<Bill>("loi", "10001"), HttpStatus.OK);
+		return new ResponseEntity<Boolean>(false, HttpStatus.OK);
 	}
 	
 	
@@ -113,13 +113,17 @@ public class BillController {
 		return new ResponseEntity<Response<BillDetail>>(new Response<BillDetail>("loi", "10001"), HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/statistic")
-	public ResponseEntity<Response<List<String>>> getSatisticBill() {
+	@GetMapping(value = "/statistic/week")
+	public ResponseEntity<Response<List<Long>>> getSatisticBillByWeek() {
 		List<Long> countList = billService.statisticBillByWeek();
-		List<String> staticList = new ArrayList<String>();
-		for (Long count : countList) {
-			staticList.add(NumberFormat.getInstance().format(count));
-		}
-		return new ResponseEntity<Response<List<String>>>(new Response<List<String>>(staticList), HttpStatus.OK);
+//		List<String> staticList = new ArrayList<String>();
+		return new ResponseEntity<Response<List<Long>>>(new Response<List<Long>>(countList), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/statistic/month")
+	public ResponseEntity<Response<List<Long>>> getSatisticBillByMonth() {
+		List<Long> countList = billService.statisticBillByMonth();
+//		List<String> staticList = new ArrayList<String>();
+		return new ResponseEntity<Response<List<Long>>>(new Response<List<Long>>(countList), HttpStatus.OK);
 	}
 }

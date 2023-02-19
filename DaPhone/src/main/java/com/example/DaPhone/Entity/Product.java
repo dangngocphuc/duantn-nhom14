@@ -19,6 +19,7 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AllArgsConstructor;
@@ -61,5 +62,8 @@ public class Product implements Serializable{
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "product",  cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<ProductOption> listProductOption;
 	
+	@JsonManagedReference
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "product",  cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<Image> listImage;
 	
 }

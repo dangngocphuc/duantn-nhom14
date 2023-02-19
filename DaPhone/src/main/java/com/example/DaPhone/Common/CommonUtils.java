@@ -233,6 +233,12 @@ public class CommonUtils {
 			this.value = value;
 			this.name = name;
 		}
+	}
 
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
+
+	public static String generateBillNumber() {
+		Date now = new Date();
+		return DATE_FORMAT.format(now);
 	}
 }

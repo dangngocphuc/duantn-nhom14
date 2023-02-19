@@ -10,7 +10,6 @@ import { Option, OptionValue, PageProductDetail, PagesRequest, Product, ProductD
 import { OptionService } from 'src/app/services/option.service';
 import { ProductService } from 'src/app/services/product.service';
 import { ProductDetailService } from 'src/app/services/productDetail.service';
-import { ProductVariantService } from 'src/app/services/productVariant.service';
 import Swal from 'sweetalert2';
 @Component({
   selector: 'app-product-details',
@@ -31,24 +30,7 @@ export class ProductDetailsComponent implements OnInit {
   @ViewChild('myModal') myModal;
 
   people$: Observable<any[]>;
-
   formGroup: FormGroup;
-
-  lstColor = [
-    { id: 1, name: 'Màu vàng' },
-    { id: 2, name: 'Màu Đỏ' },
-    { id: 3, name: 'Màu xanh' },
-    { id: 4, name: 'Màu Tím' },
-  ]
-
-  lstRom = [
-    { id: 1, name: '64G' },
-    { id: 2, name: '128G' },
-    { id: 3, name: '256G' },
-    { id: 4, name: '512G' },
-    { id: 5, name: '1T' },
-  ]
-
   product = new Product();
   option = new Option();
   optionValue = new OptionValue();
@@ -66,7 +48,6 @@ export class ProductDetailsComponent implements OnInit {
     private productService: ProductService,
     private optionService: OptionService,
     private productDetailService: ProductDetailService,
-    private productVariantService: ProductVariantService,
     private modalService: ModalManager,
     private fb: FormBuilder
   ) { }

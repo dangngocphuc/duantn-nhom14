@@ -5,7 +5,7 @@ import java.util.List;
 
 public class UserDetail {
 	
-	private Long id;
+	private Long userID;
 	private String username;
 	private String tokenId;
 	private boolean isAdmin;
@@ -19,12 +19,12 @@ public class UserDetail {
 		this.permissions = permissions;
 	}
 
-	public Long getId() {
-		return id;
+	public Long getUserID() {
+		return userID;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setUserID(Long userID) {
+		this.userID = userID;
 	}
 
 	public String getUsername() {

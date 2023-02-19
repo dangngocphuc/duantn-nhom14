@@ -262,7 +262,7 @@ public class ServiceAdmin {
 				Row row = sheet.createRow(rowIdx++);
 				++count;
 				row.createCell(0).setCellValue(count);
-				row.createCell(1).setCellValue(bill.getBillID() > 0 ? Long.toString(bill.getBillID()) : "-");
+				row.createCell(1).setCellValue(bill.getId() > 0 ? Long.toString(bill.getId()) : "-");
 				row.createCell(2)
 						.setCellValue(bill.getUser().getUsername() != null ? bill.getUser().getUsername() : " ");
 				row.createCell(3).setCellValue(bill.getPayment() != null ? bill.getPayment() : " ");

@@ -84,6 +84,7 @@ export class Image {
   createDate : Date;
   imgType : String;
   status : boolean;
+  product : Product;
 }
 
 export class Product {
@@ -93,6 +94,7 @@ export class Product {
   brand : Brand;
   listProductDetail : ProductDetail[];
   listProductOption : ProductOption[];
+  listImage : Image[];
 }
 
 export class ProductDetail {
@@ -177,6 +179,7 @@ export class Imei{
   imei: String;
   productDetail: ProductDetail; 
   status:  number;
+  productName : String;
 }
 
 export class PageImei {
@@ -195,3 +198,25 @@ export class ImeiRequest {
 
 
 
+export class Bill {
+  id: number;
+  user: User;
+  total: number;
+  payment: string;
+  address: string;
+  date: Date;
+  name: string;
+  phone: string;
+  status: string;
+  listBillDetail: BillDetail[];
+}
+
+
+export class BillDetail {
+  id: number;
+  bill: Bill;
+  productDetail: ProductDetail;
+  price : number;
+  quantity : number;
+  listImei : Imei[];
+}

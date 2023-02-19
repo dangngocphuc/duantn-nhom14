@@ -53,6 +53,7 @@ public class ImeiServiceImp implements ImeiService {
 				imei.getProductDetail().setListImei(null);
 				imei.getProductDetail().setProduct(null);
 				imei.getProductDetail().setListProductDetailValue(null);
+				imei.setProductName(imei.getProductDetail().getProductName());
 			}
 		}
 		

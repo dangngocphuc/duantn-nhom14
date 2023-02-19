@@ -48,7 +48,6 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @Data
-
 public class User implements UserDetails {
 	
 	@Id
@@ -57,15 +56,9 @@ public class User implements UserDetails {
 	private Long userID;
 	
 	@Column(name = "user_name")
-	@NotBlank
-	@Size(min = 3, max = 50)
 	private String userName;
 	
 	@Column(name = "user_email")
-	@NaturalId
-    @NotBlank
-    @Size(max = 50)
-    @Email
 	private String userEmail;
 	
 	@Column(name = "user_pass")

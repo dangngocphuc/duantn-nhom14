@@ -10,15 +10,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "imei")
+@NoArgsConstructor
+@AllArgsConstructor
 //@JsonInclude(JsonInclude.Include.NON_NULL)
 //@JsonIdentityInfo(scope = Imei.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Imei implements Serializable {
@@ -34,11 +36,19 @@ public class Imei implements Serializable {
 	@JoinColumn(name = "product_detail_id")
 	@JsonBackReference
 	private ProductDetail productDetail;
+	
+	@ManyToOne
+	@JoinColumn(name = "bill_detail_id")
+	private BillDetail billDetail;
 
 	private String imei;
 
 	private Integer status;
 
+	@Transient
+	private String productName;
+
+	
 	public Long getId() {
 		return id;
 	}
@@ -70,4 +80,21 @@ public class Imei implements Serializable {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
+
+	public BillDetail getBillDetail() {
+		return billDetail;
+	}
+
+	public void setBillDetail(BillDetail billDetail) {
+		this.billDetail = billDetail;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
 }

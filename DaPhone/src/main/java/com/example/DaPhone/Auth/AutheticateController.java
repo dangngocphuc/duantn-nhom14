@@ -72,7 +72,7 @@ public class AutheticateController {
 			UserDetail userDetail = new UserDetail();
 			userDetail.setTokenId(auth);
 			userDetail.setUsername(user.getUsername());
-			userDetail.setId(user.getUserID());
+			userDetail.setUserID(user.getUserID());
 			userDetail.setPermissions(permissions);
 
 			loginResponse.setUserDetail(userDetail);
@@ -112,7 +112,7 @@ public class AutheticateController {
 			UserDetail userDetail = new UserDetail();
 			userDetail.setTokenId(auth);
 			userDetail.setUsername(user.getUsername());
-			userDetail.setId(user.getUserID());
+			userDetail.setUserID(user.getUserID());
 			userDetail.setPermissions(permissions);
 			
 			loginResponse.setUserDetail(userDetail);

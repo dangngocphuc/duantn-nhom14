@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -38,6 +40,7 @@ import com.example.DaPhone.Entity.BillDetail;
 import com.example.DaPhone.Entity.Config;
 import com.example.DaPhone.Entity.EmailJob;
 import com.example.DaPhone.Entity.Product;
+import com.example.DaPhone.Entity.ProductDetail;
 import com.example.DaPhone.Entity.User;
 import com.example.DaPhone.Repository.BillDetailRepo;
 import com.example.DaPhone.Repository.BillRepo;
@@ -46,10 +49,11 @@ import com.example.DaPhone.Repository.EmailJobRepo;
 import com.example.DaPhone.Repository.ProductRepo;
 import com.example.DaPhone.Request.BillRequest;
 import com.example.DaPhone.Service.BillService;
+import com.fasterxml.jackson.annotation.JacksonInject.Value;
 import com.google.gson.Gson;
 
 @Service
-public class BillServiceImpl implements BillService{
+public class BillServiceImpl implements BillService {
 
 	@Autowired
 	private BillRepo billRepo;
@@ -61,22 +65,20 @@ public class BillServiceImpl implements BillService{
 	private ConfigRepo configRepo;
 	@Autowired
 	private EmailJobRepo emailJobRepo;
-	
+
 	public Page<Bill> findBill(BillRequest billParam, Pageable pageable) {
 
 		Page<Bill> listPage = billRepo.findAll(new Specification<Bill>() {
 			@Override
 			public Predicate toPredicate(Root<Bill> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				Join<Bill, User> usJoin = root.join("user", JoinType.LEFT);
-
 				query.distinct(true);
 				List<Predicate> predicates = new ArrayList<>();
 				if (billParam.getBillID() > 0) {
-					predicates.add(cb.and(cb.equal(root.get("billID"), billParam.getBillID())));
+					predicates.add(cb.and(cb.equal(root.get("id"), billParam.getBillID())));
 				}
 				if (billParam.getUserId() > 0) {
-					predicates.add(cb.and(cb.equal(root.get("user").<String>get("userID"),
-							billParam.getUserId())));
+					predicates.add(cb.and(cb.equal(root.get("user").<String>get("userID"), billParam.getUserId())));
 				}
 				if (billParam.getUserName() != null) {
 					predicates.add(cb.and(cb.like(cb.upper(root.get("user").<String>get("userName")),
@@ -94,11 +96,29 @@ public class BillServiceImpl implements BillService{
 				if (billParam.getToDate() != null) {
 					predicates.add(cb.and(cb.lessThanOrEqualTo(root.get("date"), billParam.getToDate())));
 				}
+				if (billParam.getMonth() > 0) {
+					predicates.add(
+							cb.and(cb.equal(cb.function("MONTH", Long.class, root.get("date")), billParam.getMonth())));
+				}
 				return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 		}, pageable);
+		for (Bill bill : listPage.getContent()) {
+			bill.getUser().setListBill(null);
+			bill.getListBillDetail().forEach(e -> {
+				e.getListImei().forEach(i -> {
+					i.setBillDetail(null);
+				});
+				e.setBill(null);
+				e.getProductDetail().setListImei(null);
+				e.getProductDetail().setListProductDetailValue(null);
+				e.getProductDetail().setProduct(null);
+			});
+		}
+
 		return listPage;
 	}
+
 	@Override
 	public List<Long> statisticBillByWeek() {
 		List<Long> statistic = new ArrayList<Long>();
@@ -107,11 +127,10 @@ public class BillServiceImpl implements BillService{
 		int page = 0;
 		int size = 100;
 
-		Sort sortable = Sort.by("billID").descending();
+		Sort sortable = Sort.by("id").descending();
 		Pageable pageable = PageRequest.of(page, size, sortable);
 		BillRequest billParam = new BillRequest();
 		for (int i = 1; i <= sizeMonth; i++) {
-
 			List<Date> dates = dateMap.get("Week" + i);
 			billParam.setFromDate(dates.get(0));
 			billParam.setToDate(dates.get(dates.size() - 1));
@@ -121,11 +140,30 @@ public class BillServiceImpl implements BillService{
 				total += bill.getTotal();
 			}
 			statistic.add(total);
-
 		}
 		return statistic;
 	}
-	
+
+	@Override
+	public List<Long> statisticBillByMonth() {
+		List<Long> statistic = new ArrayList<Long>();
+		int page = 0;
+		int size = 100;
+		Sort sortable = Sort.by("id").descending();
+		Pageable pageable = PageRequest.of(page, size, sortable);
+		BillRequest billParam = new BillRequest();
+		for (int i = 1; i <= 12; i++) {
+			billParam.setMonth(i);
+			List<Bill> lists = findBill(billParam, pageable).toList();
+//			long total = 0;
+//			for (Bill bill : lists) {
+//				total += bill.getTotal();
+//			}
+			statistic.add(Long.valueOf(lists.size()));
+		}
+		return statistic;
+	}
+
 	@Override
 	public ByteArrayInputStream exportExcel(BillRequest billParam) throws IOException {
 		String[] COLUMNs = { "STT", "Mã Bill", "Khách hàng", "Thanh toán", "Tổng đơn", "Địa chỉ", "Ngày",
@@ -162,7 +200,7 @@ public class BillServiceImpl implements BillService{
 					sortable = Sort.by(billParam.getSortField()).descending();
 				}
 			} else {
-				sortable = Sort.by("billID").descending();
+				sortable = Sort.by("id").descending();
 			}
 
 			Pageable pageable = PageRequest.of(page, size, sortable);
@@ -172,7 +210,7 @@ public class BillServiceImpl implements BillService{
 				Row row = sheet.createRow(rowIdx++);
 				++count;
 				row.createCell(0).setCellValue(count);
-				row.createCell(1).setCellValue(bill.getBillID() > 0 ? Long.toString(bill.getBillID()) : "-");
+				row.createCell(1).setCellValue(bill.getId() > 0 ? Long.toString(bill.getId()) : "-");
 				row.createCell(2)
 						.setCellValue(bill.getUser().getUsername() != null ? bill.getUser().getUsername() : " ");
 				row.createCell(3).setCellValue(bill.getPayment() != null ? bill.getPayment() : " ");
@@ -189,66 +227,65 @@ public class BillServiceImpl implements BillService{
 			return new ByteArrayInputStream(out.toByteArray());
 		}
 	}
-	
+
+	@Transactional(rollbackOn = Exception.class)
 	public Bill paymentBill(Bill bill) {
-		Gson g = new Gson();
-		bill.setDate(new Date());
-		bill.setStatus(CommonUtils.PROCESS);
-		Bill billSave = billRepo.save(bill);
-		StringBuilder content = new StringBuilder();
-		
-		content.append("<table width=\"98%\" border=\"1\" cellpadding=\"3\" cellspacing=\"0\">"
-				+ "	<thead>"
-				+ "	<tr align=\"center\" style=\"font-weight: bold; background-color: #D6DBE9; \">"
-				+ "	<td nowrap=\"nowrap\" width=\"30\">STT</td>"
-				+ "	<td width=\"50%\">Tên tài liệu</td>"
-				+ "	<td width=\"45%\">Ghi chú</td>"
-				+ "	</tr>"
-				+ "</thead>");
+		try {
+			Gson g = new Gson();
+			bill.setDate(new Date());
+			bill.setStatus(CommonUtils.PROCESS);
+			bill.setBillCode(CommonUtils.generateBillNumber());
+			for (BillDetail billDetail : bill.getListBillDetail()) {
+				billDetail.setBill(bill);
+			}
+			Bill billSave = billRepo.save(bill);
+			StringBuilder content = new StringBuilder();
+			content.append("<table width=\"98%\" border=\"1\" cellpadding=\"3\" cellspacing=\"0\">" + "	<thead>"
+					+ "	<tr align=\"center\" style=\"font-weight: bold; background-color: #D6DBE9; \">"
+					+ "	<td nowrap=\"nowrap\" width=\"30\">STT</td>" + "	<td width=\"50%\">Tên tài liệu</td>"
+					+ "	<td width=\"45%\">Ghi chú</td>" + "	</tr>" + "</thead>");
 
-		Product[] products = g.fromJson(bill.getProducts(), Product[].class);
-
-		for (Product product : products) {
-			int i = 1;
-			BillDetail billDetail = new BillDetail();
-			billDetail.setBill(billSave);
-//			billDetail.setPrice(product.getProductPrice());
-			billDetail.setProduct(product);
-//			billDetail.setQuantity(product.getQuanlityBuy());
-			content.append("<tr>"
-					+ "<td nowrap=\"nowrap\" width=\"30\">");
-			content.append(i);
-			content.append( "</td>"
-					+ "	<td width=\"50%\">");
-//			content.append(product.getProductName());
-			content.append("</td>"
-					+ "	<td width=\"45%\">");
-//			content.append(product.getQuanlityBuy());
-			content.append("</td>"
-					+ "</tr>");
-			// save bill
-			billDetailRepo.save(billDetail);
-			// save product
-//			product.setProductQuantily(product.getProductQuantily() - product.getQuanlityBuy());
-			productRepo.save(product);
-			i++;
+			ProductDetail[] products = g.fromJson(bill.getProducts(), ProductDetail[].class);
+			for (ProductDetail product : products) {
+				int i = 1;
+//				BillDetail billDetail = new BillDetail();
+//				billDetail.setBill(billSave);
+//				billDetail.setPrice(product.getProductPrice());
+//				billDetail.setProduct(product);
+//				billDetail.setQuantity(product.getQuanlityBuy());
+				content.append("<tr>" + "<td nowrap=\"nowrap\" width=\"30\">");
+				content.append(i);
+				content.append("</td>" + "	<td width=\"50%\">");
+				content.append(product.getProductName());
+				content.append("</td>" + "	<td width=\"45%\">");
+				content.append(product.getQuantity());
+				content.append("</td>" + "</tr>");
+				// save bill
+//				billDetailRepo.save(billDetail);
+				// save product
+//				product.setProductQuantily(product.getProductQuantily() - product.getQuanlityBuy());
+//				productRepo.save(product);
+				i++;
+			}
+			content.append("</table>");
+			// save to email job
+			EmailJob emailJob = new EmailJob();
+			String subject = configRepo.getByName("subject").getValue().replace("__billCode__",
+					String.valueOf(billSave.getBillCode()));
+			emailJob.setSubject(subject);
+			emailJob.setUser(bill.getUser());
+			Config config = configRepo.getByName("content");
+			emailJob.setContent(config.getValue().replace("__name__", billSave.getName())
+					.replace("__total__", NumberFormat.getInstance().format(bill.getTotal()))
+					.replace("__content__", content.toString()));
+			emailJobRepo.save(emailJob);
+//			return bill;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		content.append("</table>");
-		// save to email job
-		EmailJob emailJob = new EmailJob();
-		String subject = configRepo.getByName("subject").getValue().replace("__idBill__",
-				String.valueOf(billSave.getBillID()));
-		emailJob.setSubject(subject);
-		emailJob.setUser(bill.getUser());
-		
-		Config config = configRepo.getByName("content");
-		
-		emailJob.setContent(config.getValue().replace("__name__", billSave.getName())
-						.replace("__total__",NumberFormat.getInstance().format(bill.getTotal())).replace("__content__", content.toString()));
-		emailJobRepo.save(emailJob);
-		
-		return billSave;
+		return bill;
 	}
+
 	public void cancelBill(Bill bill) {
 		bill.setStatus(CommonUtils.CANCEL);
 		billRepo.save(bill);
@@ -259,9 +296,18 @@ public class BillServiceImpl implements BillService{
 //			productRepo.save(product);
 		}
 	}
-	public Bill saveBill(Bill bill) {
-		return billRepo.save(bill);
+
+	@Transactional
+	public boolean saveBill(Bill bill) {
+		Bill bills = billRepo.findById(bill.getId()).get();
+		if (bills != null) {
+			bills.setStatus(bill.getStatus());
+		} else {
+			return false;
+		}
+		return true;
 	}
+
 	public void deleteBill(Long id) {
 		billRepo.deleteById(id);
 	}

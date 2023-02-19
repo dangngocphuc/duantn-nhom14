@@ -58,6 +58,7 @@ export class ImeiComponent implements OnInit {
       (data) => {
         if (data) {
           this.pageImei = data;
+          console.log(data);
           this.pageImei.number = ++this.pageImei.number;
           console.log(this.pageImei);
         }

@@ -144,8 +144,20 @@
         <input type="text" class="form-control" [(ngModel)]="product.tenSanPham" name="ten">
       </div>
       <div class="form-group">
+        <div>Some tags before</div>
+        <owl-carousel-o [options]="customOptions">
+          <ng-container *ngFor="let slide of slidesStore"> 
+            <ng-template carouselSlide [id]="slide.id">
+              <img [src]="slide.src" [alt]="slide.alt" [title]="slide.title">
+            </ng-template>
+          </ng-container>
+        </owl-carousel-o>
+        <div>Some tags after</div>
+      </div>
+      <div class="form-group">
         <label for="trangThai">Thương hiệu</label>
-        <ng-select [items]="listBrand" class="custom-ng-select" bindLabel="tenHang" name="brand" [(ngModel)]="product.brand">
+        <ng-select [items]="listBrand" class="custom-ng-select" bindLabel="tenHang" name="brand"
+          [(ngModel)]="product.brand">
         </ng-select>
       </div>
       <div class="form-group">
@@ -155,15 +167,16 @@
       </div>
       <div class="form-group">
         <label for="danhMuc">Option</label>
-        <ng-select [items]="lstOption | async" class="custom-ng-select" bindLabel="optionName" name="optionName" [multiple]="true"
-          [hideSelected]="true" [loading]="loadlstOption" [typeahead]=" textInput_tenOption$" [(ngModel)]="listOption">
+        <ng-select [items]="lstOption | async" class="custom-ng-select" bindLabel="optionName" name="optionName"
+          [multiple]="true" [hideSelected]="true" [loading]="loadlstOption" [typeahead]=" textInput_tenOption$"
+          [(ngModel)]="listOption">
         </ng-select>
       </div>
       <div class="form-group">
-        <label for="moTa">Mô tả</label>
+        <!-- <label for="moTa">Mô tả</label> -->
         <!-- <textarea class="form-control" id="exampleFormControlTextarea1" rows="10" cols="5"></textarea> -->
-        <ckeditor [editor]="Editor">
-        </ckeditor>
+        <!-- <ckeditor [editor]="Editor">
+        </ckeditor> -->
       </div>
     </form>
   </modal-content>

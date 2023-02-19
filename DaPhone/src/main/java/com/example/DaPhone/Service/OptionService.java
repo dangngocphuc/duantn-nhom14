@@ -14,4 +14,5 @@ public interface OptionService {
 	public Option saveOption(Option option);
 	public boolean deleteOption(Long id);
 	public List<Option> ngSelect(Pageable pageable, OptionRequest optionRequest);
+	public List<Option> getListOption();
 }

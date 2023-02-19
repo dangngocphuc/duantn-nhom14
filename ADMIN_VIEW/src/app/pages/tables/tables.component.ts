@@ -9,6 +9,8 @@ import { catchError, concat, debounceTime, distinctUntilChanged, Observable, of,
 import { OptionService } from 'src/app/services/option.service';
 import { clippingParents } from '@popperjs/core';
 import { BrandService } from 'src/app/services/brand.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { OwlOptions } from 'ngx-owl-carousel-o';
 
 @Component({
   selector: 'app-tables',
@@ -32,21 +34,33 @@ export class TablesComponent implements OnInit {
   common: Common = new Common();
   lstTrangThai = this.common.lstTrangThai
   listBrand : Brand [];
-
+  imageSrc: string = '';
   @ViewChild('myModal') myModal;
+
+  slidesStore = [
+    {id:1,src:"https://media-api-beta.thinkpro.vn/media/core/products/2022/9/30/dell-xps-13-plus-9320-thinkpro-01.jpg?w=500&h=500",alt:"anh1",title:"123"},
+    {id:2,src:"https://media-api-beta.thinkpro.vn/media/core/products/2023/1/9/lenovo-thinkpad-x1-nano-gen-2-thinkpro-06.png?w=500&h=500",alt:"anh2",title:"321"},
+  ]
+
   private modalRef;
   constructor(private productService: ProductService, private optionService: OptionService,private brandService: BrandService,
     private modalService: ModalManager) { }
 
   public Editor = ClassicEditor;
-
+  
   lstOption: Observable<any[]>;
   loadlstOption = false;
   textInput_tenOption$ = new Subject<string>();
-
+  myForm: any;
   ngOnInit() {
     this.getProducts(1, 5);
     this.getListBrand();
+    this.myForm = new FormGroup({
+      // name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      file: new FormControl('', [Validators.required]),
+      fileSource: new FormControl('', [Validators.required])
+    });
+    console.log(this.slidesStore);
   }
 
   getListBrand(){
@@ -157,4 +171,47 @@ export class TablesComponent implements OnInit {
     })
   }
 
+  onFileChange(event:any) {
+    const reader = new FileReader();
+     
+    if(event.target.files && event.target.files.length) {
+      const [file] = event.target.files;
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.imageSrc = reader.result as string;
+        this.myForm.patchValue({
+          fileSource: reader.result
+        });
+      };
+    }
+  }
+
+  get f(){
+    return this.myForm.controls;
+  }
+  customOptions: OwlOptions = {
+    loop: true,
+    mouseDrag: true,
+    touchDrag: true,
+    pullDrag: true,
+    dots: true,
+    navSpeed: 700,
+    navText: ['', ''],
+    responsive: {
+      0: {
+        items: 1
+      },
+      400: {
+        items: 2
+      },
+      740: {
+        items: 3
+      },
+      940: {
+        items: 4
+      }
+    },
+    nav: true
+  }
+  
 }

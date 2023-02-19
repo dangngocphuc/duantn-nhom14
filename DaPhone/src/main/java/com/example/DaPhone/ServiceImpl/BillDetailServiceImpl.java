@@ -9,19 +9,21 @@ import com.example.DaPhone.Entity.Bill;
 import com.example.DaPhone.Entity.BillDetail;
 import com.example.DaPhone.Repository.BillDetailRepo;
 import com.example.DaPhone.Service.BillDetailService;
+
 @Service
-public class BillDetailServiceImpl implements BillDetailService{
-	
+public class BillDetailServiceImpl implements BillDetailService {
+
 	@Autowired
-	private BillDetailRepo billDetailRepo; 
+	private BillDetailRepo billDetailRepo;
 
 	@Override
-	public List<BillDetail> findByBill(Long id){
+	public List<BillDetail> findByBill(Long id) {
 		Bill bill = new Bill();
-		bill.setBillID(id);
-		return billDetailRepo.findByBill(bill);
+		bill.setId(id);
+		List<BillDetail> billDetail = billDetailRepo.findByBill(bill);
+		return billDetail;
 	}
-	
+
 	@Override
 	public BillDetail saveBillDetail(BillDetail billDetail) {
 		return billDetailRepo.save(billDetail);

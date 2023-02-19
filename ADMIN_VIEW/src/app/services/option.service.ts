@@ -9,7 +9,6 @@ import { HttpBaseService } from './http-base.service';
   providedIn: 'root'
 })
 export class OptionService {
-
   constructor(private http: HttpBaseService,private authen: AuthenticationService) { }
   getOptions(page: PagesRequest, request: OptionRequest): Observable<PageOption> {
     let query = {};
@@ -33,8 +32,6 @@ export class OptionService {
   saveOption(option): Observable<any> {
     return this.http.post<any>(`/option/save`, option);
   }
-
-
   public ngSelect(page: PagesRequest, data): Observable<any> {
     let query = {};
     if (page.page) query['page'] = page.page;
@@ -47,9 +44,7 @@ export class OptionService {
     // this.httpOption['params'] = params;
     return this.http.get<any>(`/option/ngselect`, params);
   }
-
   httpOption: {};
-
   getOption() {
     this.httpOption = {
       headers: this.authen.getHeader(),
@@ -57,5 +52,4 @@ export class OptionService {
     this.httpOption['withCredentials'] = true;
     return this.httpOption;
   }
-
 }

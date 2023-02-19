@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -22,9 +23,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class EmailJob {
 	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	@SequenceGenerator(name = "seqEmailJob", sequenceName = "SEQ_EMAIL_JOB", allocationSize = 1, initialValue = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqEmailJob")
+    private Long id;
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;

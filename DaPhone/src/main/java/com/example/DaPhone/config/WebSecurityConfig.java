@@ -73,7 +73,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
 
-
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -98,11 +97,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		httpSecurity.headers().frameOptions().disable();
 		httpSecurity.cors().and().csrf().disable().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-				.antMatchers("/api/authenticate/**", "/api/authenticate/user/login", "/api/getsession", "/api/option/**","/api/productVariant/**","/api/imei/**",
-						"/api/user/save", "/api/brand/**", "/rest-service/*", "/api/product/**", "/api/category/**" ,"/api/oauth2/google")
+				.antMatchers("/api/authenticate/**", "/api/authenticate/user/login", "/api/getsession",
+						"/api/option/**", "/api/productVariant/**", "/api/imei/**", "/api/user/save", "/api/brand/**","/api/bill/**",
+						"/api/bill-detail/**",
+						"/rest-service/*", "/api/product/**", "/api/category/**", "/api/oauth2/google")
 				.permitAll().antMatchers("/admin").hasAuthority("ADMIN").anyRequest().authenticated();
 
 	}
+
 	public class TokenAuthenticationFilter implements Filter {
 		private CommonUtils commonUtils;
 
@@ -110,9 +112,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			super();
 			this.commonUtils = commonUtils;
 		}
+
 		@Override
 		public void init(FilterConfig filterConfig) throws ServletException {
 		}
+
 		@Override
 		public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
 				throws IOException, ServletException {
@@ -125,27 +129,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					try {
 						UserDetail htnsd = this.commonUtils.getUserInfo(accessToken);
 						UserDetails userDetails = userDetailsService.loadUserByUsername(htnsd.getUsername());
-						UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+						UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+								userDetails, null, userDetails.getAuthorities());
 						authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
 						SecurityContextHolder.getContext().setAuthentication(authentication);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
-			}else {
+			} else {
 				if (jwt != null) {
 					try {
 						UserDetail htnsd = this.commonUtils.getUserInfo(jwt);
 						String username = htnsd.getUsername();
 						UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-						UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+						UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+								userDetails, null, userDetails.getAuthorities());
 						authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
 						SecurityContextHolder.getContext().setAuthentication(authentication);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
+
 				}
 			}
 			/*
@@ -169,7 +175,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		public void destroy() {
 
 		}
-		
+
 		@SuppressWarnings("unused")
 		private String getJwt(HttpServletRequest request) {
 			String accessToken = request.getHeader("Authorization");
@@ -180,5 +186,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		}
 	}
 
-	
 }

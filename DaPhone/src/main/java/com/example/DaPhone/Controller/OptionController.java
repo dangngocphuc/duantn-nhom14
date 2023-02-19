@@ -96,7 +96,12 @@ public class OptionController {
 			}
 			item.setListOptionValue(optionValues);
 		}
-
 		return item;
+	}
+	
+	@GetMapping(value = "/list")
+	public ResponseEntity<List<Option>> getListOption() {
+		List<Option> lstOption = optionService.getListOption();
+		return new ResponseEntity<List<Option>>(lstOption, HttpStatus.OK);
 	}
 }

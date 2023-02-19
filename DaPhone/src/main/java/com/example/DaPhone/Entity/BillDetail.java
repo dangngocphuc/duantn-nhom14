@@ -1,12 +1,18 @@
 package com.example.DaPhone.Entity;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -22,20 +28,26 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BillDetail {
 	@Id
-	@Column(name = "bill_detail_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long billDetailID;
-	
+	@SequenceGenerator(name = "seqBillDetail", sequenceName = "SEQ_BILL_DETAIL", allocationSize = 1, initialValue = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqBillDetail")
+	private Long id;
+
 	@ManyToOne
-	@JoinColumn(name = "bill_id", nullable = false)
+	@JoinColumn(name = "bill_id")
 	private Bill bill;
-	
+
 	@ManyToOne
-	@JoinColumn(name = "product_id", nullable = false)
-	private Product product;
-	
+	@JoinColumn(name = "product_detail_id")
+	private ProductDetail productDetail;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "productDetail",  cascade = CascadeType.MERGE, orphanRemoval = true)
+	private Set<Imei> listImei;
+
 	@Column(name = "price")
-    private long price;
+	private Double price;
+
 	@Column(name = "quantity")
-    private int quantity;
+	private int quantity;
+	
+	
 }

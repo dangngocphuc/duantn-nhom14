@@ -49,6 +49,7 @@ public class EmailJobTask implements Callable<EmailJobTask> {
 				mailServerProperties.put("mail.smtp.port", "587");
 				mailServerProperties.put("mail.smtp.auth", "true");
 				mailServerProperties.put("mail.smtp.starttls.enable", "true");
+				mailServerProperties.put("mail.smtp.debug", "true");
 				Authenticator authenticator = new Authenticator() {
 					public PasswordAuthentication getPasswordAuthentication() {
 						return new PasswordAuthentication(emailRoot,passRoot);// userid and password for "from" email
@@ -71,7 +72,7 @@ public class EmailJobTask implements Callable<EmailJobTask> {
 
 				// Thay your_gmail thành gmail của bạn, thay your_password thành mật khẩu gmail
 				// của bạn
-				transport.connect("smtp.gmail.com", this.emailRoot.trim(), this.passRoot);
+				transport.connect("smtp.gmail.com", emailRoot.trim(), passRoot);
 				transport.sendMessage(mailMessage, mailMessage.getAllRecipients());
 				transport.close();
 				// done

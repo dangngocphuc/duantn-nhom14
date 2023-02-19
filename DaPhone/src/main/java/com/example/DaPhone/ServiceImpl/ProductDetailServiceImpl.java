@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.DaPhone.Common.CommonUtils;
 import com.example.DaPhone.Entity.Brand;
+import com.example.DaPhone.Entity.Imei;
+import com.example.DaPhone.Entity.OptionValue;
 import com.example.DaPhone.Entity.Product;
 import com.example.DaPhone.Entity.ProductDetail;
 import com.example.DaPhone.Entity.ProductDetailValue;
@@ -41,11 +44,34 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 			public Predicate toPredicate(Root<ProductDetail> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				query.distinct(true);
 				Join<ProductDetail, Product> joinProduct = root.join("product",JoinType.LEFT);
+				Join<ProductDetail, Imei> joinImei = root.join("listImei",JoinType.LEFT);
 				Join<Product, Brand> joinBrand = joinProduct.join("brand",JoinType.LEFT);
+				Join<ProductDetail, ProductDetailValue> joinProductDetailValue = root.join("listProductDetailValue",JoinType.LEFT);
+				Join<ProductDetailValue, OptionValue> joinOptionValue = joinProductDetailValue.join("optionValue",JoinType.LEFT);
 				List<Predicate> predicates = new ArrayList<>();
 				if(productParam.getBrandID()!=null) {
-					predicates.add(cb.and(cb.equal(joinBrand.get("id"), productParam.getBrandID())));
+					String brandId = productParam.getBrandID();
+					if (brandId.contains(",")) {
+						String[] brandIds = brandId.split(",");
+						Expression<String> parentExpressionTT = joinBrand.get("id");
+						Predicate parentPredicateTT = parentExpressionTT.in(brandIds);
+						predicates.add(cb.and(parentPredicateTT));
+					} else {
+						predicates.add(cb.and(cb.equal(joinBrand.get("id"), brandId)));
+					}
 				}
+				if(productParam.getOptionValueID()!=null) {
+					String optonValueId = productParam.getOptionValueID();
+					if (optonValueId.contains(",")) {
+						String[] optonValueIds = optonValueId.split(",");
+						Expression<String> parentExpressionTT = joinOptionValue.get("id");
+						Predicate parentPredicateTT = parentExpressionTT.in(optonValueIds);
+						predicates.add(cb.and(parentPredicateTT));
+					} else {
+						predicates.add(cb.and(cb.equal(joinOptionValue.get("id"), optonValueId)));
+					}
+				}
+				predicates.add(cb.and(cb.equal(joinImei.get("status"), 1)));
 				return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 		}, pageable);
@@ -106,6 +132,8 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 			public Predicate toPredicate(Root<ProductDetail> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				query.distinct(true);
 				List<Predicate> predicates = new ArrayList<>();
+				Join<ProductDetail, Imei> joinImei = root.join("listImei",JoinType.LEFT);
+				predicates.add(cb.and(cb.equal(joinImei.get("status"), 1)));
 				return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 		});

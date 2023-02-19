@@ -8,8 +8,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
-
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+// import { CarouselModule } from 'ngx-owl-carousel-o';
+import { NgbCarouselModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
@@ -47,7 +47,11 @@ import { VoucherComponent } from './pages/voucher/voucher.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ImeiComponent } from './pages/imei/imei.component';
 import { BrandComponent } from './pages/brand/brand.component';
-
+import { CarouselModule } from 'ngx-owl-carousel-o';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
+// import { ChartsModule } from 'ng2-charts';
+import {CdkStepperModule} from '@angular/cdk/stepper';
 
 @NgModule({
   imports: [
@@ -68,7 +72,14 @@ import { BrandComponent } from './pages/brand/brand.component';
     ModalModule,
     NgSelectModule,
     NgxPaginationModule,
-    CKEditorModule
+    CKEditorModule,
+    NgbCarouselModule,
+    CarouselModule ,
+    SharedModule,
+    NzTableModule,
+    CdkStepperModule,
+    // ChartsModule
+    // CarouselModule
     // CKEditorModule
     // ProgressbarModule.forRoot()
   ],
@@ -89,11 +100,12 @@ import { BrandComponent } from './pages/brand/brand.component';
     CategoryComponent,
     VoucherComponent,
     ImeiComponent,
-    BrandComponent
+    BrandComponent,
   ],
   providers: [
     CookieService,
     LoaderService,
+    { provide: NZ_I18N, useValue: en_US },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]

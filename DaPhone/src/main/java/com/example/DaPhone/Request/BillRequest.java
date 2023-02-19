@@ -15,4 +15,5 @@ public class BillRequest extends BaseRequest{
 	private long priceTo;
 	private String userName;
 	private long userId;
+	private long month;
 }

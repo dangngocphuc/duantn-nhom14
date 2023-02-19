@@ -3,87 +3,57 @@
     <div class="header-body">
       <!-- Card stats -->
       <div class="row">
-        <div class="col-xl-3 col-lg-6">
+        <div class="col-xl-12 col-lg-6">
           <div class="card card-stats mb-4 mb-xl-0">
             <div class="card-body">
-              <div class="row">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Traffic</h5>
-                  <span class="h2 font-weight-bold mb-0">350,897</span>
-                </div>
-                <div class="col-auto">
-                  <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
-                    <i class="fas fa-chart-bar"></i>
+              <form class="form-search">
+                <!-- hàng 1 -->
+                <div class="row">
+                  <div class="col-md-3">
+                    <div class="form-group align-self-center">
+                      <span>Mã Bill</span>
+                      <input type="text" class="form-control" />
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group align-self-center">
+                      <span>Tên khách hàng</span>
+                      <input type="text" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group align-self-center">
+                      <span>Đơn giá từ</span>
+                      <input type="number" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group align-self-center">
+                      <span>Đơn giá đến</span>
+                      <input type="number" class="form-control">
+                    </div>
                   </div>
                 </div>
-              </div>
-              <p class="mt-3 mb-0 text-muted text-sm">
-                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
-                <span class="text-nowrap">Since last month</span>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-lg-6">
-          <div class="card card-stats mb-4 mb-xl-0">
-            <div class="card-body">
-              <div class="row">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">New users</h5>
-                  <span class="h2 font-weight-bold mb-0">2,356</span>
-                </div>
-                <div class="col-auto">
-                  <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
-                    <i class="fas fa-chart-pie"></i>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group align-self-center">
+                      <span>Từ ngày</span>
+                      <input type="text" class="form-control" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group align-self-center">
+                      <span>Đến ngày</span>
+                      <input type="text" class="form-control" />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <p class="mt-3 mb-0 text-muted text-sm">
-                <span class="text-danger mr-2"><i class="fas fa-arrow-down"></i> 3.48%</span>
-                <span class="text-nowrap">Since last week</span>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-lg-6">
-          <div class="card card-stats mb-4 mb-xl-0">
-            <div class="card-body">
-              <div class="row">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Sales</h5>
-                  <span class="h2 font-weight-bold mb-0">924</span>
+                <!-- hàng 2 -->
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                  <button type="button" class="btn btn-bidv btn-search mt-2"><i class="fa fa-search fa-btn"></i>
+                    Tìm kiếm</button>
                 </div>
-                <div class="col-auto">
-                  <div class="icon icon-shape bg-yellow text-white rounded-circle shadow">
-                    <i class="fas fa-users"></i>
-                  </div>
-                </div>
-              </div>
-              <p class="mt-3 mb-0 text-muted text-sm">
-                <span class="text-warning mr-2"><i class="fas fa-arrow-down"></i> 1.10%</span>
-                <span class="text-nowrap">Since yesterday</span>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-lg-6">
-          <div class="card card-stats mb-4 mb-xl-0">
-            <div class="card-body">
-              <div class="row">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Performance</h5>
-                  <span class="h2 font-weight-bold mb-0">49,65%</span>
-                </div>
-                <div class="col-auto">
-                  <div class="icon icon-shape bg-info text-white rounded-circle shadow">
-                    <i class="fas fa-percent"></i>
-                  </div>
-                </div>
-              </div>
-              <p class="mt-3 mb-0 text-muted text-sm">
-                <span class="text-success mr-2"><i class="fas fa-arrow-up"></i> 12%</span>
-                <span class="text-nowrap">Since last month</span>
-              </p>
+              </form>
             </div>
           </div>
         </div>
@@ -96,8 +66,190 @@
   <div class="row">
     <div class="col">
       <div class="card shadow border-0">
-        <div id="map-canvas" class="map-canvas" data-lat="40.748817" data-lng="-73.985428" style="height: 600px;"></div>
+        <div class="card-header border-0">
+          <div>
+            <h3 class="mb-0">Danh sách Đơn hàng</h3>
+          </div>
+          <div style="float: right;"><button (click)="openModal(Action.THEMMOI)" class="btn btn-sm btn-success">Thêm
+              mới</button>
+          </div>
+        </div>
+        <nz-table class="table table-bordered table-striped table-hover mr-0" nzShowSizeChanger [nzData]="listOfData"
+          [nzFrontPagination]="false" [nzLoading]="loading" [nzTotal]="total" [nzPageSize]="pageSize"
+          [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
+          <thead>
+            <tr>
+              <th nzColumnKey="id" [nzSortFn]="true" style="text-align: center;">Mã Bill</th>
+              <th style="text-align: center;">Tên</th>
+              <th nzColumnKey="total" [nzSortFn]="true" style="text-align: center;">Tổng hóa đơn</th>
+              <th style="text-align: center;">Thanh toán</th>
+              <th nzColumnKey="date" [nzSortFn]="true" style="text-align: center;">Ngày bán</th>
+              <th style="text-align: center;">Địa chỉ</th>
+              <th style="text-align: center;">Tình trạng</th>
+              <th style="text-align: center;">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of listOfData; ; let i = index">
+              <td>{{data.id}}</td>
+              <td>{{data.name}}</td>
+              <td>{{data.total| number}}</td>
+              <td>{{data.payment}}</td>
+              <td>{{data.date|date:'dd/MM/yyyy'}}</td>
+              <td>{{data.address}}</td>
+              <td>
+                <nz-select *ngIf=" data.status != 'Cancel'; else elseBlock" ngModel="{{data.status}}"
+                  (ngModelChange)="changeStatus($event,data)">
+                  <nz-option nzValue="Process" nzLabel="Đang xử lý"></nz-option>
+                  <nz-option nzValue="Delivery" nzLabel="Đang giao hàng"></nz-option>
+                  <nz-option nzValue="Delivered" nzLabel="Đã giao hàng"></nz-option>
+                </nz-select>
+                <ng-template #elseBlock>
+                  <p class="red">Đơn hàng đã hủy</p>
+                </ng-template>
+              </td>
+              <td style="text-align: center;">
+                <button (click)="showModal(data.id)" class="btn btn-primary">Xem </button>
+                <!-- <nz-divider nzType="vertical"></nz-divider> -->
+                <button *ngIf=" data.status != 'Cancel'" (click)="cancelBill(data)" class="btn btn-danger" nzDanger>Hủy
+                  đơn</button>
+                <!-- <nz-divider nzType="vertical"></nz-divider> -->
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
       </div>
     </div>
   </div>
 </div>
+
+<nz-modal [nzStyle]="{ top: '20px',width:'100%' }" [(nzVisible)]="isVisible" nzTitle="Xem chi tiết">
+  <ng-container *nzModalContent>
+    <div class="m-container" id="print-section">
+      <div>
+        <h2>Mã đơn: </h2>
+        <h2>{{this.billId}}</h2>
+      </div>
+      <nz-divider nzPlain nzText="Chi tiết"></nz-divider>
+      <nz-table nzTemplateMode>
+        <thead>
+          <tr>
+            <th style="text-align: center;">STT</th>
+            <th style="text-align: center;">Tên sản phẩm</th>
+            <th style="text-align: center;">Giá</th>
+            <th style="text-align: center;">Số lượng</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of listOfBillDetail; ; let i = index">
+            <td style="text-align: center;">{{i+1}}</td>
+            <td style="text-align: center;">{{data?.productDetail?.productName}}</td>
+            <td style="text-align: center;">{{data?.productDetail?.productPrice| number}}</td>
+            <td style="text-align: center;">{{data?.quantity}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </ng-container>
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="handlePrint()"><i nz-icon nzType="printer"
+        nzTheme="outline"></i>&nbsp;In hóa đơn</button>
+    <button nz-button nzType="primary" (click)="handleOk()">OK</button>
+  </div>
+</nz-modal>
+
+
+<modal #myModal>
+  <modal-header>
+    <h4 *ngIf="action == Action.THEMMOI">Thêm mới hóa đơn</h4>
+    <h4 *ngIf="action === Action.CAPNHAT">Cập nhật hóa đơn</h4>
+  </modal-header>
+  <modal-content>
+    <form>
+      <div class="row">
+        <div class="col-4">
+          <div class="form-group">
+            <label for="danhMuc">Sản phẩm</label>
+            <ng-select [items]="lstProductDetail" class="custom-ng-select" bindLabel="productName"
+              [hideSelected]="true">
+            </ng-select>
+          </div>
+          <button class="btn btn-primary">Thêm sản phẩm</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <ng-container *ngIf="listOfProductDetail.length">
+          <table class="table animated wow fadeInLeft" data-wow-delay=".5s">
+            <tr>
+              <th class="t-head">Hình ảnh</th>
+              <th class="t-head ">Mặt Hàng</th>
+              <th class="t-head">Giá</th>
+              <th class="t-head">Số Lượng</th>
+              <th class="t-head"></th>
+            </tr>
+            <tr *ngFor="let item of listOfProductDetail" class="cross1">
+              <td class="t-data" style="width:  25%;">
+                <a href="product-detail/{{item.id}}" class="at-in">
+                  <img src="../../assets/{{item.productImage}}" class="fashion-grid" alt="">
+                </a>
+              </td>
+              <td class="t-data" style="width:  25%;">
+                <h3>
+                  {{item.productName}}
+                </h3>
+              </td>
+              <td class="t-data">
+                {{item.productPrice | number}} VNĐ
+              </td>
+              <td class="t-data">
+                <div class="quantity">
+                  <div class="quantity-select">
+                    <div (click)="minusProduct(item)" class="entry value-minus">&nbsp;</div>
+                    <div class="entry value">
+                      {{item.quanlityBuy | number}}
+                    </div>
+                    <div (click)="plusProduct(item)" class="entry value-plus active">&nbsp;</div>
+                  </div>
+
+                </div>
+              </td>
+              <td class="t-data"><i (click)="delProduct(item.id)" class="icon-del" nz-icon nzType="close-circle"
+                  nzTheme="outline" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'"></i> </td>
+            </tr>
+          </table>
+          <div class=" ">
+            <h5 class="continue">Tổng Cộng Giỏ Hàng</h5>
+            <div class="price-details">
+              <h3>Chi Tiết Giá</h3>
+              <span>Tổng Cộng</span>
+              <span class="total1">
+                Tổng giá VND
+              </span>
+              <span>Giảm giá</span>
+              <span class="total1">{{salePrice | number}} VND</span>
+              <span>Phí vận chuyển</span>
+              <span class="total1">Miễn phí</span>
+              <div class="clearfix"></div>
+            </div>
+            <ul class="total_price">
+              <li class="last_price">
+                <h4>Tổng Cộng</h4>
+              </li>
+              <li class="last_price"><span>
+                  {{totalPrice| number}} VNĐ
+                </span></li>
+              <div class="clearfix"> </div>
+            </ul>
+            <button class="btn btn-outline-success" (click)="payment()">Thanh Toán</button>
+
+          </div>
+        </ng-container>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <!-- <button class="btn btn-primary" (click)="save()">Lưu</button>
+    <button class="btn btn-primary" (click)="closeModal()">close</button> -->
+  </modal-footer>
+</modal>

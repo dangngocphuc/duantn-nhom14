@@ -89,4 +89,18 @@ export class HttpBaseService {
       return this.http.delete<T>(url, httpOptions);
     }
   }
+
+
+  getByParams<T>(url: string, params: any): Observable<T> {
+    if (params) {
+      let param = new HttpParams();
+      params.forEach((values, keys) => {
+        if (values) {
+          param = param.append(keys, values);
+        }
+      });
+      return this.callApiBaseGetWay('GET', url, param, {});
+    }
+    return this.callApiBaseGetWay('GET', url, params, {});
+  }
 }
