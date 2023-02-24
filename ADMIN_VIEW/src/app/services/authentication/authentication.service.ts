@@ -75,7 +75,6 @@ export class AuthenticationService {
   }
 
   getUserDetail(): Observable<User> {
-    debugger;
     var httpOption = {
       headers: this.getHeader()
     }

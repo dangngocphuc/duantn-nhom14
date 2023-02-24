@@ -134,50 +134,62 @@
     <!-- <h4 *ngIf="action === 2">Thông Tin danh mục thông tin đại diện kho bạc đơn vị</h4> -->
   </modal-header>
   <modal-content>
-    <form>
+    <form [formGroup]="formGroup">
+      <fieldset formGroupName="product">
+        <div class="form-group">
+          <label for="ma">Mã sản phẩm</label>
+          <input type="text" class="form-control" [(ngModel)]="product.maSanPham" formControlName="code">
+        </div>
+        <div class="form-group">
+          <label for="ten">Tên sản phẩm</label>
+          <input type="text" class="form-control" [(ngModel)]="product.tenSanPham" formControlName="name">
+        </div>
+        <div class="form-group">
+          <label for="trangThai">Thương hiệu</label>
+          <ng-select [items]="listBrand" class="custom-ng-select" bindLabel="tenHang" formControlName="brand"
+            [(ngModel)]="product.brand">
+          </ng-select>
+        </div>
+        <div class="form-group">
+          <label for="trangThai">Trạng Thái</label>
+          <ng-select [items]="lstTrangThai" class="custom-ng-select" bindLabel="name" bindValue="value" formControlName="status"
+            name="status">
+          </ng-select>
+        </div>
+        <div class="form-group">
+          <label for="danhMuc">Option</label>
+          <ng-select [items]="lstOption | async" class="custom-ng-select" bindLabel="optionName" name="optionName" formControlName="option"
+            name="option" [multiple]="true" [hideSelected]="true" [loading]="loadlstOption"
+            [typeahead]=" textInput_tenOption$" [(ngModel)]="listOption">
+          </ng-select>
+        </div>
+      </fieldset>
       <div class="form-group">
-        <label for="ma">Mã sản phẩm</label>
-        <input type="text" class="form-control" [(ngModel)]="product.maSanPham" name="ma">
+        <!-- <img [src]="linkImage" alt="..." class="img-thumbnail">
+      <img src="" alt=""> -->
+        <label for="image">Ảnh sản phẩm</label>
+        <ng-image-slider #nav [images]="imageObject" [infinite]="false" [autoSlide]="1" slideImage="1"
+          [imageSize]="{width: '100%', height: 400}"></ng-image-slider>
       </div>
-      <div class="form-group">
-        <label for="ten">Tên sản phẩm</label>
-        <input type="text" class="form-control" [(ngModel)]="product.tenSanPham" name="ten">
-      </div>
-      <div class="form-group">
-        <div>Some tags before</div>
-        <owl-carousel-o [options]="customOptions">
-          <ng-container *ngFor="let slide of slidesStore"> 
-            <ng-template carouselSlide [id]="slide.id">
-              <img [src]="slide.src" [alt]="slide.alt" [title]="slide.title">
-            </ng-template>
-          </ng-container>
-        </owl-carousel-o>
-        <div>Some tags after</div>
-      </div>
-      <div class="form-group">
-        <label for="trangThai">Thương hiệu</label>
-        <ng-select [items]="listBrand" class="custom-ng-select" bindLabel="tenHang" name="brand"
-          [(ngModel)]="product.brand">
-        </ng-select>
-      </div>
-      <div class="form-group">
-        <label for="trangThai">Trạng Thái</label>
-        <ng-select [items]="lstTrangThai" class="custom-ng-select" bindLabel="name" bindValue="value" name="trangThai">
-        </ng-select>
-      </div>
-      <div class="form-group">
-        <label for="danhMuc">Option</label>
-        <ng-select [items]="lstOption | async" class="custom-ng-select" bindLabel="optionName" name="optionName"
-          [multiple]="true" [hideSelected]="true" [loading]="loadlstOption" [typeahead]=" textInput_tenOption$"
-          [(ngModel)]="listOption">
-        </ng-select>
-      </div>
-      <div class="form-group">
-        <!-- <label for="moTa">Mô tả</label> -->
-        <!-- <textarea class="form-control" id="exampleFormControlTextarea1" rows="10" cols="5"></textarea> -->
-        <!-- <ckeditor [editor]="Editor">
-        </ckeditor> -->
-      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col" width="1%">#</th>
+            <th scope="col" width="40px">Link ảnh</th>
+            <!-- <th scope="col" width="40px">Giá trị</th> -->
+            <td style="width:1%" class="text-center"><span (click)="addRow()"><i alt="Thêm mới" style="cursor: pointer;"
+                  class="fas fa-plus-circle" title="Thêm dòng"></i></span>
+          </tr>
+        </thead>
+        <tbody formArrayName="listImage" *ngFor="let item of product?.listImage, index as i">
+          <tr [formGroupName]="i">
+            <td>{{i+1}}</td>
+            <td><input formControlName="thumbImage" type="text" class="form-control" [(ngModel)]="item.thumbImage"
+                (blur)="convertImage()"></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
     </form>
   </modal-content>
   <modal-footer>

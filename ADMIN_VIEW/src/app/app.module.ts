@@ -52,7 +52,9 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 // import { ChartsModule } from 'ng2-charts';
 import {CdkStepperModule} from '@angular/cdk/stepper';
-
+import {NgStepperModule} from 'angular-ng-stepper';
+import { ReviewComponent } from './pages/review/review.component';
+import { NgImageSliderModule } from 'ng-image-slider';
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -79,6 +81,8 @@ import {CdkStepperModule} from '@angular/cdk/stepper';
     NzTableModule,
     CdkStepperModule,
     // ChartsModule
+    NgStepperModule,
+    NgImageSliderModule
     // CarouselModule
     // CKEditorModule
     // ProgressbarModule.forRoot()
@@ -101,6 +105,7 @@ import {CdkStepperModule} from '@angular/cdk/stepper';
     VoucherComponent,
     ImeiComponent,
     BrandComponent,
+    ReviewComponent,
   ],
   providers: [
     CookieService,

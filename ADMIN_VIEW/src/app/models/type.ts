@@ -80,21 +80,22 @@ export class OptionValue{
 
 export class Image {
   id : number;
-  imgUrl : String;
-  createDate : Date;
-  imgType : String;
-  status : boolean;
-  product : Product;
+  image : String;
+  // createDate : Date;
+  // imgType : String;
+  // status : boolean;
+  // product : Product;
+  thumbImage : String;
 }
 
 export class Product {
   id : number;
   maSanPham: String;
-  tenSanPham : Date;
+  tenSanPham : String;
   brand : Brand;
   listProductDetail : ProductDetail[];
   listProductOption : ProductOption[];
-  listImage : Image[];
+  listImage : Image[] = [];
 }
 
 export class ProductDetail {
@@ -103,6 +104,10 @@ export class ProductDetail {
   product: Product;
   listProductDetailValue :ProductDetailValue[];
   quantity : number;
+  quanlityBuy:number;
+  productPrice: number;
+  listImei : Imei[];
+  
 }
 
 export class ProductOption {
@@ -209,6 +214,7 @@ export class Bill {
   phone: string;
   status: string;
   listBillDetail: BillDetail[];
+  billCode: String;
 }
 
 
@@ -219,4 +225,15 @@ export class BillDetail {
   price : number;
   quantity : number;
   listImei : Imei[];
+}
+
+export class Review {
+  id: number;
+  productDetail: ProductDetail;
+  reviewName: string;
+  userId: number;
+  reviewStar: number;
+  reviewMessage: string;
+  date: Date;
+  status: number;
 }

@@ -5,9 +5,10 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { ModalManager } from 'ngb-modal';
 import { Action } from 'src/app/commons/common';
-import { Bill, ProductDetail } from 'src/app/models/type';
+import { Bill, BillDetail, ProductDetail } from 'src/app/models/type';
 import { BillService } from 'src/app/services/bill.service';
 import { ProductDetailService } from 'src/app/services/productDetail.service';
+import Swal from 'sweetalert2';
 declare const google: any;
 
 @Component({
@@ -32,6 +33,9 @@ export class MapsComponent implements OnInit {
   action: Action;
   lstProductDetail: ProductDetail[];
   listOfProductDetail: ProductDetail[] = [];
+  productDetail = new ProductDetail();
+  totalPrice = 0;
+  newBill = new Bill();
 
   @ViewChild('myModal') myModal;
   private modalRef;
@@ -201,29 +205,95 @@ export class MapsComponent implements OnInit {
   }
 
   plusProduct(item) {
+    debugger;
     this.listOfProductDetail.forEach((element) => {
-      // if (element.id == item.id &&  item.quanlityBuy < element.quantity ) {
-      //   element.quanlityBuy += 1;
-      // }
+      debugger;
+      if (element.id == item.id &&  item.quanlityBuy < element.quantity ) {
+        element.quanlityBuy += 1;
+      }
     });
-    // this.updateCart();
+    this.updateBill();
   }
 
   minusProduct(item) {
     this.listOfProductDetail.forEach((element) => {
-      // if (element.id == item.id && element.quantity > 1) {
-      //   element.quanlityBuy -= 1;
-      // }
+      if (element.id == item.id && element.quantity > 1) {
+        element.quanlityBuy -= 1;
+      }
     });
-    // this.updateCart();
+    this.updateBill();
   }
 
   delProduct(id) {
-    debugger;
+    // debugger;
     this.listOfProductDetail = this.listOfProductDetail.filter(
       (element) => element.id != id
     );
-    // this.updateCart();
+    this.updateBill();
     // window.location.reload();
+  }
+
+  addProduct() {
+    if(this.productDetail.id){
+      this.productDetail.quanlityBuy = 1;
+      let duplicate = false;
+      this.listOfProductDetail.forEach((e) => {
+        if (e.id == this.productDetail.id) {
+          duplicate = true;
+        }
+      })
+      if(!duplicate){
+        // debugger;
+        this.productDetail.quanlityBuy = 1;
+        this.listOfProductDetail.push(this.productDetail);
+        this.updateBill();
+      }else{
+        Swal.fire('','Sản phẩm đã có trong giỏ hàng','info');
+      }
+    }
+  }
+  updateBill(){
+    this.totalPrice = 0;
+    this.listOfProductDetail.forEach((element) => {
+      this.totalPrice += element.quanlityBuy * element.productPrice;
+      console.log(this.totalPrice);
+      // this.salePrice += (element.productMarketprice - element.productPrice) * element.quantity;
+    });
+  }
+
+  payment(){
+    // console.log(this.newBill);
+    let listBillDetailTemp = []
+    this.listOfProductDetail.forEach((e) => {
+      let billDetail = new BillDetail();
+      e.listImei = e.listImei.filter((e) => e.status == 1)
+      billDetail.productDetail = e;
+      billDetail.quantity = e.quanlityBuy;
+      billDetail.price = e.productPrice;
+      billDetail.listImei = e.listImei.slice(0, e.quanlityBuy);
+      listBillDetailTemp.push(billDetail);
+    })
+    this.newBill.total = this.totalPrice;
+    this.newBill.listBillDetail=listBillDetailTemp;
+    console.log(this.newBill);
+    this.saveBill(this.newBill);
+  }
+
+  saveBill(bill) {
+    this.billService.paymentBill(bill).subscribe(
+      (data) => {
+        if (data) {
+          this.handleOk();
+          window.location.reload();
+        }
+      },
+      (error) => {
+        this.createNotification(
+          'error',
+          'Có lỗi xảy ra!',
+          'Vui lòng liên hệ quản trị viên.'
+        );
+      }
+    );
   }
 }

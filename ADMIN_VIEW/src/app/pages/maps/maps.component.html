@@ -91,12 +91,12 @@
           </thead>
           <tbody>
             <tr *ngFor="let data of listOfData; ; let i = index">
-              <td>{{data.id}}</td>
-              <td>{{data.name}}</td>
-              <td>{{data.total| number}}</td>
-              <td>{{data.payment}}</td>
-              <td>{{data.date|date:'dd/MM/yyyy'}}</td>
-              <td>{{data.address}}</td>
+              <td>{{data?.billCode}}</td>
+              <td>{{data?.name}}</td>
+              <td>{{data?.total| number}}</td>
+              <td>{{data?.payment}}</td>
+              <td>{{data?.date|date:'dd/MM/yyyy'}}</td>
+              <td>{{data?.address}}</td>
               <td>
                 <nz-select *ngIf=" data.status != 'Cancel'; else elseBlock" ngModel="{{data.status}}"
                   (ngModelChange)="changeStatus($event,data)">
@@ -121,135 +121,185 @@
       </div>
     </div>
   </div>
-</div>
 
-<nz-modal [nzStyle]="{ top: '20px',width:'100%' }" [(nzVisible)]="isVisible" nzTitle="Xem chi tiết">
-  <ng-container *nzModalContent>
-    <div class="m-container" id="print-section">
-      <div>
-        <h2>Mã đơn: </h2>
-        <h2>{{this.billId}}</h2>
-      </div>
-      <nz-divider nzPlain nzText="Chi tiết"></nz-divider>
-      <nz-table nzTemplateMode>
-        <thead>
-          <tr>
-            <th style="text-align: center;">STT</th>
-            <th style="text-align: center;">Tên sản phẩm</th>
-            <th style="text-align: center;">Giá</th>
-            <th style="text-align: center;">Số lượng</th>
-
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let data of listOfBillDetail; ; let i = index">
-            <td style="text-align: center;">{{i+1}}</td>
-            <td style="text-align: center;">{{data?.productDetail?.productName}}</td>
-            <td style="text-align: center;">{{data?.productDetail?.productPrice| number}}</td>
-            <td style="text-align: center;">{{data?.quantity}}</td>
-          </tr>
-        </tbody>
-      </nz-table>
-    </div>
-  </ng-container>
-  <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="handlePrint()"><i nz-icon nzType="printer"
-        nzTheme="outline"></i>&nbsp;In hóa đơn</button>
-    <button nz-button nzType="primary" (click)="handleOk()">OK</button>
-  </div>
-</nz-modal>
-
-
-<modal #myModal>
-  <modal-header>
-    <h4 *ngIf="action == Action.THEMMOI">Thêm mới hóa đơn</h4>
-    <h4 *ngIf="action === Action.CAPNHAT">Cập nhật hóa đơn</h4>
-  </modal-header>
-  <modal-content>
-    <form>
-      <div class="row">
-        <div class="col-4">
-          <div class="form-group">
-            <label for="danhMuc">Sản phẩm</label>
-            <ng-select [items]="lstProductDetail" class="custom-ng-select" bindLabel="productName"
-              [hideSelected]="true">
-            </ng-select>
-          </div>
-          <button class="btn btn-primary">Thêm sản phẩm</button>
+  <nz-modal [nzStyle]="{ top: '20px',width:'100%' }" [(nzVisible)]="isVisible" nzTitle="Xem chi tiết">
+    <ng-container *nzModalContent>
+      <div class="m-container" id="print-section">
+        <div>
+          <h2>Mã đơn: </h2>
+          <h2>{{this.billId}}</h2>
         </div>
-      </div>
-      <div class="form-group">
-        <ng-container *ngIf="listOfProductDetail.length">
-          <table class="table animated wow fadeInLeft" data-wow-delay=".5s">
+        <nz-divider nzPlain nzText="Chi tiết"></nz-divider>
+        <nz-table nzTemplateMode>
+          <thead>
             <tr>
-              <th class="t-head">Hình ảnh</th>
-              <th class="t-head ">Mặt Hàng</th>
-              <th class="t-head">Giá</th>
-              <th class="t-head">Số Lượng</th>
-              <th class="t-head"></th>
-            </tr>
-            <tr *ngFor="let item of listOfProductDetail" class="cross1">
-              <td class="t-data" style="width:  25%;">
-                <a href="product-detail/{{item.id}}" class="at-in">
-                  <img src="../../assets/{{item.productImage}}" class="fashion-grid" alt="">
-                </a>
-              </td>
-              <td class="t-data" style="width:  25%;">
-                <h3>
-                  {{item.productName}}
-                </h3>
-              </td>
-              <td class="t-data">
-                {{item.productPrice | number}} VNĐ
-              </td>
-              <td class="t-data">
-                <div class="quantity">
-                  <div class="quantity-select">
-                    <div (click)="minusProduct(item)" class="entry value-minus">&nbsp;</div>
-                    <div class="entry value">
-                      {{item.quanlityBuy | number}}
-                    </div>
-                    <div (click)="plusProduct(item)" class="entry value-plus active">&nbsp;</div>
-                  </div>
+              <th style="text-align: center;">STT</th>
+              <th style="text-align: center;">Tên sản phẩm</th>
+              <th style="text-align: center;">Giá</th>
+              <th style="text-align: center;">Số lượng</th>
 
-                </div>
-              </td>
-              <td class="t-data"><i (click)="delProduct(item.id)" class="icon-del" nz-icon nzType="close-circle"
-                  nzTheme="outline" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'"></i> </td>
             </tr>
-          </table>
-          <div class=" ">
-            <h5 class="continue">Tổng Cộng Giỏ Hàng</h5>
-            <div class="price-details">
-              <h3>Chi Tiết Giá</h3>
-              <span>Tổng Cộng</span>
-              <span class="total1">
-                Tổng giá VND
-              </span>
-              <span>Giảm giá</span>
-              <span class="total1">{{salePrice | number}} VND</span>
-              <span>Phí vận chuyển</span>
-              <span class="total1">Miễn phí</span>
-              <div class="clearfix"></div>
-            </div>
-            <ul class="total_price">
-              <li class="last_price">
-                <h4>Tổng Cộng</h4>
-              </li>
-              <li class="last_price"><span>
-                  {{totalPrice| number}} VNĐ
-                </span></li>
-              <div class="clearfix"> </div>
-            </ul>
-            <button class="btn btn-outline-success" (click)="payment()">Thanh Toán</button>
-
-          </div>
-        </ng-container>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of listOfBillDetail; ; let i = index">
+              <td style="text-align: center;">{{i+1}}</td>
+              <td style="text-align: center;">{{data?.productDetail?.productName}}</td>
+              <td style="text-align: center;">{{data?.productDetail?.productPrice| number}}</td>
+              <td style="text-align: center;">{{data?.quantity}}</td>
+            </tr>
+          </tbody>
+        </nz-table>
       </div>
-    </form>
-  </modal-content>
-  <modal-footer>
-    <!-- <button class="btn btn-primary" (click)="save()">Lưu</button>
+    </ng-container>
+    <div *nzModalFooter>
+      <button nz-button nzType="default" (click)="handlePrint()"><i nz-icon nzType="printer"
+          nzTheme="outline"></i>&nbsp;In hóa đơn</button>
+      <button nz-button nzType="primary" (click)="handleOk()">OK</button>
+    </div>
+  </nz-modal>
+
+
+  <modal #myModal>
+    <modal-header>
+      <h4 *ngIf="action == Action.THEMMOI">Thêm mới hóa đơn</h4>
+      <h4 *ngIf="action === Action.CAPNHAT">Cập nhật hóa đơn</h4>
+    </modal-header>
+    <modal-content>
+      <ng-stepper #cdkStepper [linear]="true">
+        <cdk-step [stepControl]="stepOne.stepOneForm" [optional]="false">
+          <ng-template cdkStepLabel>
+            <div class="step-bullet">1</div>
+            <div class="step-title">Personal Details <span class="required">*</span></div>
+          </ng-template>
+          <div #stepOne class="row">
+            <div class="col-1"></div>
+            <div class="col-10">
+              <div class="form-group">
+                <label for="danhMuc">Sản phẩm</label>
+                <ng-select [items]="lstProductDetail" class="custom-ng-select" bindLabel="productName"
+                  [(ngModel)]="productDetail" name="product-detail" [hideSelected]="true">
+                </ng-select>
+              </div>
+              <button class="btn btn-primary" (click)="addProduct()">Thêm sản phẩm</button>
+              <div class="form-group">
+                <ng-container *ngIf="listOfProductDetail.length">
+                  <table class="table animated wow fadeInLeft" data-wow-delay=".5s">
+                    <tr>
+                      <th class="t-head">Hình ảnh</th>
+                      <th class="t-head ">Mặt Hàng</th>
+                      <th class="t-head">Giá</th>
+                      <th class="t-head">Số Lượng</th>
+                      <th class="t-head">Thao tác</th>
+                    </tr>
+                    <tr *ngFor="let item of listOfProductDetail" class="cross1">
+                      <td class="t-data" style="width:  30%;">
+                        <ng-image-slider #nav [images]="item?.product?.listImage" [infinite]="true" [autoSlide]="1"
+                          slideImage="1" [imageSize]="{width: '100%', height: 10}"></ng-image-slider>
+                      </td>
+                      <td class="t-data" style="width:  20%;">
+                        <h3>
+                          {{item.productName}}
+                        </h3>
+                      </td>
+                      <td class="t-data">
+                        {{item.productPrice | number}} VNĐ
+                      </td>
+                      <td class="t-data">
+                        <div class="quantity">
+                          <div class="quantity-select">
+                            <div (click)="minusProduct(item)" class="entry value-minus">&nbsp;</div>
+                            <div class="entry value">
+                              {{item.quanlityBuy | number}}
+                            </div>
+                            <div (click)="plusProduct(item)" class="entry value-plus active">&nbsp;</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="t-data" style="text-align: center;">
+                        <i (click)="delProduct(item.id)" class="ni ni-fat-remove text-red"></i>
+                      </td>
+                    </tr>
+                  </table>
+                  <div class="">
+                    <h5 class="continue">Tổng Cộng Giỏ Hàng</h5>
+                    <div class="price-details">
+                      <h3>Chi Tiết Giá</h3>
+                      <span>Tổng Cộng</span>
+                      <span class="total1">
+                        Tổng giá VND
+                      </span>
+                      <span>Giảm giá</span>
+                      <span class="total1">{{salePrice | number}} VND</span>
+                      <span>Phí vận chuyển</span>
+                      <span class="total1">Miễn phí</span>
+                      <div class="clearfix"></div>
+                    </div>
+                    <ul class="total_price">
+                      <li class="last_price">
+                        <h4>Tổng Cộng</h4>
+                      </li>
+                      <li class="last_price"><span>
+                          {{totalPrice| number}} VNĐ
+                        </span></li>
+                      <div class="clearfix"></div>
+                    </ul>
+                    <button class="btn btn-outline-success" cdkStepperNext>Thanh Toán</button>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <div class="col-1"></div>
+            <!-- <div class="button">
+              <button class="btn btn-outline-primary" cdkStepperNext>Next</button>
+            </div> -->
+          </div>
+        </cdk-step>
+        <cdk-step [stepControl]="stepTwo.stepTwoForm" [optional]="true">
+          <ng-template cdkStepLabel>
+            <div class="step-bullet">2</div>
+            <div class="step-title">Address</div>
+          </ng-template>
+          <div #stepTwo class="row">
+            <div class="col-1"></div>
+            <div class="col-10">
+              <form>
+                <div class="form-group">
+                  <label for="name">Tên khách hàng</label>
+                  <input type="text" class="form-control" placeholder="" [(ngModel)]="newBill.name" name="name">
+                </div>
+                <div class="form-group">
+                  <label for="phone">Số điện thoại</label>
+                  <input type="text" class="form-control" placeholder="" [(ngModel)]="newBill.phone" name="phone">
+                </div>
+                <div class="form-group">
+                  <label for="address">Địa chỉ</label>
+                  <input type="text" class="form-control" placeholder="" [(ngModel)]="newBill.address" name="address">
+                </div>
+                <div class="form-group">
+                  <label for="payment">Phương thức thanh toán</label>
+                  <select name="" id="" class="form-control" [(ngModel)]="newBill.payment" name="payment">
+                    <option value="Live">Trực tiếp</option>
+                    <option value="Transfer">Chuyển khoản</option>
+                  </select>
+                </div>
+              </form>
+              <button (click)="payment()" class="btn btn-outline-success" style="float: right;">Thanh Toán</button>
+            </div>
+            <div class="col-1">
+            </div>
+          </div>
+        </cdk-step>
+        <cdk-step [stepControl]="stepThree.stepThreeForm" [optional]="true">
+          <ng-template cdkStepLabel>
+            <div class="step-bullet">3</div>
+            <div class="step-title"></div>
+          </ng-template>
+          <div #stepThree></div>
+        </cdk-step>
+      </ng-stepper>
+    </modal-content>
+    <modal-footer>
+      <!-- <button class="btn btn-primary" (click)="save()">Lưu</button>
     <button class="btn btn-primary" (click)="closeModal()">close</button> -->
-  </modal-footer>
-</modal>
+    </modal-footer>
+  </modal>

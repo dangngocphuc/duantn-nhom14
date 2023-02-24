@@ -42,8 +42,13 @@ export class LoginComponent implements OnInit {
       this.authenticationService.loginAdmin(this.loginRequest?.username, this.loginRequest?.password, this.loginRequest.remember).subscribe(
         (data) => {
           if (data) {
+            debugger;
             this.loginResponse = data;
             if (this.loginResponse.errorCode == ERROR.SUCCESS) {
+              if(!this.loginResponse.authenticated){
+                Swal.fire('Tài Khoản không có quyền truy cập', '', 'error');
+                return;
+              }
               this.currentUser = this.loginResponse.userDetail;
               if (this.currentUser.permissions.includes(ROLE.ADMIN)) {
                 localStorage.setItem("currentUser", JSON.stringify(this.loginResponse.userDetail));

@@ -31,4 +31,8 @@ export class BillService {
   getStatisticBillByMonth(params): Observable<any> {
     return this.http.get<any>(`/bill/statistic/month`, params);
   }
+
+  paymentBill(bill): Observable<any> {
+    return this.http.post<any>(`/bill/payment`, bill);
+  }
 }

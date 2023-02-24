@@ -18,18 +18,20 @@ import { AuthGuard } from './guard/auth.guard';
 import { ProductDetailsComponent } from './pages/product-details/product-details.component';
 import { OptionValuesComponent } from './pages/option-values/option-values.component';
 import { VoucherComponent } from './pages/voucher/voucher.component';
-import { Category } from './models/type';
+import { Category, Review } from './models/type';
 import { CategoryComponent } from './pages/category/category.component';
 import { UserDetailResolveService } from './services/authentication/user-detail-resolve.service';
 import { UserSessionResolveService } from './services/authentication/user-session-resolve.service';
 import { ImeiComponent } from './pages/imei/imei.component';
 import { BrandComponent } from './pages/brand/brand.component';
+import { ReviewComponent } from './pages/review/review.component';
 
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full', },
-  { path: '', component: AdminLayoutComponent ,
-    // , canActivate: [AuthGuard], resolve: { userDetail: UserDetailResolveService, userSession: UserSessionResolveService 
+  {
+    path: '', component: AdminLayoutComponent
+    , canActivate: [AuthGuard], resolve: { userDetail: UserDetailResolveService, userSession: UserSessionResolveService },
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'brand', component: BrandComponent },
@@ -42,6 +44,7 @@ const routes: Routes = [
       { path: 'voucher', component: VoucherComponent },
       { path: 'category', component: CategoryComponent },
       { path: 'imei', component: ImeiComponent },
+      { path: 'review', component: ReviewComponent },
       // {
       //   path: '',
       //   loadChildren: () => import('src/app/layouts/admin-layout/admin-layout.module').then(m => m.AdminLayoutModule)
