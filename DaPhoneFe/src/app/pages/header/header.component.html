@@ -1,0 +1,81 @@
+<header class="header_area sticky-header">
+
+    <div class="main_menu">
+        <nav class="navbar navbar-expand-lg navbar-light main_box">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <a href="/home" class="navbar-brand logo_h" style="color:#ffffff">LAPTOP</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav navbar-right">
+
+                        <li>
+                            <form name="frmSearch" action="/Demo/search" method="post" class="form-inline my-2 my-lg-0">
+                                <ng-select [(ngModel)]="productParam.productName" [items]="lstProducts | async"
+                                    style="width: 300px;" placeholder="Search" id="product" name="product"
+                                    [hideSelected]="true" [loading]="loadLstProducts"
+                                    [typeahead]="textInput_tenProduct$">
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <a href="product-detail/{{item.productID}}" class="social-info">
+                                            <span class="ng-value-label">
+                                                <img [src]="'/assets/'+item.productImage" width="60px" height="60px">
+                                                {{item.productName}}
+                                            </span>
+                                        </a>
+                                    </ng-template>
+
+                                </ng-select>
+                            </form>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav menu_nav ml-auto">
+                        <li class="nav-item active"><a class="nav-link" href="/home" style="color:#fff">Trang chủ</a>
+                        </li>
+                        <li class="nav-item submenu dropdown">
+                            <a href="/products" class="nav-link dropdown-toggle" style="color:#fff">Sản phẩm</a>
+                            <ul class="dropdown-menu">
+                                <li *ngFor="let item of listOfCategory" class="nav-item"><a
+                                        href="/products/{{item.categoryID}}" class="nav-link">{{item.categoryName}}</a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/contact" style="color:#fff">Liên hệ</a></li>
+                        <li *ngIf="!userName" class="nav-item submenu dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
+                                aria-haspopup="true" aria-expanded="false" style="color:#fff">Tài
+                                khoản</a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item"><a href="/login" class="nav-link">Đăng nhập</a></li>
+                                <li class="nav-item"><a href="/signup" class="nav-link">Đăng ký</a></li>
+                            </ul>
+                        </li>
+                        <li *ngIf="userName" class="nav-item submenu dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
+                                aria-haspopup="true" aria-expanded="false" style="color:#fff">{{userName}}</a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item"><a href="/myorder" class="nav-link">Theo dõi đơn hàng</a></li>
+                                <li (click)="logout()" class="nav-item"><a class="nav-link">Đăng xuất</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/mycart" class="nav-link">
+                                <i class="fas fa-shopping-cart" style="color:#fff"></i><span
+                                    style="color:#fff">&nbsp;{{this.totalProduct?this.totalProduct:0}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+</header>
+<app-loader></app-loader>

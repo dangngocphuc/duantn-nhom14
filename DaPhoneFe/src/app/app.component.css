@@ -1,0 +1,6 @@
+.popup-button {
+    position: fixed;
+    bottom: 25px;
+    left: 15px;
+    z-index: 2;
+}

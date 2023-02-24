@@ -1,0 +1,100 @@
+
+<div class="container" style="margin-top:110px">
+    <nav class="d-flex align-items-center" >
+        <a href="/home" style="color: #00483d;">Trang chủ <span class="lnr lnr-arrow-right"></span>&nbsp;</a>
+        <a href="#" style="color: #00483d;"> Theo dõi đơn hàng</a>
+    </nav>
+</div>
+<div class="container mt-5">
+    <nz-table class="table table-bordered table-striped table-hover mr-0" nzShowSizeChanger [nzData]="listOfData" [nzFrontPagination]="false" [nzLoading]="loading"
+        [nzTotal]="total" [nzPageSize]="pageSize" [nzPageIndex]="pageIndex"
+        (nzQueryParams)="onQueryParamsChange($event)">
+        <thead>
+            <tr>
+                <th style="text-align: center;">STT</th>
+                <th style="text-align: center;">Mã Bill</th>
+                <th style="text-align: center;">Tên</th>
+                <th nzColumnKey="total" [nzSortFn]="true" style="text-align: center;">Tổng hóa đơn</th>
+                <th style="text-align: center;">Thanh toán</th>
+                <th nzColumnKey="date" [nzSortFn]="true" style="text-align: center;">Ngày mua</th>
+                <th style="text-align: center;">Địa chỉ</th>
+                <th style="text-align: center;">Tình trạng</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of listOfData; ; let i = index">
+                <td>{{i+1}}</td>
+                <td><span class="detail"(click)="showModal(data)">{{data?.billCode}}</span></td>
+                <td>{{data?.name}}</td>
+                <td>{{data?.total| number}}</td>
+                <td>{{data?.payment=='Live'? 'Trực tiếp':'Chuyển khoản'}}</td>
+                <td>{{data?.date|date:'dd/MM/yyyy'}}</td>
+                <td>{{data?.address}}</td>
+                <td> 
+                    {{data?.status == 'Process'?'Đang xử lý':((data?.status == 'Delivery')?'Đang giao hàng':'Đã giao hàng')}} 
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+</div>
+
+<nz-modal [nzStyle]="{ top: '20px',width:'80%' }" [(nzVisible)]="isVisible" nzTitle="Xem chi tiết">
+    <ng-container *nzModalContent>
+        <div class="m-container">
+            <div>
+                <h2>Mã đơn: {{this.billId}}</h2>
+            </div>
+            <nz-divider nzPlain nzText="Chi tiết"></nz-divider>
+            <nz-table nzTemplateMode >
+                <thead>
+                    <tr>
+                        <th style="text-align: center;">STT</th>
+                        <th style="text-align: center;">Tên sản phẩm</th>
+                        <th style="text-align: center;">Giá</th>
+                        <th style="text-align: center;">Số lượng</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of listOfBillDetail; ; let i = index">
+                        <td style="text-align: center;">{{i+1}}</td>
+                        <td style="text-align: center;">{{data?.productDetail?.productName}}</td>
+                        <td style="text-align: center;">{{data?.productDetail?.productPrice| number}}</td>
+                        <td style="text-align: center;">{{data?.quantity}}</td>
+                    </tr>
+                </tbody>
+            </nz-table>
+            <nz-divider nzPlain nzText="Tình trạng đơn hàng"></nz-divider>
+            <div *ngIf="status != 4" class="container mb-5">
+                <nz-steps  [nzCurrent]="status">
+                    <nz-step nzTitle="Đang xử lý"  nzDescription="Đơn hàng đang chờ xử lý."></nz-step>
+                    <nz-step nzTitle="Đang giao hàng" nzDescription="Đơn hàng đang được giao."></nz-step>
+                    <nz-step nzTitle="Đã giao hàng" nzDescription="Đơn hàng đã được giao."></nz-step>
+                </nz-steps>
+            </div>
+            <nz-result *ngIf="status == 4"
+            nzTitle="Đơn hàng đã bị hủy"
+            nzStatus="error"
+            nzSubTitle="Vui lòng liên hệ quản trị viên để biết thêm chi tiết!"
+             >
+            <div nz-result-content>
+              <div class="desc">
+                <h4 nz-title>Các vấn đề có thể xảy ra:</h4>
+                <p nz-paragraph>
+                  <i nz-icon nzType="close-circle"></i>
+                  Đơn hàng đã quá hạn
+                </p>
+                <p nz-paragraph>
+                  <i nz-icon nzType="close-circle"></i>
+                  Sản phẩm trong đơn hàng đã hết
+                </p>
+              </div>
+            </div>
+          </nz-result>
+        </div>
+
+    </ng-container>
+    <div *nzModalFooter>
+        <button class="btn btn-outline-success" (click)="handleOk()">Đóng</button>
+    </div>
+</nz-modal>

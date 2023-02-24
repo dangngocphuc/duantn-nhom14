@@ -1,0 +1,12 @@
+<form [formGroup]="captchaForm">
+    <div class="captcha-container {{ config.cssClass }}" style="display: flex; ">
+        <canvas id="captcahCanvas" width="300" height="80" style="height: 36px; border: 1px solid #CCC;"></canvas>
+        <div class="captcha-actions">
+            <input type="text" formControlName="captcha" [(ngModel)]="captch_input" (change)="checkCaptcha()" required/>
+            <a href="javascript:void(0)"  class="cpt-btn reload" (click)="createCaptcha()">&#x21bb;</a>
+        </div>
+    </div>
+    <div *ngIf="submitted && captchaForm.controls['captcha'].errors" class="error">
+        <div *ngIf="captchaForm.controls['captcha'].errors['required']">không được để trống.</div>
+    </div>
+</form>

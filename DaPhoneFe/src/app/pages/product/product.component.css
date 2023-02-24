@@ -1,0 +1,21 @@
+small{
+    text-decoration: line-through !important;
+}
+
+.header-loc{
+    height:50px !important; 
+    line-height: 50px; 
+    margin-top: -40px !important;
+    margin-bottom: 0px !important;
+}
+.loc-2{
+    margin-top: 10px;
+    height:50px !important; 
+    max-width: 98% !important;
+    margin-left: 1% !important;
+    border-radius: 8px;
+}
+
+.product-details{
+    margin:5px
+}

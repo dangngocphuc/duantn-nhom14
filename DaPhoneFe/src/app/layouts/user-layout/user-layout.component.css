@@ -1,0 +1,10 @@
+.popup-button {
+    position: fixed;
+    bottom: 25px;
+    left: 15px;
+    z-index: 2;
+}
+
+.icon-del {
+    text-align: right;
+}

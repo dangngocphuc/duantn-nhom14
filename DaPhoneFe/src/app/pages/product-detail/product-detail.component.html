@@ -1,0 +1,241 @@
+<div class="container" style="margin-top:110px">
+    <nav aria-label="breadcrumb" class="d-flex align-items-center">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/home">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="/products">Sản phẩm</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Chi tiết sản phẩm</li>
+        </ol>
+    </nav>
+</div>
+<div class="product">
+    <div class="container row  mx-auto">
+        <div class="col-md-1"></div>
+        <div class="col-md-10 animated row wow fadeInRight" data-wow-delay=".5s">
+            <div class="col-md-5 grid-im">
+                <div class="flexslider">
+                    <!-- <ul class="slides"> -->
+                        <!-- <li> -->
+                        <div class="thumb-image"> <ng-image-slider #nav [images]="productDetail?.product?.listImage"
+                                [infinite]="true" [autoSlide]="1" slideImage="1"
+                                [imageSize]="{width: '100%', height: 200}"></ng-image-slider>
+                        </div>
+                        <!-- </li> -->
+                    <!-- </ul> -->
+                </div>
+            </div>
+            <div class="col-md-7 single-top-in">
+                <div class="span_2_of_a1 simpleCart_shelfItem">
+                    <h3>{{productDetail?.productName}}</h3>
+                    <div class="row">
+                    </div>
+                    <div class="product__info__item">
+                        <!-- <div class="row">
+                            <div class="col-md-3 product__info__item__title">
+                                Màu sắc
+                            </div>
+                            <div class="col-md-9 product__info__item__list">
+                                <div class="product__info__item__list__item">
+                                    <div class="circle bg-red"></div>
+                                </div>
+                                <div class="product__info__item__list__item">
+                                    <div class="circle bg-blue"></div>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                    <div class="price_single">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <span *ngIf="productDetail?.quantity == 0 " class="text-danger">Đã hết hàng</span>
+                                <br>
+                                <!-- <span class="reducedfrom item_price"> {{product.productPrice | number}} VNĐ</span> -->
+                            </div>
+                            <!-- <div class="col-md-3">   
+                            </div> -->
+                        </div>
+                        <div class="row">
+                            <div>
+                                <button style="float: right;" *ngIf="productDetail.quantity > 0 "
+                                    (click)="addToCart(productDetail)" class="btn btn-outline-success"><i
+                                        class="fas fa-cart-plus"></i> Thêm vào giỏ hàng</button>
+                            </div>
+                        </div>
+                        <div class="clearfix"> </div>
+                        <!-- <div style="color:#0056b3">Số lượng sản phẩm : {{product.productQuantily | number}}</div> -->
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+                <div class="sap_tabs">
+                    <div id="horizontalTab" style="display: block; width: 100%; margin: 0px;">
+                        <ul class="resp-tabs-list">
+                            <li class="resp-tab-item " aria-controls="tab_item-0" role="tab" style="width: 28%;">
+                                <span>ƯU ĐÃI THÊM</span>
+                            </li>
+                            <li class="resp-tab-item" aria-controls="tab_item-1" role="tab" style="width: 44%;"><span><i
+                                        class="glyphicon glyphicon-info-sign"></i>Chi Tiết Sản Phẩm</span></li>
+                            <li class="resp-tab-item" aria-controls="tab_item-2" role="tab" style="width: 28%;"><span><i
+                                        class="glyphicon glyphicon-info-sign"></i>Đánh Giá</span></li>
+                            <div class="clearfix"></div>
+                        </ul>
+                        <div class="resp-tabs-container">
+                            <h2 class="resp-accordion resp-tab-active" role="tab" aria-controls="tab_item-0"><span
+                                    class="resp-arrow"></span>Mô Tả</h2>
+                            <div class="tab-1 resp-tab-content resp-tab-content-active" aria-labelledby="tab_item-0"
+                                style="display:block">
+                                <div class="facts">
+                                    <ul>
+                                        <li>
+                                            <h4>ƯU ĐÃI KHÁCH HÀNG :</h4>
+                                        </li>
+                                        <li>Sản phẩm chính hãng</li>
+                                        <li>Khuyến mãi đặt biệt</li>
+                                        <li>GIAO HÀNG MIỄN PHÍ VỚI HÓA ĐƠN TRÊN 8.000.000 Đ</li>
+                                        <li>Vận chuyển nhanh</li>
+                                        <li>Bảo hành sản phẩm trọn đời</li>
+                                        <li>Hỗ trợ trực tuyến dành cho khách hàng VIP</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h2 class="resp-accordion" role="tab" aria-controls="tab_item-1"><span
+                                    class="resp-arrow"></span>Additional Information</h2>
+                            <div class="tab-1 resp-tab-content" aria-labelledby="tab_item-1">
+                                <h3>Thông số kỹ thuật chi tiết {{product?.productName}}</h3>
+                                <div class="facts1">
+                                    <table class="table table-hover table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" width="5%">#</th>
+                                                <th scope="col" width="20%">Thuộc tính</th>
+                                                <th scope="col">Giá trị</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngFor="let item of productDetail?.listProductDetailValue, index as i">
+                                            <tr>
+                                                <td>{{i+1}}</td>
+                                                <td>{{item?.option?.optionName}}:</td>
+                                                <td>{{item?.optionValue?.optionValue}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <h3>Kích thước & trọng lượng</h3>
+                                    <div class="color">
+                                        <p>Kích thước</p>
+                                        <span>
+                                            <!-- {{product.productDimensions}} -->
+                                        </span>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="color">
+                                        <p>Trọng lượng</p>
+                                        <span>
+                                            <!-- {{product.productWeight}} -->
+                                        </span>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="color">
+                                        <p>Chất liệu</p>
+                                        <span>
+                                            <!-- {{product.productMaterial}} -->
+                                        </span>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 class="resp-accordion" role="tab" aria-controls="tab_item-2"><span
+                                    class="resp-arrow"></span>Đánh giá</h2>
+                            <div class="tab-1 resp-tab-content" aria-labelledby="tab_item-2">
+                                <div class="col-md-12 mb-4">
+                                    <form class="mt-4" [formGroup]="validateForm" #form="ngForm"
+                                        (ngSubmit)="submitForm(form.value)">
+                                        <div>
+                                            <h4>Đánh giá của bạn</h4>
+                                            <fieldset class="starability-basic">
+                                                <input type="radio" id="rate5" formControlName="reviewStar" ngModel
+                                                    value="5" name="reviewStar" checked="checked" />
+                                                <label for="rate5" title="Amazing">5 stars</label>
+                                                <input type="radio" id="rate4" formControlName="reviewStar" ngModel
+                                                    value="4" name="reviewStar" />
+                                                <label for="rate4" title="Very good">4 stars</label>
+                                                <input type="radio" id="rate3" formControlName="reviewStar" ngModel
+                                                    value="3" name="reviewStar" />
+                                                <label for="rate3" title="Average">3 stars</label>
+                                                <input type="radio" id="rate2" formControlName="reviewStar" ngModel
+                                                    value="2" name="reviewStar" />
+                                                <label for="rate2" title="Not good">2 stars</label>
+                                                <input type="radio" id="rate1" formControlName="reviewStar" ngModel
+                                                    value="1" name="reviewStar" />
+                                                <label for="rate1" title="Terrible">1 star</label>
+                                            </fieldset>
+                                            <textarea formControlName="reviewMessage" ngModel id="reviewMessage"
+                                                class="form-control" name="reviewMessage" rows="4" cols="50"
+                                                placeholder="Nội dung đánh giá sản phẩm"></textarea>
+                                        </div>
+                                        <br>
+                                        <button class="btn btn-outline-success my-2 my-sm-0 text-white"
+                                            style="background-color: green;float: right;" type="submit">Gửi Đánh
+                                            giá</button>
+                                    </form>
+                                    <div id="danhgia" class="mt-5">
+                                        <h4 class="mb-3">Các đánh giá khác</h4>
+                                        <div *ngFor="let data of listOfData2;">
+                                            <p class="mt-2" style="margin-bottom: 0px;"><strong>{{data?.reviewName}}
+                                                    ({{data?.reviewStar}} sao): </strong> {{data?.reviewMessage}} </p>
+                                            <p style="font-size: 10px;margin-bottom: 20px;"> Ngày {{data?.date}}</p>
+                                        </div>
+
+                                        <nz-pagination [nzPageIndex]="pageIndex" [nzTotal]="totalReview"
+                                            nzShowSizeChanger [nzPageSize]="pageSize"
+                                            (nzPageIndexChange)="onPageIndexChange($event)"
+                                            (nzPageSizeChange)="onPageSizeChange($event)">
+                                        </nz-pagination>
+
+                                    </div>
+                                    <div class="clearfix"> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!---->
+                </div>
+                <div class="clearfix"> </div>
+            </div>
+            <div>
+                <h3>SẢN PHẨM LIÊN QUAN</h3>
+            </div>
+            <div class="lattest-product-area pb-40 category-list">
+                <div class="mid-popular row" id="content_value">
+                    <div *ngFor="let item of listOfData" class="col-lg-4 col-md-6">
+                        <div class="single-product">
+                            <div class="text-center">
+                                <img style="height:220px; width:75%;" class="img-fluid"
+                                    src="../../assets/{{item?.productImage}}" alt="">
+                            </div>
+
+                            <div class="product-details">
+                                <h6><a href="product-detail/{{item?.id}}">{{item?.productName}}</a></h6>
+                                <div class="price">
+                                    <h6>{{item?.productPrice | number}} VNĐ &emsp;<small>{{item?.productMarketprice |
+                                            number}} VND</small></h6>
+                                    <span *ngIf="item?.productQuantily == 0 " class="text-danger">Đã hết hàng</span>
+                                </div>
+                                <div class="prd-bottom">
+
+                                    <a *ngIf="item?.productQuantily > 0 " (click)="addToCart(item)" class="social-info">
+                                        <span class="ti-bag"></span>
+                                        <p class="hover-text">Thêm vào giỏ</p>
+                                    </a>
+                                    <a href="product-detail/{{item?.id}}" class="social-info">
+                                        <span class="lnr lnr-move"></span>
+                                        <p class="hover-text">Xem thêm</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</div>

@@ -1,0 +1,226 @@
+<!-- section banner  -->
+<div class="container" style="margin-top: 70px; ">
+    <div class="row fullscreen align-items-center justify-content-start">
+        <div class="col-lg-12">
+            <div class="active-banner-slider owl-carousel">
+                <div class="banner-img">
+                    <img class="img-fluid" style="width:100%;" src="../assets/images/slide3.png" alt="">
+                </div>
+                <div class="banner-img">
+                    <img class="img-fluid" style="width:100%;" src="../assets/images/slide2.jpg" alt="">
+                </div>
+                <div class="banner-img">
+                    <img class="img-fluid" style="width:100%;" src="../assets/images/slide1.png" alt="">
+                </div>
+                <div class="banner-img">
+                    <img class="img-fluid" style="width:100%;" src="../assets/images/slide44.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- section  -->
+<section class="features-area section_gap" style="margin-top:20px !important;">
+    <div class="container">
+        <div class="row features-inner">
+            <!-- single features -->
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="single-features">
+                    <div class="f-icon">
+                        <img src="../assets/img/features/f-icon1.png" alt="">
+                    </div>
+                    <h6><a href="chinhsach.jsp">Giao hàng</a></h6>
+                    <p>Giao hàng nhanh chóng</p>
+                </div>
+            </div>
+            <!-- single features -->
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="single-features">
+                    <div class="f-icon">
+                        <img src="../assets/img/features/f-icon2.png" alt="">
+                    </div>
+                    <h6><a href="doitra.jsp">Đổi trả</a></h6>
+                    <p>Lỗi đổi tại nhà nhanh chóng</p>
+                </div>
+            </div>
+            <!-- single features -->
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="single-features">
+                    <div class="f-icon">
+                        <img src="../assets/img/features/f-icon3.png" alt="">
+                    </div>
+                    <h6><a href="doitra.jsp">Hỗ trợ 24/7</a></h6>
+                    <p>Hỗ trợ suốt thời gian sử dụng</p>
+                </div>
+            </div>
+            <!-- single features -->
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="single-features">
+                    <div class="f-icon">
+                        <img src="../assets/img/features/f-icon4.png" alt="">
+                    </div>
+                    <h6><a href="thanhtoan.jsp">Thanh toán</a></h6>
+                    <p>Tiền mặt, visa / master, trả góp</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- section san pham  -->
+<section>
+    <!-- single product slide -->
+    <div class="single-product-slider">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <div class="section-title">
+                        <h1><b>Sản phẩm mới</b></h1>
+
+                    </div>
+                </div>
+            </div>
+            <div class="lattest-product-area pb-40 category-list">
+                <div class="mid-popular row" id="content_value">
+                    <div *ngFor="let item of pageProductDetail?.content" class="col-lg-3 col-md-4">
+                        <div class="single-product">
+                            <div class="text-center">
+                                <ng-image-slider #nav [images]="item?.product?.listImage" [infinite]="true" [autoSlide]="1"
+                                    slideImage="1" [imageSize]="{width: '100%', height: 200}"></ng-image-slider>
+                            </div>
+                            <div class="product-details">
+                                <h6><a href="product-detail/{{item.id}}">{{item.productName}}</a></h6>
+                                <div class="price">
+                                    <h6>{{item.productPrice | number}} VNĐ &emsp;<small>{{item.productMarketprice |
+                                            number}} VND</small></h6>
+                                    <span *ngIf="item.quantity == 0 " class="text-danger">Đã hết hàng</span>
+                                </div>
+                                <div class="prd-bottom">
+                                    <a *ngIf="item.quantity > 0" (click)="addToCart(item)" class="social-info">
+                                        <span class="ti-shopping-cart"></span>
+                                        <p class="hover-text">Thêm vào giỏ</p>
+                                    </a>
+                                    <a href="" (click)="addToCompare(item)" class="social-info">
+                                        <span class="ti-bag"></span>
+                                        <p class="hover-text">So sánh</p>
+                                    </a>
+                                    <a href="product-detail/{{item.id}}" class="social-info">
+                                        <span class="lnr lnr-move"></span>
+                                        <p class="hover-text">Xem thêm</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="single-product-slider">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <div class="section-title">
+                        <h1><b>Sản phẩm bán chạy nhất</b></h1>
+
+                    </div>
+                </div>
+            </div>
+            <div class="lattest-product-area pb-40 category-list">
+                <div class="mid-popular row" id="content_value">
+                    <div *ngFor="let item of listOfDataSale" class="col-lg-3 col-md-4">
+                        <div class="single-product">
+                            <div class="text-center">
+                                <img style="height:220px; width:75%;" class="img-fluid"
+                                    src="../../assets/{{item.productImage}}" alt="">
+                            </div>
+
+                            <div class="product-details">
+                                <h6><a href="product-detail/{{item.productID}}">{{item.productName}}</a></h6>
+                                <div class="price">
+                                    <h6>{{item.productPrice | number}} VNĐ &emsp;<small>{{item.productMarketprice |
+                                            number}} VND</small></h6>
+                                    <span *ngIf="item.productQuantily == 0 " class="text-danger">Đã hết hàng</span>
+                                </div>
+                                <div class="prd-bottom">
+
+                                    <a *ngIf="item.productQuantily > 0 " (click)="addToCart(item)" class="social-info">
+                                        <span class="ti-bag"></span>
+                                        <p class="hover-text">Thêm vào giỏ</p>
+                                    </a>
+                                    <a href="product-detail/{{item.productID}}" class="social-info">
+                                        <span class="lnr lnr-move"></span>
+                                        <p class="hover-text">Xem thêm</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- section promotion  -->
+<div class="exclusive-deal-area">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 no-padding exclusive-left">
+                <div class="row clock_sec clockdiv" id="clockdiv">
+                    <div class="col-lg-12">
+                        <h1>Ưu đãi hot nhất trong tháng!</h1>
+                        <p>Nhanh tay thời gian có hạn.</p>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="row clock-wrap">
+                            <div class="col clockinner1 clockinner">
+                                <h1 class="days">29</h1>
+                                <span class="smalltext">Days</span>
+                            </div>
+                            <div class="col clockinner clockinner1">
+                                <h1 class="hours">23</h1>
+                                <span class="smalltext">Hours</span>
+                            </div>
+                            <div class="col clockinner clockinner1">
+                                <h1 class="minutes">47</h1>
+                                <span class="smalltext">Mins</span>
+                            </div>
+                            <div class="col clockinner clockinner1">
+                                <h1 class="seconds">59</h1>
+                                <span class="smalltext">Secs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 no-padding exclusive-right">
+                <div>
+
+                    <div class="single-exclusive-slider">
+                        <img style="height:60%; width:60%;" class="img-fluid"
+                            src="../../assets/{{product?.productImage}}" alt="">
+                        <div class="product-details">
+                            <div class="price">
+                                <h6> {{product?.productPrice | number}} VNĐ &emsp;<small>{{product?.productMarketprice |
+                                        number}} VND</small></h6>
+                            </div>
+                            <h4>{{product?.productName}}</h4>
+                            <div class="add-bag d-flex align-items-center justify-content-center">
+                                <a *ngIf="product?.productQuantily > 0 " class="add-btn"
+                                    (click)="addToCart(product)"><span class="ti-bag"></span></a>
+                                <span class="add-text text-uppercase">Thêm vào giỏ</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
