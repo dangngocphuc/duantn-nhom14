@@ -3,14 +3,11 @@ package com.example.DaPhone.ServiceImpl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -32,11 +29,9 @@ import org.springframework.stereotype.Service;
 
 import com.example.DaPhone.Entity.Brand;
 import com.example.DaPhone.Entity.Category;
-import com.example.DaPhone.Entity.Option;
-import com.example.DaPhone.Entity.OptionValue;
+import com.example.DaPhone.Entity.Image;
 import com.example.DaPhone.Entity.Product;
 import com.example.DaPhone.Entity.ProductOption;
-import com.example.DaPhone.Model.OptionRequest;
 import com.example.DaPhone.Repository.BrandRepo;
 import com.example.DaPhone.Repository.CategoryRepo;
 import com.example.DaPhone.Repository.ProductRepo;
@@ -107,9 +102,15 @@ public class ProductServiceImpl implements ProductService{
 			products.setTenSanPham(product.getTenSanPham());
 			products.getListProductOption().clear();
 			products.getListProductOption().addAll(product.getListProductOption());
+			products.getListProductOption().clear();
+			products.getListImage().addAll(product.getListImage());
 			products.setBrand(product.getBrand());
 			for(ProductOption po : product.getListProductOption()) {
 				po.setProduct(products);
+			}
+			for(Image po : product.getListImage()) {
+				po.setProduct(products);
+				po.setImage(po.getThumbImage());
 			}
 			Product pro = productRepo.save(products);			
 			return true;

@@ -33,7 +33,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
 	@Autowired
 	private ProductDetailRepo productRepo;
-	
+
 	@Autowired
 	private CommonUtils commonUtils;
 
@@ -43,13 +43,15 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 			@Override
 			public Predicate toPredicate(Root<ProductDetail> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				query.distinct(true);
-				Join<ProductDetail, Product> joinProduct = root.join("product",JoinType.LEFT);
-				Join<ProductDetail, Imei> joinImei = root.join("listImei",JoinType.LEFT);
-				Join<Product, Brand> joinBrand = joinProduct.join("brand",JoinType.LEFT);
-				Join<ProductDetail, ProductDetailValue> joinProductDetailValue = root.join("listProductDetailValue",JoinType.LEFT);
-				Join<ProductDetailValue, OptionValue> joinOptionValue = joinProductDetailValue.join("optionValue",JoinType.LEFT);
+				Join<ProductDetail, Product> joinProduct = root.join("product", JoinType.LEFT);
+				Join<ProductDetail, Imei> joinImei = root.join("listImei", JoinType.LEFT);
+				Join<Product, Brand> joinBrand = joinProduct.join("brand", JoinType.LEFT);
+				Join<ProductDetail, ProductDetailValue> joinProductDetailValue = root.join("listProductDetailValue",
+						JoinType.LEFT);
+				Join<ProductDetailValue, OptionValue> joinOptionValue = joinProductDetailValue.join("optionValue",
+						JoinType.LEFT);
 				List<Predicate> predicates = new ArrayList<>();
-				if(productParam.getBrandID()!=null) {
+				if (productParam.getBrandID() != null) {
 					String brandId = productParam.getBrandID();
 					if (brandId.contains(",")) {
 						String[] brandIds = brandId.split(",");
@@ -60,7 +62,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 						predicates.add(cb.and(cb.equal(joinBrand.get("id"), brandId)));
 					}
 				}
-				if(productParam.getOptionValueID()!=null) {
+				if (productParam.getOptionValueID() != null) {
 					String optonValueId = productParam.getOptionValueID();
 					if (optonValueId.contains(",")) {
 						String[] optonValueIds = optonValueId.split(",");
@@ -76,8 +78,11 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 			}
 		}, pageable);
 		for (ProductDetail pro : listPage) {
-			if(!pro.getListImei().isEmpty()) {
-				pro.setQuantity(pro.getListImei().stream().filter(e -> e.getStatus()==1).count());
+			if (!pro.getListImei().isEmpty()) {
+				pro.setQuantity(pro.getListImei().stream().filter(e -> e.getStatus() == 1).count());
+				for (Imei i : pro.getListImei()) {
+					i.setBillDetail(null);
+				}
 			}
 			pro.setListProductDetailValue(null);
 			pro.getProduct().setListProductDetail(null);
@@ -132,16 +137,40 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 			public Predicate toPredicate(Root<ProductDetail> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				query.distinct(true);
 				List<Predicate> predicates = new ArrayList<>();
-				Join<ProductDetail, Imei> joinImei = root.join("listImei",JoinType.LEFT);
+				Join<ProductDetail, Imei> joinImei = root.join("listImei", JoinType.LEFT);
 				predicates.add(cb.and(cb.equal(joinImei.get("status"), 1)));
 				return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 		});
 		for (ProductDetail pro : listPage) {
+			if (!pro.getListImei().isEmpty()) {
+				pro.setQuantity(pro.getListImei().stream().filter(e -> e.getStatus() == 1).count());
+			}
 			pro.setListProductDetailValue(null);
 			pro.getProduct().setListProductDetail(null);
 			pro.getProduct().setListProductOption(null);
 		}
 		return listPage;
 	}
+
+	@Override
+	public String compareLaptops(List<ProductDetail> listProductDetail) {
+		ProductDetail ProductDetail1 = productRepo.getById(listProductDetail.get(0).getId());
+		ProductDetail ProductDetail2 = productRepo.getById(listProductDetail.get(1).getId());
+		double avgRating1 = ProductDetail1.calculateAverageRating();
+		double avgRating2 = ProductDetail2.calculateAverageRating();
+		String result = null;
+		if (avgRating1 > avgRating2) {
+			result = ProductDetail1.getProductName() + " có đánh giá người dùng tốt hơn " + " "
+					+ ProductDetail2.getProductName();
+		} else if (avgRating1 < avgRating2) {
+			result = ProductDetail2.getProductName() + " có đánh giá người dùng tốt hơn "
+					+ ProductDetail1.getProductName();
+		} else {
+			result = ProductDetail1.getProductName() + " and " + ProductDetail2.getProductName() + " "
+					+ " có đánh giá bằng nhau";
+		}
+		return result;
+	}
+
 }

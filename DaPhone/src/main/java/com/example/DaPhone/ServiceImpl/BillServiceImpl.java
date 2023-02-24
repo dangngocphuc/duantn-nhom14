@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -33,23 +31,23 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.DaPhone.Common.CommonUtils;
 import com.example.DaPhone.Entity.Bill;
 import com.example.DaPhone.Entity.BillDetail;
 import com.example.DaPhone.Entity.Config;
 import com.example.DaPhone.Entity.EmailJob;
-import com.example.DaPhone.Entity.Product;
-import com.example.DaPhone.Entity.ProductDetail;
+import com.example.DaPhone.Entity.Imei;
 import com.example.DaPhone.Entity.User;
 import com.example.DaPhone.Repository.BillDetailRepo;
 import com.example.DaPhone.Repository.BillRepo;
 import com.example.DaPhone.Repository.ConfigRepo;
 import com.example.DaPhone.Repository.EmailJobRepo;
+import com.example.DaPhone.Repository.ImeiRepository;
 import com.example.DaPhone.Repository.ProductRepo;
 import com.example.DaPhone.Request.BillRequest;
 import com.example.DaPhone.Service.BillService;
-import com.fasterxml.jackson.annotation.JacksonInject.Value;
 import com.google.gson.Gson;
 
 @Service
@@ -65,6 +63,8 @@ public class BillServiceImpl implements BillService {
 	private ConfigRepo configRepo;
 	@Autowired
 	private EmailJobRepo emailJobRepo;
+	@Autowired
+	private ImeiRepository imeiRepo;
 
 	public Page<Bill> findBill(BillRequest billParam, Pageable pageable) {
 
@@ -104,7 +104,9 @@ public class BillServiceImpl implements BillService {
 			}
 		}, pageable);
 		for (Bill bill : listPage.getContent()) {
-			bill.getUser().setListBill(null);
+			if (bill.getUser() != null) {
+				bill.getUser().setListBill(null);
+			}
 			bill.getListBillDetail().forEach(e -> {
 				e.getListImei().forEach(i -> {
 					i.setBillDetail(null);
@@ -137,7 +139,9 @@ public class BillServiceImpl implements BillService {
 			List<Bill> lists = findBill(billParam, pageable).toList();
 			long total = 0;
 			for (Bill bill : lists) {
-				total += bill.getTotal();
+				if (bill.getTotal() != null) {
+					total += bill.getTotal();
+				}
 			}
 			statistic.add(total);
 		}
@@ -228,8 +232,8 @@ public class BillServiceImpl implements BillService {
 		}
 	}
 
-	@Transactional(rollbackOn = Exception.class)
-	public Bill paymentBill(Bill bill) {
+	@Transactional(rollbackFor = Exception.class)
+	public boolean paymentBill(Bill bill) {
 		try {
 			Gson g = new Gson();
 			bill.setDate(new Date());
@@ -237,28 +241,52 @@ public class BillServiceImpl implements BillService {
 			bill.setBillCode(CommonUtils.generateBillNumber());
 			for (BillDetail billDetail : bill.getListBillDetail()) {
 				billDetail.setBill(bill);
+//				for(Imei imei: billDetail.getListImei()) {
+//					imei.setBillDetail(billDetail);
+//					imei.setProductDetail(billDetail.getProductDetail());
+//					imei.setStatus(0);
+//				}
 			}
 			Bill billSave = billRepo.save(bill);
-			StringBuilder content = new StringBuilder();
-			content.append("<table width=\"98%\" border=\"1\" cellpadding=\"3\" cellspacing=\"0\">" + "	<thead>"
-					+ "	<tr align=\"center\" style=\"font-weight: bold; background-color: #D6DBE9; \">"
-					+ "	<td nowrap=\"nowrap\" width=\"30\">STT</td>" + "	<td width=\"50%\">Tên tài liệu</td>"
-					+ "	<td width=\"45%\">Ghi chú</td>" + "	</tr>" + "</thead>");
 
-			ProductDetail[] products = g.fromJson(bill.getProducts(), ProductDetail[].class);
-			for (ProductDetail product : products) {
-				int i = 1;
+			for (BillDetail billDetail : bill.getListBillDetail()) {
+				for (Imei imei : billDetail.getListImei()) {
+					Imei imeiNew = imeiRepo.getById(imei.getId());
+					imeiNew.setBillDetail(billDetail);
+					imeiNew.setProductDetail(billDetail.getProductDetail());
+					imeiNew.setStatus(0);
+				}
+			}
+
+			StringBuilder content = new StringBuilder();
+			content.append("<table width=\"98%\" border=\"1\" cellpadding=\"3\" cellspacing=\"0\">\r\n"
+					+ "        <thead>\r\n"
+					+ "            <tr align=\"center\" style=\"font-weight: bold; background-color: #D6DBE9; \">\r\n"
+					+ "                <td nowrap=\"nowrap\" width=\"5%\">STT</td>\r\n"
+					+ "                <td width=\"55%\">Tên Sản phẩm</td>\r\n"
+					+ "                <td width=\"10%\">Số lượng</td>\r\n"
+					+ "                <td width=\"30%\">Giá bán</td>\r\n" + "            </tr>\r\n"
+					+ "        </thead>");
+
+//			ProductDetail[] products = g.fromJson(bill.getProducts(), ProductDetail[].class);
+			int i = 1;
+			Double total = 0D;
+			for (BillDetail billDetail : bill.getListBillDetail()) {
 //				BillDetail billDetail = new BillDetail();
 //				billDetail.setBill(billSave);
 //				billDetail.setPrice(product.getProductPrice());
 //				billDetail.setProduct(product);
 //				billDetail.setQuantity(product.getQuanlityBuy());
-				content.append("<tr>" + "<td nowrap=\"nowrap\" width=\"30\">");
+				total = (billDetail.getPrice().doubleValue() * billDetail.getQuantity());
+
+				content.append("<tr>" + "<td nowrap=\"nowrap\" width=\"5%\" style=\"text-align: center;\">");
 				content.append(i);
-				content.append("</td>" + "	<td width=\"50%\">");
-				content.append(product.getProductName());
-				content.append("</td>" + "	<td width=\"45%\">");
-				content.append(product.getQuantity());
+				content.append("</td>" + "<td width=\"50%\">");
+				content.append(billDetail.getProductDetail().getProductName());
+				content.append("</td>" + "	<td width=\"10%\" style=\"text-align: center;\" >");
+				content.append(billDetail.getQuantity());
+				content.append("</td>" + "	<td width=\"30%\" style=\"text-align: right;\">");
+				content.append(total.longValue());
 				content.append("</td>" + "</tr>");
 				// save bill
 //				billDetailRepo.save(billDetail);
@@ -278,12 +306,15 @@ public class BillServiceImpl implements BillService {
 			emailJob.setContent(config.getValue().replace("__name__", billSave.getName())
 					.replace("__total__", NumberFormat.getInstance().format(bill.getTotal()))
 					.replace("__content__", content.toString()));
-			emailJobRepo.save(emailJob);
+			if (bill.getUser() != null) {
+				emailJobRepo.save(emailJob);
+			}
 //			return bill;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
-		return bill;
+		return true;
 	}
 
 	public void cancelBill(Bill bill) {

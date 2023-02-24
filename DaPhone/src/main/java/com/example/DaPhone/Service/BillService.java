@@ -20,5 +20,5 @@ public interface BillService {
 	public boolean saveBill(Bill bill);
 	public void cancelBill(Bill bill);
 	public void deleteBill(Long id);
-	public Bill paymentBill(Bill bill);
+	public boolean paymentBill(Bill bill);
 }

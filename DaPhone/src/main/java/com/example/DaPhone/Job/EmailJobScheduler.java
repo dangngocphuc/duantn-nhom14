@@ -24,7 +24,7 @@ public class EmailJobScheduler {
 	@Autowired
 	private EmailJobRepo emailJobRepo;
 
-	@Scheduled(initialDelay = 10000, fixedRate = 300 * 1000)
+	@Scheduled(initialDelay = 10000, fixedRate = 30 * 1000)
 	public void syncData() {
 
 		System.out

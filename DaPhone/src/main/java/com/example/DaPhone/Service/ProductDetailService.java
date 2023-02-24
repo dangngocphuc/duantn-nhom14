@@ -14,4 +14,5 @@ public interface ProductDetailService {
 	public ProductDetail findById(Long id);
 	public boolean saveOrUpdate(ProductDetail productDetail);
 	public List<ProductDetail> getListProduct();
+	public String compareLaptops (List<ProductDetail> listProductDetail);
 }

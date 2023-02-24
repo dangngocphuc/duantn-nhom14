@@ -41,7 +41,11 @@ public class Image implements Serializable {
 	@JsonBackReference
 	private Product product;
 
-	@Column(name="img_url")
-	private String imgUrl;
+	@Column(name="thumb_image")
+	private String thumbImage;
+	
+	@Column(name="images")
+	private String image;
+
 
 }

@@ -16,10 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.DaPhone.Entity.Product;
 import com.example.DaPhone.Entity.ProductDetail;
 import com.example.DaPhone.Entity.ProductDetailValue;
-import com.example.DaPhone.Entity.ProductOption;
+import com.example.DaPhone.Model.CompareResponse;
 import com.example.DaPhone.Model.Response;
 import com.example.DaPhone.Request.ProductDetailRequest;
 import com.example.DaPhone.Service.ProductDetailService;
@@ -79,5 +78,10 @@ public class ProductDetailController {
 		return new ResponseEntity<List<ProductDetail>>(pageBrandPage, HttpStatus.OK);
 	}
 	
-	
+	@PostMapping(value = "/compare")
+	public ResponseEntity<CompareResponse> compareLaptops(@RequestBody List<ProductDetail> lstProductDetails) {
+		CompareResponse compareResponse = new CompareResponse();
+		compareResponse.setMessage(productService.compareLaptops(lstProductDetails));
+		return new ResponseEntity<CompareResponse>(compareResponse, HttpStatus.OK);
+	}
 }

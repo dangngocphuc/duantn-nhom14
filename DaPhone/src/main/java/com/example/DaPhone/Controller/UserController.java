@@ -113,7 +113,7 @@ public class UserController {
 				sortable = Sort.by(reviewParam.getSortField()).descending();
 			}
 		} else {
-			sortable = Sort.by("review_star").descending();
+			sortable = Sort.by("id").descending();
 		}
 		Pageable pageable = PageRequest.of(page, size, sortable);
 		Page<Review> pageBrandPage = serviceUser.findReview(reviewParam, pageable);
@@ -121,4 +121,9 @@ public class UserController {
 		Long count = (long) pageBrandPage.getTotalElements();
 		return new ResponseEntity<Response<Review>>(new Response<Review>(count, lists), HttpStatus.OK);
 	}
+	
+	
+	
+	
+	
 }

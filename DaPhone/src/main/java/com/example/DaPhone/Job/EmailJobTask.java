@@ -50,31 +50,36 @@ public class EmailJobTask implements Callable<EmailJobTask> {
 				mailServerProperties.put("mail.smtp.auth", "true");
 				mailServerProperties.put("mail.smtp.starttls.enable", "true");
 				mailServerProperties.put("mail.smtp.debug", "true");
+//				mailServerProperties.put("mail.smtp.ssl.protocols", "TLSv1.2");
 				Authenticator authenticator = new Authenticator() {
 					public PasswordAuthentication getPasswordAuthentication() {
 						return new PasswordAuthentication(emailRoot,passRoot);// userid and password for "from" email
 																				// address
 					}
 				};
-
+				
+				
 				// Step2: get Mail Session
 				getMailSession = Session.getDefaultInstance(mailServerProperties, authenticator);
 				mailMessage = new MimeMessage(getMailSession);
 
 				mailMessage.addRecipient(Message.RecipientType.TO,
-						new InternetAddress(emailJob.getUser().getUserEmail()));
-				mailMessage.setSubject(emailJob.getSubject());
+						new InternetAddress(emailJob.getUser().getUserEmail(),false));
+				mailMessage.setSubject(emailJob.getSubject(),"utf-8");
 				String emailBody = emailJob.getContent();
-				mailMessage.setContent(emailBody, "text/html");
-
+				mailMessage.setContent(emailBody, "text/html; charset=UTF-8");
+//				mailMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail, false));
+			    Transport.send(mailMessage);
+				
 				// Step3: Send mail
-				Transport transport = getMailSession.getTransport("smtp");
-
-				// Thay your_gmail thành gmail của bạn, thay your_password thành mật khẩu gmail
-				// của bạn
-				transport.connect("smtp.gmail.com", emailRoot.trim(), passRoot);
-				transport.sendMessage(mailMessage, mailMessage.getAllRecipients());
-				transport.close();
+//				Transport transport = getMailSession.getTransport("smtp");
+//
+//				// Thay your_gmail thành gmail của bạn, thay your_password thành mật khẩu gmail
+//				// của bạn
+//				transport.connect("smtp.gmail.com", emailRoot.trim(), passRoot);
+//			
+//				transport.sendMessage(mailMessage, mailMessage.getAllRecipients());
+//				transport.close();
 				// done
 				this.emailJob.setStatus(1);
 			}

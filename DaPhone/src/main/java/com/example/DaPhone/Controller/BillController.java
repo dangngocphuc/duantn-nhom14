@@ -79,12 +79,11 @@ public class BillController {
 	
 	// payment service
 	@PostMapping(value = "/payment")
-	public ResponseEntity<Response<Bill>> paymentBill(@RequestBody Bill bill) {
+	public ResponseEntity<Boolean> paymentBill(@RequestBody Bill bill) {
 		if (bill != null) {
-			Bill billSave = billService.paymentBill(bill);
-			return new ResponseEntity<Response<Bill>>(new Response<Bill>(billSave), HttpStatus.OK);
+			return new ResponseEntity<Boolean>(billService.paymentBill(bill), HttpStatus.OK);
 		}
-		return new ResponseEntity<Response<Bill>>(new Response<Bill>("loi", "10001"), HttpStatus.OK);
+		return new ResponseEntity<Boolean>(false, HttpStatus.OK);
 	}
 	
 	//Export excel

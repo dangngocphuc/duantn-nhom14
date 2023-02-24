@@ -1,0 +1,117 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+            <!-- Card stats -->
+            <div class="row">
+                <div class="col-xl-12 col-lg-6">
+                    <div class="card card-stats mb-4 mb-xl-0">
+                        <div class="card-body">
+                            <form nz-form [formGroup]="searchForm" class="ant-advanced-search-form">
+                                <div nz-row [nzGutter]="24">
+                                    <div nz-col [nzSpan]="6">
+                                        <nz-form-item>
+                                            <nz-form-label>Tên khách hàng</nz-form-label>
+                                            <nz-form-control>
+                                                <input nz-input placeholder="Người đánh giá"
+                                                    formControlName="reviewName" />
+                                            </nz-form-control>
+                                        </nz-form-item>
+                                    </div>
+                                    <div nz-col [nzSpan]="4">
+                                        <nz-form-item>
+                                            <nz-form-label>Sao đánh giá</nz-form-label>
+                                            <nz-form-control>
+                                                <nz-input-number class="w-100" formControlName="reviewStar" [nzMin]="0"
+                                                    [nzStep]="1" [nzMax]="5">
+                                                </nz-input-number>
+                                            </nz-form-control>
+                                        </nz-form-item>
+                                    </div>
+                                    <div nz-col [nzSpan]="8">
+                                        <nz-form-item>
+                                            <nz-form-label>Tên sản phẩm</nz-form-label>
+                                            <nz-form-control>
+                                                <input nz-input placeholder="Tên sản phẩm"
+                                                    formControlName="productName" />
+                                            </nz-form-control>
+                                        </nz-form-item>
+                                    </div>
+                                    <div nz-col [nzSpan]="6">
+                                        <nz-form-item>
+                                            <nz-form-label>Trạng thái</nz-form-label>
+                                            <nz-form-control>
+                                                <nz-select formControlName="status">
+                                                    <nz-option nzValue="" nzLabel="Tất cả"></nz-option>
+                                                    <nz-option nzValue="0" nzLabel="Ẩn"></nz-option>
+                                                    <nz-option nzValue="1" nzLabel="Hiển thị"></nz-option>
+                                                </nz-select>
+                                            </nz-form-control>
+                                        </nz-form-item>
+                                    </div>
+                                </div>
+                                <div nz-row>
+                                    <div nz-col [nzSpan]="24" class="search-area">
+                                        <button nz-button (click)="search()" [nzType]="'primary'">Search</button>
+                                        <button nz-button (click)="resetForm()">Clear</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--7">
+    <!-- Table -->
+    <div class="row">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-header border-0">
+                    <div>
+                        <h3 class="mb-0">Danh sách sản phẩm</h3>
+                    </div>
+                    <!-- <div style="float: right;"><button (click)="openModal(Action.THEMMOI,myModal)"
+                class="btn btn-sm btn-success">Thêm
+                mới</button>
+            </div> -->
+                </div>
+                <div class="table-responsive">
+                    <nz-table nzShowSizeChanger [nzData]="listOfData" [nzFrontPagination]="false" [nzLoading]="loading"
+                        [nzTotal]="total" [nzPageSize]="pageSize" [nzPageIndex]="pageIndex"
+                        (nzQueryParams)="onQueryParamsChange($event)">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;">Tên khách hàng</th>
+                                <th style="text-align: center;">Tên sản phẩm</th>
+                                <th nzColumnKey="reviewStar" [nzSortFn]="true" style="text-align: center;">Số sao đánh
+                                    giá</th>
+                                <th style="text-align: center;">Nội dung đánh giá</th>
+                                <th style="text-align: center;">Ngày</th>
+                                <th nzColumnKey="status" [nzSortFn]="true" style="text-align: center;">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of listOfData; ; let i = index">
+                                <td>{{data?.reviewName}}</td>
+                                <td>{{data?.productDetail?.productName}}</td>
+                                <td>{{data?.reviewStar}}</td>
+                                <td>{{data?.reviewMessage}}</td>
+                                <td>{{data?.date}}</td>
+                                <td>
+                                    <nz-select ngModel="{{data.status}}" (ngModelChange)="changeStatus($event,data)">
+                                        <nz-option nzValue="0" nzLabel="Ẩn"></nz-option>
+                                        <nz-option nzValue="1" nzLabel="Hiển thị"></nz-option>
+                                    </nz-select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

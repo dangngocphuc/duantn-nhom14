@@ -1,12 +1,15 @@
 package com.example.DaPhone.Auth;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.DaPhone.Common.CommonUtils;
 import com.example.DaPhone.Entity.User;
-import com.example.DaPhone.Model.LoginResponse;
 import com.example.DaPhone.Model.TokenDto;
 import com.example.DaPhone.Service.UserService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -49,6 +51,8 @@ public class Oauth2Controller {
 		final GoogleIdToken googleIdToken = GoogleIdToken.parse(verifier.getJsonFactory(), tokenDto.getValue());
 		final GoogleIdToken.Payload payload = googleIdToken.getPayload();
 		User usuario = new User();
+		LoginResponse loginResponse = new LoginResponse();
+		loginResponse.setErrorCode("00");
 		if (!userService.getByEmail(payload.getEmail()).isEmpty())
 			usuario = userService.getByEmail(payload.getEmail()).get(0);
 		else {
@@ -60,13 +64,23 @@ public class Oauth2Controller {
 		}
 		try {
 			auth = commonUtils.createToken(payload.getEmail(), secretPsw, "0");
+			List<String> permissions = new ArrayList<>();
+			for (GrantedAuthority role : usuario.getAuthorities()) {
+				permissions.add(role.getAuthority());
+			}
+			UserDetail userDetail = new UserDetail();
+			userDetail.setTokenId(auth);
+			userDetail.setUsername(usuario.getUsername());
+			userDetail.setUserID(usuario.getUserID());
+			userDetail.setPermissions(permissions);
+			loginResponse.setUserDetail(userDetail);
+			loginResponse.setAuthorization(auth);
+			loginResponse.setAuthenticated(true);
 		} catch (Exception e) {
-			return new ResponseEntity<LoginResponse>(new LoginResponse("false", ""), HttpStatus.OK);
+			return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
 		}
 
-		return new ResponseEntity<LoginResponse>(
-				new LoginResponse(auth, usuario.getUsername(), usuario.getUserID()),
-				HttpStatus.OK);
+		return new ResponseEntity<LoginResponse>(loginResponse,HttpStatus.OK);
 	}
 
 //	private TokenDto login(User usuario) {
