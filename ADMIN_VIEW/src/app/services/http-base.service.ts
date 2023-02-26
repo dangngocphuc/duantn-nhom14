@@ -74,7 +74,7 @@ export class HttpBaseService {
       withCredentials: true,
       params: params,
     };
-    // console.log(params)
+    console.log(params)
     url = this.serverPort + url;
     if (method == 'GET') {
       return this.http.get<T>(url, httpOptions);

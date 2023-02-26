@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -40,6 +41,7 @@ public class Review implements Serializable{
 
 	@ManyToOne
 	@JoinColumn(name = "product_detail_id", nullable = true)
+	@JsonBackReference
 	private ProductDetail productDetail;
 
 	@Column(name = "review_name")

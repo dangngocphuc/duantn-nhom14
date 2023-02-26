@@ -29,7 +29,7 @@ public class BillDetailController {
 			if(e.getBill().getUser()!=null) {
 				e.getBill().getUser().setListBill(null);
 			};
-			e.getProductDetail().setListProductDetailValue(null);
+//			e.getProductDetail().setListProductDetailValue(null);
 			e.getProductDetail().setProduct(null);
 			e.getProductDetail().setListImei(null);
 		});

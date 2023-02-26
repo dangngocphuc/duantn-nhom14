@@ -52,24 +52,31 @@ public class ProductDetail implements Serializable {
 
 	@Column(name = "product_marketprice")
 	private String productMarketprice;
+	
+	@ManyToOne
+	@JoinColumn(name = "cpu_id")
+	private Cpu cpu;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "productDetail", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<ProductDetailValue> listProductDetailValue;
+//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "productDetail", cascade = CascadeType.ALL, orphanRemoval = true)
+//	private Set<ProductDetailValue> listProductDetailValue;
 
 	@JsonManagedReference
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "productDetail", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Imei> listImei;
 
-	@JsonIgnore
+	@JsonManagedReference
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "productDetail", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Review> listReview;
+
+	@Column(name = "demand")
+	private String demand;
 
 	@Transient
 	private long quantity;
 
 	public double calculateAverageRating() {
 		double sum = 0;
-		for(Review review : listReview) {
+		for (Review review : listReview) {
 			sum += review.getReviewStar();
 		}
 		return sum / listReview.size();

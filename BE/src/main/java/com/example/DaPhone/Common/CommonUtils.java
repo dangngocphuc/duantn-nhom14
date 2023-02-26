@@ -241,4 +241,43 @@ public class CommonUtils {
 		Date now = new Date();
 		return DATE_FORMAT.format(now);
 	}
+
+	public static enum Demand {
+		OFFICE("1", "Văn phòng, học tập"), GAMING("2", "Gaming"), DESIGN("3", "");
+
+		private String value;
+		private String name;
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		private Demand(String value, String name) {
+			this.value = value;
+			this.name = name;
+		}
+
+	}
+	
+	public static String generateProductCode() {
+	    String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	    StringBuilder code = new StringBuilder();
+	    for (int i = 0; i < 6; i++) {
+	        int index = (int) (Math.random() * characters.length());
+	        code.append(characters.charAt(index));
+	    }
+	    return code.toString();
+	}
 }

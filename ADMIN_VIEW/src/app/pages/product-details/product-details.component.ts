@@ -5,8 +5,8 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { clippingParents } from '@popperjs/core';
 import { ModalManager } from 'ngb-modal';
 import { catchError, concat, debounceTime, distinctUntilChanged, forkJoin, lastValueFrom, Observable, of, Subject, switchMap, tap } from 'rxjs';
-import { Action } from 'src/app/commons/common';
-import { Option, OptionValue, PageProductDetail, PagesRequest, Product, ProductDetail, ProductDetailValue, ProductOption } from 'src/app/models/type';
+import { Action, Common } from 'src/app/commons/common';
+import { Imei, Option, OptionValue, PageProductDetail, PagesRequest, Product, ProductDetail, ProductDetailValue, ProductOption } from 'src/app/models/type';
 import { OptionService } from 'src/app/services/option.service';
 import { ProductService } from 'src/app/services/product.service';
 import { ProductDetailService } from 'src/app/services/productDetail.service';
@@ -38,6 +38,9 @@ export class ProductDetailsComponent implements OnInit {
   pageProductDetail = new PageProductDetail();
   // productVariant = new ProductVariant();
   // pagesResponse = new PageResponse();
+  common = new Common();
+  lstDemand = this.common.lstDemand;
+  lstTrangThai = this.common.lstTrangThai;
   lstProduct: Observable<any[]>;
   loadlstProduct = false;
   textInput_tenProduct$ = new Subject<string>();
@@ -65,8 +68,9 @@ export class ProductDetailsComponent implements OnInit {
       productDetail: this.fb.group({
         name: [{ value: '', }, Validators.required],
         product: [{ value: '', }, Validators.required],
+        demand : [{ value: '', }, Validators.required],
       }),
-      listProductDetailValue: this.fb.array([], Validators.required),
+      listImei: this.fb.array([], Validators.required),
     });
   }
 
@@ -124,8 +128,8 @@ export class ProductDetailsComponent implements OnInit {
 
   closeModal() {
     // debugger;
-    this.getListProductDetailValue.clearValidators();
-    this.getListProductDetailValue.clear();
+    this.getImei.clearValidators();
+    this.getImei.clear();
     this.productDetail = new ProductDetail();
     this.modalRef.close();
   }
@@ -134,24 +138,13 @@ export class ProductDetailsComponent implements OnInit {
     this.productDetailService.getProductDetailById(item.id).subscribe((respone) => {
       debugger;
       this.productDetail = respone.result;
-      const observables = [];
-      if(this.productDetail.listProductDetailValue.length == 0){
-        this.openModal(Action.CAPNHAT, content);
-        return;
+      if(this.productDetail.listImei.length>0){
+        this.productDetail.listImei.forEach((e)=>{
+          this.addRow(e);
+        })
       }
-      this.productDetail.listProductDetailValue.forEach((e) => {
-        this.addRow(e);
-        observables.push(this.optionService.getOptionById(e.option.id));
-      });
-      forkJoin(observables).subscribe((res) => {
-        let i = 0;
-        res.forEach((r) => {
-          this.productDetail.listProductDetailValue[i].listOptionValue = r.listOptionValue;
-          i++;
-        });
-        // this.initForm();
-        this.openModal(Action.CAPNHAT, content);
-      });
+      // this.listOption = listProductTemp;
+      this.openModal(Action.CAPNHAT,content);
     });
   }
   
@@ -161,27 +154,27 @@ export class ProductDetailsComponent implements OnInit {
       productDetail: this.fb.group({
         name: [{ value: this.productDetail.productName}, Validators.required],
         product: [{ value: this.productDetail.product, }, Validators.required],
+        demand : [{ value: '', }, Validators.required],
       }),
-      listProductDetailValue: this.fb.array([], Validators.required),
+      listImei: this.fb.array([], Validators.required),
     });
-    if (productDetail?.listProductDetailValue?.length && productDetail?.listProductDetailValue?.length > 0) {
-      productDetail?.listProductDetailValue?.forEach((item) => {
+    if (productDetail?.listImei?.length && productDetail?.listImei?.length > 0) {
+      productDetail?.listImei?.forEach((item) => {
         this.addRow(item);
       });
     }
   }
 
 
-  async addRow(item: ProductDetailValue = new ProductDetailValue()) {
-    await this.getListProductDetailValue.push(this.fb.group({
-      option: [{ value: item?.option?.optionName }],
-      optionValue: [{ value: item?.optionValue }, Validators.required],
+  async addRow(item: Imei = new Imei()) {
+    await this.getImei.push(this.fb.group({
+      imei: [{ value: item?.imei }],
+      status: [{ value: item?.status }, Validators.required],
     }));
   }
 
-
-  get getListProductDetailValue() {
-    return this.formGroup.controls['listProductDetailValue'] as FormArray;
+  get getImei() {
+    return this.formGroup.controls['listImei'] as FormArray;
   }
 
   save() {
@@ -194,7 +187,9 @@ export class ProductDetailsComponent implements OnInit {
     })
     console.log(this.productDetail);
   }
+  
   lstproductOptionTemp: ProductOption[];
+
   async onSelect(item?) {
     // debugger;
     // this.product = item;

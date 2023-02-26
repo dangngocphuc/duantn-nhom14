@@ -56,13 +56,13 @@ public class ProductController {
 //			po.getOption().getListOptionValue().clear();
 		}
 		pro.setListProductDetail(null);
-		for(ProductOption po:  pro.getListProductOption()) {
-			po.setProduct(null);
-			if(po.getOption() != null) {
-				po.getOption().getListOptionValue().clear();
-			}
-			
-		}
+//		for(ProductOption po:  pro.getListProductOption()) {
+//			po.setProduct(null);
+//			if(po.getOption() != null) {
+//				po.getOption().getListOptionValue().clear();
+//			}
+//			
+//		}
 		return new ResponseEntity<Product>(pro, HttpStatus.OK);
 	}
 	

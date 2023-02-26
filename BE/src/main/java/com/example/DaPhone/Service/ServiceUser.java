@@ -135,7 +135,7 @@ public class ServiceUser {
 		for (Review e : listPage.getContent()) {
 			if (e.getProductDetail() != null) {
 				e.getProductDetail().setListImei(null);
-				e.getProductDetail().setListProductDetailValue(null);
+//				e.getProductDetail().setListProductDetailValue(null);
 				e.getProductDetail().setProduct(null);
 			}
 		}

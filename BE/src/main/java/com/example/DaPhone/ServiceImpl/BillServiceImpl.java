@@ -113,7 +113,7 @@ public class BillServiceImpl implements BillService {
 				});
 				e.setBill(null);
 				e.getProductDetail().setListImei(null);
-				e.getProductDetail().setListProductDetailValue(null);
+//				e.getProductDetail().setListProductDetailValue(null);
 				e.getProductDetail().setProduct(null);
 			});
 		}

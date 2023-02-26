@@ -96,18 +96,23 @@ export class Product {
   listProductDetail : ProductDetail[];
   listProductOption : ProductOption[];
   listImage : Image[] = [];
+  status : number;
+  updateDate : Date;
+  createDate : Date;
 }
 
 export class ProductDetail {
   id : number;
   productName : String;
+  productCode : String;
   product: Product;
   listProductDetailValue :ProductDetailValue[];
   quantity : number;
   quanlityBuy:number;
   productPrice: number;
+  productMarketprice:number;
   listImei : Imei[];
-  
+  demand : String;
 }
 
 export class ProductOption {
@@ -169,7 +174,7 @@ export class OptionValueRequest {
 
 export class PagesRequest {
   page: number = 0;
-  size: number = 10;
+  size: number = 5;
   sort: string;
 
   constructor(page: number = 0, size: number = 5, sort?: string) {
@@ -194,6 +199,20 @@ export class PageImei {
   numberOfElements: number;
   size: number;
   number: number;
+}
+
+export class PageCpu {
+  content: Cpu[];
+  totalPages: number;
+  totalElements: number;
+  numberOfElements: number;
+  size: number;
+  number: number;
+}
+
+export class Cpu {
+  id : number;
+  cpu : String;
 }
 
 export class ImeiRequest {

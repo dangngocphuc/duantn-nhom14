@@ -86,15 +86,16 @@
                     <div *ngFor="let item of pageProductDetail?.content" class="col-lg-3 col-md-4">
                         <div class="single-product">
                             <div class="text-center">
-                                <ng-image-slider #nav [images]="item?.product?.listImage" [infinite]="true" [autoSlide]="1"
-                                    slideImage="1" [imageSize]="{width: '100%', height: 200}"></ng-image-slider>
+                                <ng-image-slider #nav [images]="item?.product?.listImage" [infinite]="true"
+                                    [autoSlide]="1" slideImage="1"
+                                    [imageSize]="{width: '100%', height: 200}"></ng-image-slider>
                             </div>
                             <div class="product-details">
-                                <h6><a href="product-detail/{{item.id}}">{{item.productName}}</a></h6>
+                                <h6><a href="product-detail/{{item?.id}}">{{item?.productName}}</a></h6>
                                 <div class="price">
-                                    <h6>{{item.productPrice | number}} VNĐ &emsp;<small>{{item.productMarketprice |
+                                    <h6>{{item?.productPrice | number}} VNĐ &emsp;<small>{{item?.productMarketprice |
                                             number}} VND</small></h6>
-                                    <span *ngIf="item.quantity == 0 " class="text-danger">Đã hết hàng</span>
+                                    <span *ngIf="item?.quantity == 0 " class="text-danger">Đã hết hàng</span>
                                 </div>
                                 <div class="prd-bottom">
                                     <a *ngIf="item.quantity > 0" (click)="addToCart(item)" class="social-info">
@@ -105,7 +106,7 @@
                                         <span class="ti-bag"></span>
                                         <p class="hover-text">So sánh</p>
                                     </a>
-                                    <a href="product-detail/{{item.id}}" class="social-info">
+                                    <a href="product-detail/{{item?.id}}" class="social-info">
                                         <span class="lnr lnr-move"></span>
                                         <p class="hover-text">Xem thêm</p>
                                     </a>
@@ -133,24 +134,24 @@
                     <div *ngFor="let item of listOfDataSale" class="col-lg-3 col-md-4">
                         <div class="single-product">
                             <div class="text-center">
-                                <img style="height:220px; width:75%;" class="img-fluid"
-                                    src="../../assets/{{item.productImage}}" alt="">
+                                <ng-image-slider #nav [images]="item?.product?.listImage" [infinite]="true"
+                                    [autoSlide]="1" slideImage="1"
+                                    [imageSize]="{width: '100%', height: 200}"></ng-image-slider>
                             </div>
-
                             <div class="product-details">
-                                <h6><a href="product-detail/{{item.productID}}">{{item.productName}}</a></h6>
+                                <h6><a href="product-detail/{{item?.id}}">{{item?.productName}}</a></h6>
                                 <div class="price">
-                                    <h6>{{item.productPrice | number}} VNĐ &emsp;<small>{{item.productMarketprice |
+                                    <h6>{{item?.productPrice | number}} VNĐ &emsp;<small>{{item?.productMarketprice |
                                             number}} VND</small></h6>
-                                    <span *ngIf="item.productQuantily == 0 " class="text-danger">Đã hết hàng</span>
+                                    <span *ngIf="item?.productQuantily == 0 " class="text-danger">Đã hết hàng</span>
                                 </div>
                                 <div class="prd-bottom">
 
-                                    <a *ngIf="item.productQuantily > 0 " (click)="addToCart(item)" class="social-info">
+                                    <a *ngIf="item?.productQuantily > 0 " (click)="addToCart(item)" class="social-info">
                                         <span class="ti-bag"></span>
                                         <p class="hover-text">Thêm vào giỏ</p>
                                     </a>
-                                    <a href="product-detail/{{item.productID}}" class="social-info">
+                                    <a href="product-detail/{{item?.id}}" class="social-info">
                                         <span class="lnr lnr-move"></span>
                                         <p class="hover-text">Xem thêm</p>
                                     </a>
@@ -160,7 +161,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </section>
@@ -202,16 +202,18 @@
 
                     <div class="single-exclusive-slider">
                         <img style="height:60%; width:60%;" class="img-fluid"
-                            src="../../assets/{{product?.productImage}}" alt="">
+                            src="{{productDetail?.product?.listImage[0].thumbImage}}" alt="">
+                        <!-- {{productDetail?.product?.listImage[0].thumbImage}}                       -->
                         <div class="product-details">
                             <div class="price">
-                                <h6> {{product?.productPrice | number}} VNĐ &emsp;<small>{{product?.productMarketprice |
+                                <h6> {{productDetail?.productPrice | number}} VNĐ
+                                    &emsp;<small>{{productDetail?.productMarketprice |
                                         number}} VND</small></h6>
                             </div>
-                            <h4>{{product?.productName}}</h4>
+                            <h4>{{productDetail?.productName}}</h4>
                             <div class="add-bag d-flex align-items-center justify-content-center">
-                                <a *ngIf="product?.productQuantily > 0 " class="add-btn"
-                                    (click)="addToCart(product)"><span class="ti-bag"></span></a>
+                                <a *ngIf="productDetail?.quantity > 0 " class="add-btn"
+                                    (click)="addToCart(productDetail)"><span class="ti-bag"></span></a>
                                 <span class="add-text text-uppercase">Thêm vào giỏ</span>
                             </div>
 

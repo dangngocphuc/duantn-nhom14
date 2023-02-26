@@ -55,6 +55,7 @@ import {CdkStepperModule} from '@angular/cdk/stepper';
 import {NgStepperModule} from 'angular-ng-stepper';
 import { ReviewComponent } from './pages/review/review.component';
 import { NgImageSliderModule } from 'ng-image-slider';
+import { CpuComponent } from './pages/cpu/cpu.component';
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -106,6 +107,7 @@ import { NgImageSliderModule } from 'ng-image-slider';
     ImeiComponent,
     BrandComponent,
     ReviewComponent,
+    CpuComponent,
   ],
   providers: [
     CookieService,

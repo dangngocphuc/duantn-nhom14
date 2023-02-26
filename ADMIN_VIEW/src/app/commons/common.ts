@@ -1,9 +1,9 @@
-export enum ROLE{
+export enum ROLE {
   ADMIN = 'ADMIN',
   USER = 'USER'
 }
 
-export enum ERROR{
+export enum ERROR {
   SUCCESS = '00',
   FAILURE = '01'
 }
@@ -17,11 +17,18 @@ export enum Action {
   LICHSUCHINHSUA = 5,
 }
 
-
-
 export class Common {
   lstTrangThai = [
-    {value : 0 ,name :'hết '},
-    {value : 1 ,name :'Còn hàng'},
+    { value: 0, name: 'Hết' },
+    { value: 1, name: 'Còn hàng' },
+  ]
+
+  lstDemand = [
+    { value: '1', name: 'Văn phòng, học tập ' },
+    { value: '2', name: '2D Design' },
+    { value: '3', name: 'Quay dựng video' },
+    { value: '4', name: '3D Design' },
+    { value: '5', name: 'Gaming' },
+    { value: '6', name: 'Lập trình' },
   ]
 }

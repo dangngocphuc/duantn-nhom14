@@ -25,6 +25,7 @@ import { UserSessionResolveService } from './services/authentication/user-sessio
 import { ImeiComponent } from './pages/imei/imei.component';
 import { BrandComponent } from './pages/brand/brand.component';
 import { ReviewComponent } from './pages/review/review.component';
+import { CpuComponent } from './pages/cpu/cpu.component';
 
 
 const routes: Routes = [
@@ -37,7 +38,7 @@ const routes: Routes = [
       { path: 'brand', component: BrandComponent },
       { path: 'user', component: UserProfileComponent },
       { path: 'products', component: TablesComponent },
-      { path: 'options', component: IconsComponent },
+      // { path: 'options', component: IconsComponent },
       { path: 'oders', component: MapsComponent },
       { path: 'product-details', component: ProductDetailsComponent },
       { path: 'option-values', component: OptionValuesComponent },
@@ -45,6 +46,7 @@ const routes: Routes = [
       { path: 'category', component: CategoryComponent },
       { path: 'imei', component: ImeiComponent },
       { path: 'review', component: ReviewComponent },
+      { path: 'cpu', component: CpuComponent },
       // {
       //   path: '',
       //   loadChildren: () => import('src/app/layouts/admin-layout/admin-layout.module').then(m => m.AdminLayoutModule)

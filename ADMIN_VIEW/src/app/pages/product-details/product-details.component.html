@@ -99,15 +99,14 @@
               <label for="danhMuc">Sản phẩm</label>
               <ng-select [items]="lstProduct | async" class="custom-ng-select" bindLabel="tenSanPham"
                 [hideSelected]="true" [loading]="loadlstProduct" [typeahead]=" textInput_tenProduct$"
-                formControlName="product" [(ngModel)]="productDetail.product"
-                (change)="onSelect(productDetail.product)">
+                formControlName="product" [(ngModel)]="productDetail.product">
               </ng-select>
             </div>
           </div>
           <div class="col-4">
             <div class="form-group">
               <label for="ma">Mã sản phẩm</label>
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" disabled [(ngModel)]="productDetail.productCode">
             </div>
           </div>
           <div class="col-4">
@@ -132,8 +131,10 @@
           </div>
           <div class="col-4">
             <div class="form-group">
-              <label for="screen">RAM</label>
-              <input type="text" class="form-control">
+              <label for="screen">Nhu cầu</label>
+              <ng-select [items]="lstDemand" class="custom-ng-select" bindLabel="name" bindValue="value"
+                formControlName="demand" name="demand" [(ngModel)]="productDetail.demand">
+              </ng-select>
             </div>
           </div>
         </div>
@@ -158,14 +159,14 @@
           </div>
           <div class="col-6">
             <div class="form-group">
-              <label for="screen">Giá bán</label>
-              <input type="text" class="form-control">
+              <label for="screen">Giá bán </label>
+              <input type="text" class="form-control" [(ngModel)]="productDetail.productPrice">
             </div>
           </div>
           <div class="col-6">
             <div class="form-group">
-              <label for="screen">Số lượng</label>
-              <input type="text" class="form-control">
+              <label for="screen">Giá nhập </label>
+              <input type="text" class="form-control" [(ngModel)]="productDetail.productMarketprice">
             </div>
           </div>
         </div>
@@ -173,20 +174,19 @@
       <table class="table table-bordered">
         <thead>
           <tr>
-            <th scope="col" width="10px">#</th>
-            <th scope="col" width="40px">Thuộc tính</th>
-            <th scope="col">Giá trị</th>
+            <th scope="col" width="1">#</th>
+            <th scope="col" width="59%">Số Imei</th>
+            <th scope="col">Trạng thái</th>
           </tr>
         </thead>
-        <tbody formArrayName="listProductDetailValue"
-          *ngFor="let item of productDetail?.listProductDetailValue, index as i">
+        <tbody formArrayName="listImei"
+          *ngFor="let item of productDetail?.listImei, index as i">
           <tr [formGroupName]="i">
             <td>{{i+1}}</td>
-            <td>{{item?.option?.optionName}}</td>
-            <!-- <td>{{item?.optionValue?.optionValue}}</td> -->
+            <td><input formControlName="imei" type="text" class="form-control" [(ngModel)]="item.imei"></td>
             <td>
-              <ng-select formControlName="optionValue" [items]="item?.listOptionValue" bindLabel="optionValue"
-                [(ngModel)]="item.optionValue"></ng-select>
+              <ng-select formControlName="status" [items]="lstTrangThai" bindLabel="name" bindValue="value"
+                [(ngModel)]="item.status"></ng-select>
             </td>
           </tr>
         </tbody>

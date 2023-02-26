@@ -43,7 +43,7 @@ public class ImeiController {
 		item.setStatus(entity.getStatus());
 		item.getProductDetail().setListImei(null);
 		item.getProductDetail().setProduct(null);
-		item.getProductDetail().setListProductDetailValue(null);
+//		item.getProductDetail().setListProductDetailValue(null);
 		return item;
 	}
 }

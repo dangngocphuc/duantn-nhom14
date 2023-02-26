@@ -1,5 +1,4 @@
 <header class="header_area sticky-header">
-
     <div class="main_menu">
         <nav class="navbar navbar-expand-lg navbar-light main_box">
             <div class="container">
@@ -15,7 +14,6 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                     <ul class="nav navbar-nav navbar-right">
-
                         <li>
                             <form name="frmSearch" action="/Demo/search" method="post" class="form-inline my-2 my-lg-0">
                                 <ng-select [(ngModel)]="productParam.productName" [items]="lstProducts | async"
@@ -23,14 +21,13 @@
                                     [hideSelected]="true" [loading]="loadLstProducts"
                                     [typeahead]="textInput_tenProduct$">
                                     <ng-template ng-option-tmp let-item="item">
-                                        <a href="product-detail/{{item.productID}}" class="social-info">
+                                        <a href="product-detail/{{item?.id}}" class="social-info">
                                             <span class="ng-value-label">
-                                                <img [src]="'/assets/'+item.productImage" width="60px" height="60px">
-                                                {{item.productName}}
+                                                <img [src]="item.listImage[0].thumbImage" width="60px" height="60px">
+                                                {{item.tenSanPham}}
                                             </span>
                                         </a>
                                     </ng-template>
-
                                 </ng-select>
                             </form>
                         </li>
@@ -39,14 +36,16 @@
                         <li class="nav-item active"><a class="nav-link" href="/home" style="color:#fff">Trang chủ</a>
                         </li>
                         <li class="nav-item submenu dropdown">
-                            <a href="/products" class="nav-link dropdown-toggle" style="color:#fff">Sản phẩm</a>
+                            <a href="/products" class="nav-link dropdown-toggle" style="color:#fff">Thương Hiệu</a>
                             <ul class="dropdown-menu">
-                                <li *ngFor="let item of listOfCategory" class="nav-item"><a
-                                        href="/products/{{item.categoryID}}" class="nav-link">{{item.categoryName}}</a>
+                                <li *ngFor="let item of listOfBrand" class="nav-item">
+                                    <a href="#" class="nav-link">{{item?.tenHang}}</a>
+                                    <ul class="dropdown-menu">
+                                    </ul>
                                 </li>
-
                             </ul>
                         </li>
+
                         <li class="nav-item"><a class="nav-link" href="/contact" style="color:#fff">Liên hệ</a></li>
                         <li *ngIf="!userName" class="nav-item submenu dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"

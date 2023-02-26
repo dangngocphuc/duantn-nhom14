@@ -2,16 +2,16 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalManager } from 'ngb-modal';
 import { Action, Common } from 'src/app/commons/common';
-import { Brand, BrandRequest, PageBrand, PagesRequest } from 'src/app/models/type';
-import { BrandService } from 'src/app/services/brand.service';
-import Swal from 'sweetalert2';
+import { Cpu, PageCpu, PagesRequest, ProductDetail } from 'src/app/models/type';
+import { CpuService } from 'src/app/services/cpu.service';
+import { ProductDetailService } from 'src/app/services/productDetail.service';
 
 @Component({
-  selector: 'app-brand',
-  templateUrl: './brand.component.html',
-  styleUrls: ['./brand.component.scss']
+  selector: 'app-cpu',
+  templateUrl: './cpu.component.html',
+  styleUrls: ['./cpu.component.scss']
 })
-export class BrandComponent implements OnInit {
+export class CpuComponent implements OnInit {
 
   isVisible = false;
   closeResult = '';
@@ -21,66 +21,71 @@ export class BrandComponent implements OnInit {
   isView = false;
   Action = Action;
   pageSizes = [5, 10, 15, 20];
-
+  
+  // cpuRequest = new cpuRequest();
   pageRequest = new PagesRequest();
-  brandRequest = new BrandRequest();
-  pageBrand = new PageBrand();
-
-  brand = new Brand();
-
+  pageCpu = new PageCpu();
+  cpu = new Cpu();
+  lstProductDetail : ProductDetail[];
   common: Common = new Common();
   lstTrangThai = this.common.lstTrangThai;
-
+  
+  option = new Option();
   formGroup: FormGroup;
   controlArray: Map<string, any> = new Map<string, any>();
   isFormSubmit = false;
-
   @ViewChild('myModal') myModal;
   private modalRef;
 
-
-  constructor(private brandService: BrandService, private modalService: ModalManager, private fb: FormBuilder) { }
+  constructor(private cpuService: CpuService, private modalService: ModalManager, private fb: FormBuilder,
+    private productService : ProductDetailService) { }
 
   ngOnInit(): void {
-    this.getListBrand();
+    this.getcpu();
     this.formGroup = this.fb.group({
-      brand: this.fb.group({
-        maHang: [{ value: '' }, Validators.required],
-        tenHang: [{ value: '', }, Validators.required]
+      cpu: this.fb.group({
+        id: [{ value: '' }, Validators.required],
+        cpu: [{ value: '', }, Validators.required],
       }),
     });
   }
 
-  getListBrand() {
+
+  getcpu() {
     // get product
-    this.brandService.getPageBrand(this.pageRequest, this.brandRequest).subscribe(
+    // console.log(this.cpuRequest)
+    this.cpuService.getPageCpu(this.pageRequest).subscribe(
       (data) => {
         if (data) {
-          this.pageBrand = data;
-          this.pageBrand.number = ++this.pageBrand.number;
-          console.log(this.pageRequest);
+          this.pageCpu = data;
+          console.log(data);
+          this.pageCpu.number = ++this.pageCpu.number;
+          console.log(this.pageCpu);
         }
       }, (error) => {
-        console.log(error);
+         console.log(error);
       }
     );
   }
   handlePageSizeChange(event: any) {
     this.pageRequest.size = event.target.value;
-    this.getListBrand();
+    this.getcpu();
   }
   handlePageChange(event: any) {
     this.pageRequest.page = event - 1;
-    this.getListBrand();
+    this.getcpu();
   }
 
   search() {
-    this.getListBrand();
+    this.getcpu();
   }
 
   view(id) {
-    this.brandService.getBrandById(id).subscribe((respone) => {
-      this.brand = respone;
+    console.log(id);
+    this.cpuService.getCpuById(id).subscribe((respone) => {
+      this.cpu = respone;
+      // this.initForm(this.option);
+      console.log(this.cpu);
       this.openModal(Action.CAPNHAT);
     })
   }
@@ -95,6 +100,9 @@ export class BrandComponent implements OnInit {
   }
 
   openModal(action) {
+    // this.productService.getListProductDetail().subscribe((res)=>{
+    //   this.lstProductDetail = res;
+    // })
     this.action = action;
     this.modalRef = this.modalService.open(this.myModal, {
       size: "md",
@@ -112,22 +120,7 @@ export class BrandComponent implements OnInit {
   closeModal() {
     this.modalService.close(this.modalRef);
     this.isFormSubmit = false;
-    this.brand = new Brand();
+    this.cpu = new Cpu();
   }
 
-  save(){
-    console.log(this.brand);
-    console.log(this.formGroup);
-    this.isFormSubmit = true;
-    if (this.formGroup.status == "INVALID") {
-      return;
-    }
-    this.brandService.saveBrand(this.brand).subscribe((respone) => {
-      // this.option = respone;
-      this.closeModal();
-      this.getListBrand();
-    }, (error) => {
-        Swal.fire('',error,'error')
-    })
-  }
 }

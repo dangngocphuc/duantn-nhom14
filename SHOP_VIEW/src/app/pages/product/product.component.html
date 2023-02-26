@@ -16,7 +16,7 @@
                     <div class="head">Danh mục sản phẩm</div>
                     <ul>
                         <li *ngFor="let item of listOfCategory" class="filter-list"><input class="pixel-radio"
-                                type="radio" (click)="filterByBrand(item.categoryID)" id="apple" name="brand"><label
+                                type="radio" (click)="filterByBrand(item?.categoryID)" id="apple" name="brand"><label
                                 for="apple"><a>
                                     {{item.categoryName}}
                                 </a>
@@ -30,7 +30,7 @@
                     <div class="head">Thương hiệu</div>
                     <ul>
                         <li *ngFor="let item of listOfBrand" class="filter-list"><input class="pixel-radio"
-                                type="checkbox" (click)="filterByBrand(item.id,$event)" id="brand" name="brand"><label
+                                type="checkbox" (click)="filterByBrand(item?.id,$event)" id="brand" name="brand"><label
                                 for="apple"><a>
                                     {{item.tenHang}}
                                 </a></label></li>
@@ -41,8 +41,8 @@
                     <ul>
                         <li *ngFor="let e of item?.listOptionValue" class="filter-list">
                             <input class="pixel-radio" type="checkbox" id="optionValue" name="optionValue"
-                                (click)="filterByBrand(e.id,$event)">
-                            <label for="apple"><a>{{e.optionValue}}</a>
+                                (click)="filterByBrand(e?.id,$event)">
+                            <label for="apple"><a>{{e?.optionValue}}</a>
                             </label>
                         </li>
                     </ul>
@@ -62,10 +62,10 @@
                 </div>
                 <div class="col-md-4">
                     <b style="color: #fff;">Khoảng Giá
-                        (0 - 30,000,000):</b>
+                        (0 - 100,000,000):</b>
                 </div>
                 <div class="col-md-3">
-                    <nz-slider nzRange [(ngModel)]="price" [nzMin]="0" [nzMax]="30000000" [nzStep]="1000000"
+                    <nz-slider nzRange [(ngModel)]="price" [nzMin]="0" [nzMax]="100000000" [nzStep]="1000000"
                         (nzOnAfterChange)="priceChange($event)"></nz-slider>
                 </div>
             </div>
@@ -81,11 +81,11 @@
                                     [imageSize]="{width: '100%', height: 200}"></ng-image-slider>
                             </div>
                             <div class="product-details">
-                                <h5><a href="product-detail/{{item.id}}">{{item.productName}}</a></h5>
+                                <h5><a href="product-detail/{{item?.id}}">{{item?.productName}}</a></h5>
                                 <div class="price">
-                                    <h6>{{item.productPrice | number}} VNĐ &emsp;<small>{{item.productMarketprice |
+                                    <h6>{{item.productPrice | number}} VNĐ &emsp;<small>{{item?.productMarketprice |
                                             number}} VND</small></h6>
-                                    <span *ngIf="item.quantity == 0 " class="text-danger">Đã hết hàng</span>
+                                    <span *ngIf="item?.quantity == 0 " class="text-danger">Đã hết hàng</span>
                                 </div>
                                 <div class="prd-bottom">
                                     <a *ngIf="item.quantity > 0 " (click)="addToCart(item)" class="social-info">
@@ -96,7 +96,7 @@
                                         <span class="ti-bag"></span>
                                         <p class="hover-text">So sánh</p>
                                     </a>
-                                    <a href="product-detail/{{item.id}}" class="social-info">
+                                    <a href="product-detail/{{item?.id}}" class="social-info">
                                         <span class="lnr lnr-move"></span>
                                         <p class="hover-text">Xem thêm</p>
                                     </a>

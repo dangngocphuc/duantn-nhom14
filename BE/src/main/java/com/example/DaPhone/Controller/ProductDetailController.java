@@ -56,14 +56,6 @@ public class ProductDetailController {
 	public ResponseEntity<Response<ProductDetail>> getProduct(@PathVariable(name = "id") Long id) {
 		ProductDetail productDetail = productService.findById(id);
 		productDetail.getProduct().setListProductDetail(null);
-		productDetail.getProduct().setListProductOption(null);
-		if (!productDetail.getListProductDetailValue().isEmpty()) {
-			for (ProductDetailValue e : productDetail.getListProductDetailValue()) {
-				e.getOption().setListOptionValue(null);
-				e.getOptionValue().setOption(null);
-				e.setProductDetail(null);
-			}
-		}
 		return new ResponseEntity<Response<ProductDetail>>(new Response<ProductDetail>(productDetail), HttpStatus.OK);
 	}
 

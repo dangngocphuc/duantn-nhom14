@@ -14,16 +14,16 @@ import { ProductDetailService } from 'src/app/services/productDetail.service';
 })
 export class HomeComponent implements OnInit {
   listOfData: ProductDetail[] = [];
-  listOfDataSale: Product[] = [];
+  listOfDataSale: ProductDetail[] = [];
   pageSize = 8;
   pageIndex = 1;
-  product:Product = null;
+  productDetail: ProductDetail = null;
   controlArray: Map<string, any> = new Map<string, any>();
-  totalPrice:number = 0;
+  totalPrice: number = 0;
   cart: ProductDetail[] = [];
   compare: ProductDetail[] = [];
-  lenthCompare: number ;
-  totalProduct : number; 
+  lenthCompare: number;
+  totalProduct: number;
   pageProductDetail = new PageProductDetail();
 
   constructor(
@@ -32,26 +32,25 @@ export class HomeComponent implements OnInit {
     private productService: ProductService,
     private notification: NzNotificationService,
     private productDetailService: ProductDetailService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-     // declare cart
+    // declare cart
     //  debugger; 
-     const cart = localStorage.getItem('cart') || '';
-     if (cart) {
-       this.cart = JSON.parse(cart);
-       this.totalProduct = this.cart.length;
-     }
-     
-     const compare = localStorage.getItem('compare') || '';
-     if (compare) {
-       this.compare = JSON.parse(compare);
-       this.lenthCompare =  this.compare.length;
-       console.log(this.lenthCompare);
-     }
+    const cart = localStorage.getItem('cart') || '';
+    if (cart) {
+      this.cart = JSON.parse(cart);
+      this.totalProduct = this.cart.length;
+    }
 
-    this.getProducts(this.pageIndex,this.pageSize,'productID','descend')
-    // this.getProductSales(this.pageIndex,this.pageSize, 'productQuantily', 'ascend');
+    const compare = localStorage.getItem('compare') || '';
+    if (compare) {
+      this.compare = JSON.parse(compare);
+      this.lenthCompare = this.compare.length;
+      console.log(this.lenthCompare);
+    }
+    this.getProducts(this.pageIndex, this.pageSize, 'productID', 'descend')
+    this.getProductSales(this.pageIndex,this.pageSize, 'productID', 'ascend');
   }
   createNotification(type: string, title: string, message: string): void {
     this.notification.create(type, title, message);
@@ -71,7 +70,8 @@ export class HomeComponent implements OnInit {
       (data) => {
         if (data && data) {
           this.pageProductDetail = data;
-          // this.product = this.listOfData[0];
+          this.productDetail = this.pageProductDetail.content[0];
+          // console.log(this.p);
         }
       },
       (error) => {
@@ -85,43 +85,43 @@ export class HomeComponent implements OnInit {
   }
 
 
-  // getProductSales(
-  //   pageIndex: number,
-  //   pageSize: number,
-  //   sortField: string | null,
-  //   sortOrder: string | null
-  // ) {
-  //   this.controlArray.set('pageIndex', pageIndex);
-  //   this.controlArray.set('pageSize', pageSize);
-  //   this.controlArray.set('sortField', sortField);
-  //   this.controlArray.set('sortOrder', sortOrder);
-  //   // get product
-  //   this.productService.getProducts(this.controlArray).subscribe(
-  //     (data) => {
-  //       if (data && data.results) {
-  //         this.listOfDataSale = data.results;
-  //       }
-  //     },
-  //     (error) => {
-  //       this.createNotification(
-  //         'error',
-  //         'Có lỗi xảy ra!',
-  //         'Vui lòng liên hệ quản trị viên.'
-  //       );
-  //     }
-  //   );
-  // }
+  getProductSales(
+    pageIndex: number,
+    pageSize: number,
+    sortField: string | null,
+    sortOrder: string | null
+  ) {
+    this.controlArray.set('pageIndex', pageIndex);
+    this.controlArray.set('pageSize', pageSize);
+    // this.controlArray.set('sortField', sortField);
+    // this.controlArray.set('sortOrder', sortOrder);
+    // get product
+    this.productDetailService.getPageProductDetail(this.controlArray).subscribe(
+      (data) => {
+        if (data && data) {
+          this.listOfDataSale = data.content;
+        }
+      },
+      (error) => {
+        this.createNotification(
+          'error',
+          'Có lỗi xảy ra!',
+          'Vui lòng liên hệ quản trị viên.'
+        );
+      }
+    );
+  }
 
-  addToCart(product:ProductDetail){
+  addToCart(product: ProductDetail) {
     debugger
     let duplicate = false;
     this.cart.forEach((ele) => {
-      if (ele.id == product.id ) {
+      if (ele.id == product.id) {
         duplicate = true;
       }
     });
     // if no => add item
-    if(!duplicate){
+    if (!duplicate) {
       debugger;
       product.quanlityBuy = 1;
       this.cart.push(product);
@@ -133,7 +133,7 @@ export class HomeComponent implements OnInit {
       );
       window.location.reload();
       // window.location.href = '/mycart'
-    }else{
+    } else {
       this.createNotification(
         'info',
         'Sản phẩm đã có trong giỏ hàng',
@@ -143,26 +143,27 @@ export class HomeComponent implements OnInit {
   }
 
 
-  addToCompare(product:ProductDetail){
+  addToCompare(product: ProductDetail) {
+    debugger;
     this.lenthCompare = this.compare.length;
     let duplicate = false;
     this.compare.forEach((ele) => {
-      if (ele.id == product.id ) {
+      if (ele.id == product.id) {
         duplicate = true;
       }
     });
     // if no => add item
-    if(!duplicate){
-      if(this.lenthCompare > 1){
+    if (!duplicate) {
+      if (this.lenthCompare > 1) {
         this.createNotification(
           'info',
           'vui lòng xóa bớt sản phẩm để so sánh',
           ''
         );
         return;
-      }else{
-
-        this.productDetailService.getProductDetailById(product.id).subscribe((data)=>{
+      } else {
+        this.productDetailService.getProductDetailById(product.id).subscribe((data) => {
+          debugger;
           this.compare.push(data.result);
           this.updateCompare();
           this.createNotification(
@@ -173,7 +174,7 @@ export class HomeComponent implements OnInit {
           window.location.reload();
         })
       }
-    }else{
+    } else {
       this.createNotification(
         'info',
         'Sản phẩm đã có trong so sánh',

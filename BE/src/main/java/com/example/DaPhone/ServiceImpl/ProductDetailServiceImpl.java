@@ -46,10 +46,10 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 				Join<ProductDetail, Product> joinProduct = root.join("product", JoinType.LEFT);
 				Join<ProductDetail, Imei> joinImei = root.join("listImei", JoinType.LEFT);
 				Join<Product, Brand> joinBrand = joinProduct.join("brand", JoinType.LEFT);
-				Join<ProductDetail, ProductDetailValue> joinProductDetailValue = root.join("listProductDetailValue",
-						JoinType.LEFT);
-				Join<ProductDetailValue, OptionValue> joinOptionValue = joinProductDetailValue.join("optionValue",
-						JoinType.LEFT);
+//				Join<ProductDetail, ProductDetailValue> joinProductDetailValue = root.join("listProductDetailValue",
+//						JoinType.LEFT);
+//				Join<ProductDetailValue, OptionValue> joinOptionValue = joinProductDetailValue.join("optionValue",
+//						JoinType.LEFT);
 				List<Predicate> predicates = new ArrayList<>();
 				if (productParam.getBrandID() != null) {
 					String brandId = productParam.getBrandID();
@@ -62,16 +62,26 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 						predicates.add(cb.and(cb.equal(joinBrand.get("id"), brandId)));
 					}
 				}
-				if (productParam.getOptionValueID() != null) {
-					String optonValueId = productParam.getOptionValueID();
-					if (optonValueId.contains(",")) {
-						String[] optonValueIds = optonValueId.split(",");
-						Expression<String> parentExpressionTT = joinOptionValue.get("id");
-						Predicate parentPredicateTT = parentExpressionTT.in(optonValueIds);
-						predicates.add(cb.and(parentPredicateTT));
-					} else {
-						predicates.add(cb.and(cb.equal(joinOptionValue.get("id"), optonValueId)));
-					}
+//				if (productParam.getOptionValueID() != null) {
+//					String optonValueId = productParam.getOptionValueID();
+//					if (optonValueId.contains(",")) {
+//						String[] optonValueIds = optonValueId.split(",");
+//						Expression<String> parentExpressionTT = joinOptionValue.get("id");
+//						Predicate parentPredicateTT = parentExpressionTT.in(optonValueIds);
+//						predicates.add(cb.and(parentPredicateTT));
+//					} else {
+//						predicates.add(cb.and(cb.equal(joinOptionValue.get("id"), optonValueId)));
+//					}
+//				}
+				if (productParam.getPriceFrom() > 0) {
+					predicates.add(
+							cb.and(cb.greaterThanOrEqualTo(root.get("productPrice"), productParam.getPriceFrom())));
+				}
+				if (productParam.getPriceTo() > 0) {
+					predicates.add(cb.and(cb.lessThanOrEqualTo(root.get("productPrice"), productParam.getPriceTo())));
+				}
+				if (productParam.isInventory()) {
+					predicates.add(cb.and(cb.greaterThan(root.get("productQuantily"), 0)));
 				}
 				predicates.add(cb.and(cb.equal(joinImei.get("status"), 1)));
 				return cb.and(predicates.toArray(new Predicate[predicates.size()]));
@@ -84,9 +94,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 					i.setBillDetail(null);
 				}
 			}
-			pro.setListProductDetailValue(null);
+//			pro.setListProductDetailValue(null);
 			pro.getProduct().setListProductDetail(null);
-			pro.getProduct().setListProductOption(null);
+//			pro.getProduct().setListProductOption(null);
 		}
 		return listPage;
 	}
@@ -106,27 +116,34 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 			entity.getProduct().setListProductDetail(null);
 		}
 		item.setProduct(entity.getProduct());
-		if (entity.getListProductDetailValue() != null) {
-			for (ProductDetailValue e : entity.getListProductDetailValue()) {
-				e.setProductDetail(null);
-				if (e.getOptionValue() != null) {
-//					e.getOptionValue().setListProductDetailValue(null);
-				}
-				if (e.getOption() != null) {
-//					e.getOption().setListProductDetailValue(null);
-				}
-			}
-			item.setListProductDetailValue(entity.getListProductDetailValue());
-		}
+//		if (entity.getListProductDetailValue() != null) {
+//			for (ProductDetailValue e : entity.getListProductDetailValue()) {
+//				e.setProductDetail(null);
+//				if (e.getOptionValue() != null) {
+////					e.getOptionValue().setListProductDetailValue(null);
+//				}
+//				if (e.getOption() != null) {
+////					e.getOption().setListProductDetailValue(null);
+//				}
+//			}
+//			item.setListProductDetailValue(entity.getListProductDetailValue());
+//		}
 		return item;
 	}
 
 	@Override
 	public boolean saveOrUpdate(ProductDetail productDetail) {
-		for (ProductDetailValue productDetailValue : productDetail.getListProductDetailValue()) {
-			productDetailValue.setProductDetail(productDetail);
+		if(productDetail.getId() != null) {
+			ProductDetail pro = productRepo.findById(productDetail.getId()).get();
+//			pro.getListProductDetailValue().clear();
+//			pro.getListProductDetailValue().addAll(productDetail.getListProductDetailValue());
+		    pro = productRepo.save(productDetail);
+		}else {
+//			for (ProductDetailValue productDetailValue : productDetail.getListProductDetailValue()) {
+//				productDetailValue.setProductDetail(productDetail);
+//			}
+			ProductDetail pro = productRepo.save(productDetail);
 		}
-		ProductDetail pro = productRepo.save(productDetail);
 		return true;
 	}
 
@@ -146,9 +163,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 			if (!pro.getListImei().isEmpty()) {
 				pro.setQuantity(pro.getListImei().stream().filter(e -> e.getStatus() == 1).count());
 			}
-			pro.setListProductDetailValue(null);
+//			pro.setListProductDetailValue(null);
 			pro.getProduct().setListProductDetail(null);
-			pro.getProduct().setListProductOption(null);
+//			pro.getProduct().setListProductOption(null);
 		}
 		return listPage;
 	}

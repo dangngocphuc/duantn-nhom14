@@ -12,7 +12,7 @@ export class ProductService {
   // Url=environment.urlServer
   constructor(private http: HttpBaseService) {}
   getProducts(params): Observable<PageProduct> {
-    return this.http.get<PageProduct>(`/product`, params);
+    return this.http.getByParams<PageProduct>(`/product`, params);
   }
   getProductById(id): Observable<any> {
     return this.http.get<any>(`/product/` + id, null);

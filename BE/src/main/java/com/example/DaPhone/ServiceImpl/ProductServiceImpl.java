@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -31,7 +32,6 @@ import com.example.DaPhone.Entity.Brand;
 import com.example.DaPhone.Entity.Category;
 import com.example.DaPhone.Entity.Image;
 import com.example.DaPhone.Entity.Product;
-import com.example.DaPhone.Entity.ProductOption;
 import com.example.DaPhone.Repository.BrandRepo;
 import com.example.DaPhone.Repository.CategoryRepo;
 import com.example.DaPhone.Repository.ProductRepo;
@@ -51,8 +51,8 @@ public class ProductServiceImpl implements ProductService{
 	private CategoryRepo categoryRepo;
 	
 	@Override
-	public Page<Product> findProduct(ProductRequest productParam, Pageable pageable) {
-
+	public Page<Product> findProduct(ProductRequest productParam, Pageable pageable) {	
+		Pageable page = PageRequest.of(productParam.getPageIndex(), productParam.getPageSize());
 		Page<Product> listPage = productRepo.findAll(new Specification<Product>() {
 			@Override
 			public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -87,10 +87,10 @@ public class ProductServiceImpl implements ProductService{
 				}
 				return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
-		}, pageable);
+		}, page);
 		for (Product pro : listPage) {
 		    pro.setListProductDetail(null);
-			pro.setListProductOption(null);
+//			pro.setListProductOption(null);
 		}
 		
 		return listPage;
@@ -100,14 +100,15 @@ public class ProductServiceImpl implements ProductService{
 		if (product.getId() != null) {
 			Product products = productRepo.findById(product.getId()).orElse(null);
 			products.setTenSanPham(product.getTenSanPham());
-			products.getListProductOption().clear();
-			products.getListProductOption().addAll(product.getListProductOption());
-			products.getListProductOption().clear();
+//			products.getListProductOption().clear();
+//			products.getListProductOption().addAll(product.getListProductOption());
+			products.getListImage().clear();
 			products.getListImage().addAll(product.getListImage());
 			products.setBrand(product.getBrand());
-			for(ProductOption po : product.getListProductOption()) {
-				po.setProduct(products);
-			}
+			products.setStatus(product.getStatus());
+//			for(ProductOption po : product.getListProductOption()) {
+//				po.setProduct(products);
+//			}
 			for(Image po : product.getListImage()) {
 				po.setProduct(products);
 				po.setImage(po.getThumbImage());
@@ -115,9 +116,10 @@ public class ProductServiceImpl implements ProductService{
 			Product pro = productRepo.save(products);			
 			return true;
 		} else { // new
-			for(ProductOption po : product.getListProductOption()) {
-				po.setProduct(product);
-			}
+//			for(ProductOption po : product.getListProductOption()) {
+//				po.setProduct(product);
+//			}
+			product.setCreateDate(new Date());
 			Product pro = productRepo.save(product);
 			return true;
 		}
@@ -247,7 +249,7 @@ public class ProductServiceImpl implements ProductService{
 		}, pageable);
 		for (Product pro : page) {
 		    pro.setListProductDetail(null);
-			pro.setListProductOption(null);
+//			pro.setListProductOption(null);
 		}
 		return page.getContent();
 	}

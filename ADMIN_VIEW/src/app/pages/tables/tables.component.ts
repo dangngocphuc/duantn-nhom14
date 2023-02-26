@@ -39,10 +39,9 @@ export class TablesComponent implements OnInit {
   formGroup: FormGroup;
   @ViewChild('myModal') myModal;
 
-  slidesStore = [
-    { id: 1, src: "https://media-api-beta.thinkpro.vn/media/core/products/2022/9/30/dell-xps-13-plus-9320-thinkpro-01.jpg?w=500&h=500", alt: "anh1", title: "123" },
-    { id: 2, src: "https://media-api-beta.thinkpro.vn/media/core/products/2023/1/9/lenovo-thinkpad-x1-nano-gen-2-thinkpro-06.png?w=500&h=500", alt: "anh2", title: "321" },
-  ]
+  pageSizes = [5, 10, 15, 20];
+
+  pageRequest = new PagesRequest();
 
   private modalRef;
   constructor(private productService: ProductService, private optionService: OptionService, private brandService: BrandService, private fb: FormBuilder,
@@ -55,16 +54,16 @@ export class TablesComponent implements OnInit {
   textInput_tenOption$ = new Subject<string>();
   myForm: any;
   ngOnInit() {
-    this.getProducts(1, 5);
+    this.getProducts(this.pageRequest.page, this.pageRequest.size);
     this.getListBrand();
 
     this.formGroup = this.fb.group({
       product: this.fb.group({
-        code: [{ value: '', }, Validators.required],
-        name: [{ value: '', }, Validators.required],
-        brand: [{ value: '', }, Validators.required],
-        status: [{ value: '', }, Validators.required],
-        option: [{ value: '', }, Validators.required],
+        code: [{ value: this.product.maSanPham, }, Validators.required],
+        name: [{ value: this.product.tenSanPham, }, Validators.required],
+        brand: [{ value: this.product.brand, }, Validators.required],
+        status: [{ value: this.product.status, }, Validators.required],
+        // option: [{ value: '', }, Validators.required],
       }),
       listImage: this.fb.array([], Validators.required),
     });
@@ -86,10 +85,12 @@ export class TablesComponent implements OnInit {
     this.controlArray.set('pageIndex', pageIndex);
     this.controlArray.set('pageSize', pageSize);
     // get product
+    console.log(this.controlArray);
     this.productService.getProducts(this.controlArray).subscribe(
       (data) => {
         if (data) {
           this.pageProduct = data;
+          this.pageProduct.number = ++this.pageProduct.number;
           console.log(this.pageProduct);
         }
       },
@@ -118,17 +119,17 @@ export class TablesComponent implements OnInit {
       debugger;
       this.product = respone;
       // this.initForm(this.option);
-      let listProductTemp = [];
-      this.product.listProductOption.forEach((e) => {
-        listProductTemp.push(e.option);
-      })
+      // let listProductTemp = [];
+      // this.product.listProductOption.forEach((e) => {
+      //   listProductTemp.push(e.option);
+      // })
       if(this.product.listImage.length>0){
         this.product.listImage.forEach((e)=>{
           this.addRow(e);
           this.imageObject.push(e);
         })
       }
-      this.listOption = listProductTemp;
+      // this.listOption = listProductTemp;
       console.log(this.listOption);
       console.log(this.product)
       this.openModal(Action.CAPNHAT);
@@ -170,35 +171,21 @@ export class TablesComponent implements OnInit {
     let listProductOptionTemp = [];
     console.log(this.listOption);
     debugger;
-    this.listOption.forEach((e) => {
-      // debugger;
-      // let op = new Option();
-      // op.id = Number(e);
-      let productOption = new ProductOption();
-      productOption.option = e;
-      listProductOptionTemp.push(productOption);
-    })
-    this.product.listProductOption = listProductOptionTemp;
+    // this.listOption.forEach((e) => {
+    //   // debugger;
+    //   // let op = new Option();
+    //   // op.id = Number(e);
+    //   let productOption = new ProductOption();
+    //   productOption.option = e;
+    //   listProductOptionTemp.push(productOption);
+    // })
+    // this.product.listProductOption = listProductOptionTemp;
     console.log(this.product);
     this.productService.saveProduct(this.product).subscribe((res) => {
       console.log(res);
       this.closeModal();
-      this.getProducts(1, 5);
+      this.getProducts(this.pageRequest.page, this.pageRequest.size);
     })
-  }
-
-  onFileChange(event: any) {
-    const reader = new FileReader();
-    if (event.target.files && event.target.files.length) {
-      const [file] = event.target.files;
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        this.imageSrc = reader.result as string;
-        this.myForm.patchValue({
-          fileSource: reader.result
-        });
-      };
-    }
   }
 
   get f() {
@@ -228,5 +215,15 @@ export class TablesComponent implements OnInit {
       this.imageObject.push(e);
     })
     console.log(this.imageObject);
+  }
+
+  handlePageSizeChange(event: any) {
+    this.pageRequest.size = event.target.value;
+    this.getProducts(this.pageRequest.page, this.pageRequest.size);
+  }
+
+  handlePageChange(event: any) {
+    this.pageRequest.page = event - 1;
+    this.getProducts(this.pageRequest.page, this.pageRequest.size);
   }
 }

@@ -8,7 +8,8 @@ import { CategoryService } from 'src/app/services/category.service';
 import { ProductService } from 'src/app/services/product.service';
 import { SocialAuthService, GoogleLoginProvider, SocialUser } from 'angularx-social-login';
 import { CookieService } from 'ngx-cookie-service';
-import { User } from 'src/app/models/type';
+import { Brand, User } from 'src/app/models/type';
+import { BrandService } from 'src/app/services/brand.service';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -18,6 +19,8 @@ export class HeaderComponent implements OnInit {
   listOfCategory: Category[] = [];
   userName: string;
   productName: string;
+
+  listOfBrand: Brand[] = [];
 
   loadLstProducts = false;
   textInput_tenProduct$ = new Subject<string>();
@@ -35,6 +38,7 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private categoryService: CategoryService,
+    private brandService: BrandService,
     private notification: NzNotificationService,
     private modal: NzModalService,
     private productService: ProductService,
@@ -45,6 +49,7 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     // this.getCategories();
     this.getProducts();
+    this.getBrand();
     // debugger;
     const user = localStorage.getItem('currentUser') || '';
     if(user){
@@ -78,6 +83,14 @@ export class HeaderComponent implements OnInit {
       }
     );
   }
+
+  getBrand(){
+    this.brandService.getListBrand().subscribe((res)=>{
+      this.listOfBrand = res;
+      console.log(this.listOfBrand);
+    })
+  }
+
   logout() {
     this.modal.confirm({
       nzTitle: 'Bạn có muốn đăng xuất!',

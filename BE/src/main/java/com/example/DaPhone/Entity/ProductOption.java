@@ -32,9 +32,9 @@ public class ProductOption implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqProductOption")
 	private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "product_id")
-	private Product product;
+//	@ManyToOne
+//	@JoinColumn(name = "product_id")
+//	private Product product;
 
 	@ManyToOne
 	@JoinColumn(name = "option_id")
