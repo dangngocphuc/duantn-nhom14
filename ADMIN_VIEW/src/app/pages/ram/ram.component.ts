@@ -2,16 +2,16 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalManager } from 'ngb-modal';
 import { Action, Common } from 'src/app/commons/common';
-import { Cpu, PageCpu, PagesRequest, ProductDetail } from 'src/app/models/type';
-import { CpuService } from 'src/app/services/cpu.service';
-import { ProductDetailService } from 'src/app/services/productDetail.service';
+import { Ram, PageRam, PagesRequest } from 'src/app/models/type';
+import { RamService } from 'src/app/services/Ram.service';
+
 
 @Component({
-  selector: 'app-cpu',
-  templateUrl: './cpu.component.html',
-  styleUrls: ['./cpu.component.scss']
+  selector: 'app-ram',
+  templateUrl: './ram.component.html',
+  styleUrls: ['./ram.component.scss']
 })
-export class CpuComponent implements OnInit {
+export class RamComponent implements OnInit {
 
   isVisible = false;
   closeResult = '';
@@ -22,11 +22,11 @@ export class CpuComponent implements OnInit {
   Action = Action;
   pageSizes = [5, 10, 15, 20];
   
-  // cpuRequest = new cpuRequest();
+  // RamRequest = new RamRequest();
   pageRequest = new PagesRequest();
-  pageCpu = new PageCpu();
-  cpu = new Cpu();
-  lstProductDetail : ProductDetail[];
+  pageRam = new PageRam();
+  ram = new Ram();
+  // lstProductDetail : ProductDetail[];
   common: Common = new Common();
   lstTrangThai = this.common.lstTrangThai;
   
@@ -37,56 +37,54 @@ export class CpuComponent implements OnInit {
   @ViewChild('myModal') myModal;
   private modalRef;
 
-  constructor(private cpuService: CpuService, private modalService: ModalManager, private fb: FormBuilder,
-    private productService : ProductDetailService) { }
+  constructor(private ramService: RamService, private modalService: ModalManager, private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    this.getcpu();
+    this.getRam();
     this.formGroup = this.fb.group({
-      cpu: this.fb.group({
+      Ram: this.fb.group({
         id: [{ value: '' }, Validators.required],
-        cpu: [{ value: '', }, Validators.required],
+        ram: [{ value: '', }, Validators.required],
       }),
     });
   }
 
 
-  getcpu() {
+  getRam() {
     // get product
-    // console.log(this.cpuRequest)
-    this.cpuService.getPageCpu(this.pageRequest).subscribe(
+    // console.log(this.RamRequest)
+    this.ramService.getPageRam(this.pageRequest).subscribe(
       (data) => {
         if (data) {
-          this.pageCpu = data;
+          this.pageRam = data;
           console.log(data);
-          this.pageCpu.number = ++this.pageCpu.number;
-          console.log(this.pageCpu);
+          this.pageRam.number = ++this.pageRam.number;
+          console.log(this.pageRam);
         }
       }, (error) => {
          console.log(error);
       }
     );
   }
-  
   handlePageSizeChange(event: any) {
     this.pageRequest.size = event.target.value;
-    this.getcpu();
+    this.getRam();
   }
   handlePageChange(event: any) {
     this.pageRequest.page = event - 1;
-    this.getcpu();
+    this.getRam();
   }
 
   search() {
-    this.getcpu();
+    this.getRam();
   }
 
   view(id) {
     console.log(id);
-    this.cpuService.getCpuById(id).subscribe((respone) => {
-      this.cpu = respone;
+    this.ramService.getRamById(id).subscribe((respone) => {
+      this.ram = respone;
       // this.initForm(this.option);
-      console.log(this.cpu);
+      console.log(this.ram);
       this.openModal(Action.CAPNHAT);
     })
   }
@@ -121,7 +119,7 @@ export class CpuComponent implements OnInit {
   closeModal() {
     this.modalService.close(this.modalRef);
     this.isFormSubmit = false;
-    this.cpu = new Cpu();
+    this.ram = new Ram();
   }
 
 }

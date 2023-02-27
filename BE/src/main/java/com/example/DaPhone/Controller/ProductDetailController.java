@@ -32,8 +32,8 @@ public class ProductDetailController {
 
 	@GetMapping(value = "/search")
 	public ResponseEntity<Page<ProductDetail>> getProductSeach(ProductDetailRequest request) {
-		int page = 0;
-		int size = 5;
+//		int page = 0;
+//		int size = 5;
 		Sort sortable = null;
 		if (request.getSortField() != null && !request.getSortField().equalsIgnoreCase("null")) {
 			if (request.getSortOrder().equals("ascend")) {
@@ -45,7 +45,7 @@ public class ProductDetailController {
 		} else {
 			sortable = Sort.by("id").descending();
 		}
-		Pageable pageable = PageRequest.of(page, size, sortable);
+		Pageable pageable = PageRequest.of(request.getPageIndex(), request.getPageSize(), sortable);
 
 		Page<ProductDetail> pageBrandPage = productService.findProduct(request, pageable);
 //		List<Product> lists = pageBrandPage.toList();

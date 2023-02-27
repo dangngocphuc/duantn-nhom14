@@ -26,6 +26,9 @@ import { ImeiComponent } from './pages/imei/imei.component';
 import { BrandComponent } from './pages/brand/brand.component';
 import { ReviewComponent } from './pages/review/review.component';
 import { CpuComponent } from './pages/cpu/cpu.component';
+import { RamComponent } from './pages/ram/ram.component';
+import { RomComponent } from './pages/rom/rom.component';
+import { GpuComponent } from './pages/gpu/gpu.component';
 
 
 const routes: Routes = [
@@ -47,6 +50,9 @@ const routes: Routes = [
       { path: 'imei', component: ImeiComponent },
       { path: 'review', component: ReviewComponent },
       { path: 'cpu', component: CpuComponent },
+      { path: 'ram', component: RamComponent },
+      { path: 'rom', component: RomComponent },
+      { path: 'gpu', component: GpuComponent },
       // {
       //   path: '',
       //   loadChildren: () => import('src/app/layouts/admin-layout/admin-layout.module').then(m => m.AdminLayoutModule)

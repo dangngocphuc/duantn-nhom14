@@ -78,7 +78,6 @@ export class ProductComponent implements OnInit {
   }
 
 
-
   getProducts(
     pageIndex: number,
     pageSize: number,

@@ -1,6 +1,7 @@
 package com.example.DaPhone.ServiceImpl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -19,11 +20,13 @@ import org.springframework.stereotype.Service;
 
 import com.example.DaPhone.Common.CommonUtils;
 import com.example.DaPhone.Entity.Brand;
+import com.example.DaPhone.Entity.Cpu;
+import com.example.DaPhone.Entity.Gpu;
 import com.example.DaPhone.Entity.Imei;
-import com.example.DaPhone.Entity.OptionValue;
 import com.example.DaPhone.Entity.Product;
 import com.example.DaPhone.Entity.ProductDetail;
-import com.example.DaPhone.Entity.ProductDetailValue;
+import com.example.DaPhone.Entity.Ram;
+import com.example.DaPhone.Entity.Rom;
 import com.example.DaPhone.Repository.ProductDetailRepo;
 import com.example.DaPhone.Request.ProductDetailRequest;
 import com.example.DaPhone.Service.ProductDetailService;
@@ -46,13 +49,30 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 				Join<ProductDetail, Product> joinProduct = root.join("product", JoinType.LEFT);
 				Join<ProductDetail, Imei> joinImei = root.join("listImei", JoinType.LEFT);
 				Join<Product, Brand> joinBrand = joinProduct.join("brand", JoinType.LEFT);
+				
+				Join<ProductDetail, Cpu> joinCpu = root.join("cpu", JoinType.LEFT);
+				Join<ProductDetail, Gpu> joinGpu = root.join("gpu", JoinType.LEFT);
+				Join<ProductDetail, Ram> joinRam = root.join("ram", JoinType.LEFT);
+				Join<ProductDetail, Rom> joinRom = root.join("rom", JoinType.LEFT);
+				
 //				Join<ProductDetail, ProductDetailValue> joinProductDetailValue = root.join("listProductDetailValue",
 //						JoinType.LEFT);
 //				Join<ProductDetailValue, OptionValue> joinOptionValue = joinProductDetailValue.join("optionValue",
 //						JoinType.LEFT);
 				List<Predicate> predicates = new ArrayList<>();
-				if (productParam.getBrandID() != null) {
-					String brandId = productParam.getBrandID();
+				if (productParam.getProductId() != null) {
+					String productId = productParam.getProductId();
+					if (productId.contains(",")) {
+						String[] productIds = productId.split(",");
+						Expression<String> parentExpressionTT = joinProduct.get("id");
+						Predicate parentPredicateTT = parentExpressionTT.in(productIds);
+						predicates.add(cb.and(parentPredicateTT));
+					} else {
+						predicates.add(cb.and(cb.equal(joinProduct.get("id"), productId)));
+					}
+				}
+				if (productParam.getBrandId() != null) {
+					String brandId = productParam.getBrandId();
 					if (brandId.contains(",")) {
 						String[] brandIds = brandId.split(",");
 						Expression<String> parentExpressionTT = joinBrand.get("id");
@@ -60,6 +80,53 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 						predicates.add(cb.and(parentPredicateTT));
 					} else {
 						predicates.add(cb.and(cb.equal(joinBrand.get("id"), brandId)));
+					}
+				}
+				
+				if (productParam.getLstCpu() != null) {
+					String cpuId = productParam.getLstCpu();
+					if (cpuId.contains(",")) {
+						String[] cpuIds = cpuId.split(",");
+						Expression<String> parentExpressionTT = joinCpu.get("id");
+						Predicate parentPredicateTT = parentExpressionTT.in(cpuIds);
+						predicates.add(cb.and(parentPredicateTT));
+					} else {
+						predicates.add(cb.and(cb.equal(joinCpu.get("id"), cpuId)));
+					}
+				}
+				
+				if (productParam.getLstGpu() != null) {
+					String gpuId = productParam.getLstGpu();
+					if (gpuId.contains(",")) {
+						String[] gpuIds = gpuId.split(",");
+						Expression<String> parentExpressionTT = joinGpu.get("id");
+						Predicate parentPredicateTT = parentExpressionTT.in(gpuIds);
+						predicates.add(cb.and(parentPredicateTT));
+					} else {
+						predicates.add(cb.and(cb.equal(joinGpu.get("id"), gpuId)));
+					}
+				}
+				
+				if (productParam.getLstRam() != null) {
+					String ramId = productParam.getLstRam();
+					if (ramId.contains(",")) {
+						String[] ramIds = ramId.split(",");
+						Expression<String> parentExpressionTT = joinRam.get("id");
+						Predicate parentPredicateTT = parentExpressionTT.in(ramIds);
+						predicates.add(cb.and(parentPredicateTT));
+					} else {
+						predicates.add(cb.and(cb.equal(joinRam.get("id"), ramId)));
+					}
+				}
+				if (productParam.getLstRom() != null) {
+					String romId = productParam.getLstRom();
+					if (romId.contains(",")) {
+						String[] romIdIds = romId.split(",");
+						Expression<String> parentExpressionTT = joinRom.get("id");
+						Predicate parentPredicateTT = parentExpressionTT.in(romIdIds);
+						predicates.add(cb.and(parentPredicateTT));
+					} else {
+						predicates.add(cb.and(cb.equal(joinRom.get("id"), romId)));
 					}
 				}
 //				if (productParam.getOptionValueID() != null) {
@@ -73,6 +140,16 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 //						predicates.add(cb.and(cb.equal(joinOptionValue.get("id"), optonValueId)));
 //					}
 //				}
+				if (productParam.getProductCode() != null && !productParam.getProductCode().equals("")) {
+					predicates.add(cb.and(cb.like(cb.upper(root.<String>get("productCode")),
+							"%" + productParam.getProductCode().trim().toUpperCase() + "%")));
+				}
+
+				if (productParam.getProductName() != null && !productParam.getProductName().equals("")) {
+					predicates.add(cb.and(cb.like(cb.upper(root.<String>get("productName")),
+							"%" + productParam.getProductName().trim().toUpperCase() + "%")));
+				}
+
 				if (productParam.getPriceFrom() > 0) {
 					predicates.add(
 							cb.and(cb.greaterThanOrEqualTo(root.get("productPrice"), productParam.getPriceFrom())));
@@ -133,15 +210,16 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
 	@Override
 	public boolean saveOrUpdate(ProductDetail productDetail) {
-		if(productDetail.getId() != null) {
+		if (productDetail.getId() != null) {
 			ProductDetail pro = productRepo.findById(productDetail.getId()).get();
-//			pro.getListProductDetailValue().clear();
-//			pro.getListProductDetailValue().addAll(productDetail.getListProductDetailValue());
-		    pro = productRepo.save(productDetail);
-		}else {
-//			for (ProductDetailValue productDetailValue : productDetail.getListProductDetailValue()) {
-//				productDetailValue.setProductDetail(productDetail);
-//			}
+//			pro.setProductCode(CommonUtils.generateProductCode());
+			pro.setUpdateDate(new Date());
+			pro.getListImei().clear();
+			pro.getListImei().addAll(productDetail.getListImei());
+			pro = productRepo.save(pro);
+		} else {
+			productDetail.setCreateDate(new Date());
+			productDetail.setProductCode(CommonUtils.generateProductCode());
 			ProductDetail pro = productRepo.save(productDetail);
 		}
 		return true;

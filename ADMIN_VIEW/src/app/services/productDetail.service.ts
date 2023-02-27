@@ -12,7 +12,7 @@ export class ProductDetailService {
   constructor(private http: HttpBaseService) {}
 
   getPageProductDetail(params): Observable<PageProductDetail> {
-    return this.http.get<PageProductDetail>(`/product/detail/search`, params);
+    return this.http.getByParams<PageProductDetail>(`/product/detail/search`, params);
   }
 
   getProductDetailById(id): Observable<any> {

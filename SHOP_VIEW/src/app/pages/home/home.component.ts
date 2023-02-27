@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit {
   listOfData: ProductDetail[] = [];
   listOfDataSale: ProductDetail[] = [];
   pageSize = 8;
-  pageIndex = 1;
+  pageIndex = 0;
   productDetail: ProductDetail = null;
   controlArray: Map<string, any> = new Map<string, any>();
   totalPrice: number = 0;

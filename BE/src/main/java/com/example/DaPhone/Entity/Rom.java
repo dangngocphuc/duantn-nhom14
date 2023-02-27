@@ -14,18 +14,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "cpu")
+@Table(name = "rom")
 @Getter
 @Setter
 
-public class Cpu implements Serializable {
+public class Rom implements Serializable {
 
 	@Id
-	@SequenceGenerator(name = "seqCpu", sequenceName = "SEQ_CPU", allocationSize = 1, initialValue = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqCpu")
+	@SequenceGenerator(name = "seqRom", sequenceName = "SEQ_ROM", allocationSize = 1, initialValue = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqRom")
 	private Long id;
 
-	@Column(name = "cpu")
-	private String cpu;
-
+	@Column(name = "rom")
+	private String rom;
 }

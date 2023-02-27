@@ -2,16 +2,15 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalManager } from 'ngb-modal';
 import { Action, Common } from 'src/app/commons/common';
-import { Cpu, PageCpu, PagesRequest, ProductDetail } from 'src/app/models/type';
-import { CpuService } from 'src/app/services/cpu.service';
-import { ProductDetailService } from 'src/app/services/productDetail.service';
+import { Rom, PageRom, PagesRequest } from 'src/app/models/type';
+import { RomService } from 'src/app/services/Rom.service';
 
 @Component({
-  selector: 'app-cpu',
-  templateUrl: './cpu.component.html',
-  styleUrls: ['./cpu.component.scss']
+  selector: 'app-rom',
+  templateUrl: './rom.component.html',
+  styleUrls: ['./rom.component.scss']
 })
-export class CpuComponent implements OnInit {
+export class RomComponent implements OnInit {
 
   isVisible = false;
   closeResult = '';
@@ -21,15 +20,15 @@ export class CpuComponent implements OnInit {
   isView = false;
   Action = Action;
   pageSizes = [5, 10, 15, 20];
-  
-  // cpuRequest = new cpuRequest();
+
+  // RomRequest = new RomRequest();
   pageRequest = new PagesRequest();
-  pageCpu = new PageCpu();
-  cpu = new Cpu();
-  lstProductDetail : ProductDetail[];
+  pageRom = new PageRom();
+  rom = new Rom();
+  // lstProductDetail : ProductDetail[];
   common: Common = new Common();
   lstTrangThai = this.common.lstTrangThai;
-  
+
   option = new Option();
   formGroup: FormGroup;
   controlArray: Map<string, any> = new Map<string, any>();
@@ -37,56 +36,54 @@ export class CpuComponent implements OnInit {
   @ViewChild('myModal') myModal;
   private modalRef;
 
-  constructor(private cpuService: CpuService, private modalService: ModalManager, private fb: FormBuilder,
-    private productService : ProductDetailService) { }
+  constructor(private romService: RomService, private modalService: ModalManager, private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    this.getcpu();
+    this.getRom();
     this.formGroup = this.fb.group({
-      cpu: this.fb.group({
+      rom: this.fb.group({
         id: [{ value: '' }, Validators.required],
-        cpu: [{ value: '', }, Validators.required],
+        rom: [{ value: '', }, Validators.required],
       }),
     });
   }
 
 
-  getcpu() {
+  getRom() {
     // get product
-    // console.log(this.cpuRequest)
-    this.cpuService.getPageCpu(this.pageRequest).subscribe(
+    // console.log(this.RomRequest)
+    this.romService.getPageRom(this.pageRequest).subscribe(
       (data) => {
         if (data) {
-          this.pageCpu = data;
+          this.pageRom = data;
           console.log(data);
-          this.pageCpu.number = ++this.pageCpu.number;
-          console.log(this.pageCpu);
+          this.pageRom.number = ++this.pageRom.number;
+          console.log(this.pageRom);
         }
       }, (error) => {
-         console.log(error);
+        console.log(error);
       }
     );
   }
-  
   handlePageSizeChange(event: any) {
     this.pageRequest.size = event.target.value;
-    this.getcpu();
+    this.getRom();
   }
   handlePageChange(event: any) {
     this.pageRequest.page = event - 1;
-    this.getcpu();
+    this.getRom();
   }
 
   search() {
-    this.getcpu();
+    this.getRom();
   }
 
   view(id) {
     console.log(id);
-    this.cpuService.getCpuById(id).subscribe((respone) => {
-      this.cpu = respone;
+    this.romService.getRomById(id).subscribe((respone) => {
+      this.rom = respone;
       // this.initForm(this.option);
-      console.log(this.cpu);
+      console.log(this.rom);
       this.openModal(Action.CAPNHAT);
     })
   }
@@ -121,7 +118,7 @@ export class CpuComponent implements OnInit {
   closeModal() {
     this.modalService.close(this.modalRef);
     this.isFormSubmit = false;
-    this.cpu = new Cpu();
+    this.rom = new Rom();
   }
 
 }

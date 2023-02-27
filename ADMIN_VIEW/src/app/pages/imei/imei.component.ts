@@ -69,6 +69,7 @@ export class ImeiComponent implements OnInit {
   }
   handlePageSizeChange(event: any) {
     this.pageRequest.size = event.target.value;
+    this.pageRequest.page = 0;
     this.getImei();
   }
   handlePageChange(event: any) {

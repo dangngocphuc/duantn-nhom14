@@ -56,6 +56,10 @@ import {NgStepperModule} from 'angular-ng-stepper';
 import { ReviewComponent } from './pages/review/review.component';
 import { NgImageSliderModule } from 'ng-image-slider';
 import { CpuComponent } from './pages/cpu/cpu.component';
+import { RamComponent } from './pages/ram/ram.component';
+import { RomComponent } from './pages/rom/rom.component';
+import { GpuComponent } from './pages/gpu/gpu.component';
+import { NgxCurrencyModule } from 'ngx-currency';
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -83,7 +87,8 @@ import { CpuComponent } from './pages/cpu/cpu.component';
     CdkStepperModule,
     // ChartsModule
     NgStepperModule,
-    NgImageSliderModule
+    NgImageSliderModule,
+    NgxCurrencyModule
     // CarouselModule
     // CKEditorModule
     // ProgressbarModule.forRoot()
@@ -108,6 +113,9 @@ import { CpuComponent } from './pages/cpu/cpu.component';
     BrandComponent,
     ReviewComponent,
     CpuComponent,
+    RamComponent,
+    RomComponent,
+    GpuComponent,
   ],
   providers: [
     CookieService,

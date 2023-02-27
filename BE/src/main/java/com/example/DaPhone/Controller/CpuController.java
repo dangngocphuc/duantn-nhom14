@@ -1,5 +1,7 @@
 package com.example.DaPhone.Controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +40,10 @@ public class CpuController {
 		return new ResponseEntity<Boolean>(cpuService.saveCpu(cpu), HttpStatus.OK);
 	}
 	
-	
+	@GetMapping(value = "/list")
+	public ResponseEntity<List<Cpu>> getListCpu() {
+		List<Cpu> listCpu = cpuService.getListCpu();
+		return new ResponseEntity<List<Cpu>>(listCpu, HttpStatus.OK);
+	}
 	
 }

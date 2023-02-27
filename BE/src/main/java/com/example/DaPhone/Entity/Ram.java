@@ -14,18 +14,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "cpu")
+@Table(name = "ram")
 @Getter
 @Setter
 
-public class Cpu implements Serializable {
-
+public class Ram implements Serializable{
+	
 	@Id
-	@SequenceGenerator(name = "seqCpu", sequenceName = "SEQ_CPU", allocationSize = 1, initialValue = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqCpu")
+	@SequenceGenerator(name = "seqRam", sequenceName = "SEQ_RAM", allocationSize = 1, initialValue = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqRam")
 	private Long id;
-
-	@Column(name = "cpu")
-	private String cpu;
-
+	
+	@Column(name="ram")
+	private String ram;
+	
 }

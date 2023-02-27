@@ -6,10 +6,14 @@ import { clippingParents } from '@popperjs/core';
 import { ModalManager } from 'ngb-modal';
 import { catchError, concat, debounceTime, distinctUntilChanged, forkJoin, lastValueFrom, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { Action, Common } from 'src/app/commons/common';
-import { Imei, Option, OptionValue, PageProductDetail, PagesRequest, Product, ProductDetail, ProductDetailValue, ProductOption } from 'src/app/models/type';
+import { Cpu, Gpu, Imei, Option, OptionValue, PageProductDetail, PagesRequest, Product, ProductDetail, ProductDetailRequest, ProductDetailValue, ProductOption, Ram, Rom } from 'src/app/models/type';
+import { CpuService } from 'src/app/services/cpu.service';
+import { GpuService } from 'src/app/services/Gpu.service';
 import { OptionService } from 'src/app/services/option.service';
 import { ProductService } from 'src/app/services/product.service';
 import { ProductDetailService } from 'src/app/services/productDetail.service';
+import { RamService } from 'src/app/services/Ram.service';
+import { RomService } from 'src/app/services/Rom.service';
 import Swal from 'sweetalert2';
 @Component({
   selector: 'app-product-details',
@@ -45,10 +49,25 @@ export class ProductDetailsComponent implements OnInit {
   loadlstProduct = false;
   textInput_tenProduct$ = new Subject<string>();
 
+  request = new ProductDetailRequest();
+
+  pageRequest = new PagesRequest();
+  pageSizes = [5, 10, 15, 20];
+  
+
+  listCpu : Cpu[];
+  listRam : Ram[];
+  listRom : Rom[];
+  listGpu : Gpu[];
+
   private modalRef;
 
   constructor(
     private productService: ProductService,
+    private cpuService : CpuService,
+    private ramService : RamService,
+    private romService : RomService,
+    private gpuService : GpuService,
     private optionService: OptionService,
     private productDetailService: ProductDetailService,
     private modalService: ModalManager,
@@ -63,18 +82,31 @@ export class ProductDetailsComponent implements OnInit {
     // this.optionValue.id = 5;
     // this.productDetail.id = 2;
     // this.getProducts(1,5);
-    this.getProducts(1, 5);
+    this.loadProduct();
+    this.getListCpu();
+    this.getListRam();
+    this.getListRom();
+    this.getListGpu();
+    this.getProducts(this.pageRequest.page, this.pageRequest.size);
     this.formGroup = this.fb.group({
       productDetail: this.fb.group({
         name: [{ value: '', }, Validators.required],
+        code: [{ value: '', }, Validators.required],
         product: [{ value: '', }, Validators.required],
         demand : [{ value: '', }, Validators.required],
+        cpu : [{ value: '', }, Validators.required],
+        ram : [{ value: '', }, Validators.required],
+        rom : [{ value: '', }, Validators.required],
+        gpu : [{ value: '', }, Validators.required],
+        productPrice : [{ value: '', }, Validators.required],
+        productMarketprice : [{ value: '', }, Validators.required],
       }),
       listImei: this.fb.array([], Validators.required),
     });
   }
 
   getProducts(pageIndex: number, pageSize: number) {
+    debugger;
     this.controlArray.set('pageIndex', pageIndex);
     this.controlArray.set('pageSize', pageSize);
     this.productDetailService.getPageProductDetail(this.controlArray).subscribe(
@@ -82,12 +114,48 @@ export class ProductDetailsComponent implements OnInit {
         if (data) {
           console.log(data);
           this.pageProductDetail = data;
+          this.pageProductDetail.number = ++this.pageProductDetail.number;
         }
       },
       (error) => {
         console.log(error)
       }
     );
+  }
+
+  search(){
+    // console.log(this.request.productId.toString());
+    this.controlArray.set('pageIndex', this.pageRequest.page);
+    this.controlArray.set('pageSize', this.pageRequest.size);
+    this.controlArray.set('productId', this.request?.productId?.toString());
+    this.controlArray.set('productCode', this.request?.productCode);
+    this.controlArray.set('productName', this.request?.productName);
+    this.controlArray.set('lstCpu', this.request?.lstCpu?.toString());
+    this.controlArray.set('lstGpu', this.request?.lstGpu?.toString());
+    this.controlArray.set('lstGpu', this.request?.lstGpu?.toString());
+    this.controlArray.set('lstRom', this.request?.lstRom?.toString());
+
+    this.productDetailService.getPageProductDetail(this.controlArray).subscribe(
+      (data) => {
+        if (data) {
+          console.log(data);
+          this.pageProductDetail = data;
+          this.pageProductDetail.number = ++this.pageProductDetail.number;
+        }
+      },
+      (error) => {
+        console.log(error)
+      }
+    );
+  }
+  handlePageSizeChange(event: any) {
+    this.pageRequest.size = event.target.value;
+    this.pageRequest.page = 0;
+    this.getProducts(this.pageRequest.page,this.pageRequest.size);
+  }
+  handlePageChange(event: any) {
+    this.pageRequest.page = event - 1;
+    this.getProducts(this.pageRequest.page,this.pageRequest.size);
   }
 
   loadProduct() {
@@ -111,6 +179,10 @@ export class ProductDetailsComponent implements OnInit {
 
   openModal(action,content) {
     this.loadProduct();
+    this.getListCpu();
+    this.getListRam();
+    this.getListRom();
+    this.getListGpu();
     // this.initForm();
     this.action = action;
     this.modalRef = this.modalService.open(content, {
@@ -167,6 +239,9 @@ export class ProductDetailsComponent implements OnInit {
 
 
   async addRow(item: Imei = new Imei()) {
+    if (!item.id) {
+      this.productDetail.listImei.push(item);
+    }
     await this.getImei.push(this.fb.group({
       imei: [{ value: item?.imei }],
       status: [{ value: item?.status }, Validators.required],
@@ -178,14 +253,15 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   save() {
+    console.log(this.productDetail);
     this.productDetailService.saveProductDetail(this.productDetail).subscribe((res) => {
       if(res){
         Swal.fire('','','success');
         this.closeModal();
-        this.getProducts(1, 5);
+        this.getProducts(this.pageRequest.page,this.pageRequest.size);
       }
     })
-    console.log(this.productDetail);
+    
   }
   
   lstproductOptionTemp: ProductOption[];
@@ -220,4 +296,27 @@ export class ProductDetailsComponent implements OnInit {
     }
   }
 
+  getListCpu(){
+    this.cpuService.getListCpu().subscribe((res)=>{
+      this.listCpu = res;
+    })
+  }
+
+  getListRam(){
+    this.ramService.getListRam().subscribe((res)=>{
+      this.listRam = res;
+    })
+  }
+
+  getListRom(){
+    this.romService.getListRom().subscribe((res)=>{
+      this.listRom = res;
+    })
+  }
+
+  getListGpu(){
+    this.gpuService.getListGpu().subscribe((res)=>{
+      this.listGpu = res;
+    })
+  }
 }

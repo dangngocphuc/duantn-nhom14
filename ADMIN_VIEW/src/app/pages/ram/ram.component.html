@@ -1,3 +1,4 @@
+
 <div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
     <div class="container-fluid">
         <div class="header-body">
@@ -10,9 +11,9 @@
                                 <div class="row">
                                     <!-- <div class="col-md-6">
                                         <div class="form-group align-self-center">
-                                            <span>cpu</span>
+                                            <span>Ram</span>
                                             <input type="text" name="ma" class="form-control"
-                                                [(ngModel)]="cpuRequest.cpu">
+                                                [(ngModel)]="RamRequest.Ram">
                                         </div>
                                     </div> -->
                                     <!-- <div class="col-md-6">
@@ -56,18 +57,18 @@
                         <thead class="thead-light">
                             <tr>
                                 <th scope="col">STT</th>
-                                <th scope="col">cpu</th>
+                                <th scope="col">Ram</th>
                                 <!-- <th scope="col">Tên chi tiết sản phẩm</th> -->
                                 <!-- <th scope="col">Trạng thái</th> -->
                             </tr>
                         </thead>
-                        <tbody *ngFor="let item of pageCpu?.content | paginate: { id: 'lst-option',
-                            itemsPerPage: pageCpu?.size,
-                            currentPage: pageCpu?.number,
-                            totalItems: pageCpu?.totalElements }; index as i">
+                        <tbody *ngFor="let item of pageRam?.content | paginate: { id: 'lst-option',
+                            itemsPerPage: pageRam?.size,
+                            currentPage: pageRam?.number,
+                            totalItems: pageRam?.totalElements }; index as i">
                             <tr>
                                 <td>{{i+1}}</td>
-                                <td><span class="link-text" (click)="view(item?.id)">{{item?.cpu}}</span></td>
+                                <td><span class="link-text" (click)="view(item?.id)">{{item?.ram}}</span></td>
                                 <!-- <td>{{item?.productName}}</td> -->
                                 <!-- <td>
                                     <span class="badge badge-dot mr-4">
@@ -79,8 +80,8 @@
                     </table>
                 </div>
                 <div class="card-footer py-4">
-                    <div class="text-left col-6 ">{{'Tổng số bản ghi: '+ (pageCpu?.totalElements ?
-                        pageCpu?.totalElements : 0)}}
+                    <div class="text-left col-6 ">{{'Tổng số bản ghi: '+ (pageRam?.totalElements ?
+                        pageRam?.totalElements : 0)}}
                         &nbsp;&nbsp;&nbsp;&nbsp;Số bản ghi hiển thị:
                         <select class="custom-select " style="width: 60px; " (change)="handlePageSizeChange($event) ">
                             <option *ngFor="let pageSize of pageSizes " [ngValue]="pagesRequest?.size ">
@@ -107,21 +108,21 @@
     </modal-header>
     <modal-content>
         <form [formGroup]="formGroup">
-            <fieldset formGroupName="cpu">
+            <fieldset formGroupName="Ram">
                 <div class="form-group">
                     <label for="ma">ID</label>
-                    <input type="text" class="form-control" formControlName="id" [(ngModel)]="cpu.id" >
+                    <input type="text" class="form-control" formControlName="id" [(ngModel)]="ram.id" >
                     <div class="validation-alert"
-                        *ngIf="isFormSubmit && formGroup.get('cpu')['controls']['id'].errors?.['required']">
+                        *ngIf="isFormSubmit && formGroup.get('Ram')['controls']['id'].errors?.['required']">
                         Không được để trống!
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="trangThai">Name</label>
-                    <input  type="text" class="form-control" formControlName="cpu" [(ngModel)]="cpu.cpu">
+                    <input  type="text" class="form-control" formControlName="ram" [(ngModel)]="ram.ram">
                    
                     <div class="validation-alert"
-                        *ngIf="isFormSubmit &&  formGroup.get('cpu')['controls']['cpu'].errors?.['required']">
+                        *ngIf="isFormSubmit &&  formGroup.get('Ram')['controls']['ram'].errors?.['required']">
                         Không được để trống!
                     </div>
                 </div>
