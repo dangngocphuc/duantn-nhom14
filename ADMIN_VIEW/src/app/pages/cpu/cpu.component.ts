@@ -1,10 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalManager } from 'ngb-modal';
+import { Observable } from 'rxjs';
 import { Action, Common } from 'src/app/commons/common';
 import { Cpu, PageCpu, PagesRequest, ProductDetail } from 'src/app/models/type';
 import { CpuService } from 'src/app/services/cpu.service';
 import { ProductDetailService } from 'src/app/services/productDetail.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-cpu',
@@ -41,17 +43,18 @@ export class CpuComponent implements OnInit {
     private productService : ProductDetailService) { }
 
   ngOnInit(): void {
-    this.getcpu();
+    this.getPagecpu();
     this.formGroup = this.fb.group({
       cpu: this.fb.group({
-        id: [{ value: '' }, Validators.required],
+        id: [{ value: '', disabled: true } ,],
         cpu: [{ value: '', }, Validators.required],
+        status: [{ value: '', }, Validators.required],
       }),
     });
   }
 
 
-  getcpu() {
+  getPagecpu() {
     // get product
     // console.log(this.cpuRequest)
     this.cpuService.getPageCpu(this.pageRequest).subscribe(
@@ -70,15 +73,15 @@ export class CpuComponent implements OnInit {
   
   handlePageSizeChange(event: any) {
     this.pageRequest.size = event.target.value;
-    this.getcpu();
+    this.getPagecpu();
   }
   handlePageChange(event: any) {
     this.pageRequest.page = event - 1;
-    this.getcpu();
+    this.getPagecpu();
   }
 
   search() {
-    this.getcpu();
+    this.getPagecpu();
   }
 
   view(id) {
@@ -93,10 +96,13 @@ export class CpuComponent implements OnInit {
 
   setStatus(item) {
     if (item == 1) {
-      return "Còn hàng";
+      return "Active";
+    }
+    else if(item == 0){
+      return "InActive";
     }
     else {
-      return "hết hàng";
+      return "";
     }
   }
 
@@ -124,4 +130,55 @@ export class CpuComponent implements OnInit {
     this.cpu = new Cpu();
   }
 
+  save(){
+    console.log(this.cpu);
+    console.log(this.formGroup);
+    this.isFormSubmit = true;
+    if (this.formGroup.status == "INVALID") {
+      return;
+    }
+    this.cpuService.saveCpu(this.cpu).subscribe((respone) => {
+      // this.option = respone;
+      Swal.fire('','','success');
+      this.closeModal();
+      this.getPagecpu()
+      
+    }, (error) => {
+        Swal.fire('',error,'error')
+    })
+  }
+
+ delete(){
+  if(this.cpu.id){
+    this.cpuService.deleteCpu(this.cpu.id).subscribe((respone) => {
+      // this.option = respone;
+      Swal.fire('','','success');
+      this.closeModal();
+      this.getPagecpu()
+      
+    }, (error) => {
+        Swal.fire('',error,'error')
+    })
+  }
+ }
+
+ checkButtonDelete(){
+  if(this.cpu.status == 1){
+    return true;
+  }
+  return false;
+ }
+
+ checkButtonSave(){
+  if(!this.cpu){
+    return true;
+  }
+  if(!this.cpu.status){
+    return true;
+  }
+  if(this.cpu.status == 0){
+    return false;
+  }
+  return true;
+ }
 }

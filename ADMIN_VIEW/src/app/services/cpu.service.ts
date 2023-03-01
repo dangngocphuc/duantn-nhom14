@@ -27,4 +27,12 @@ export class CpuService {
   getListCpu(): Observable<any>{
     return this.http.get<any>('/cpu/list',null)
   }
+
+  saveCpu(cpu): Observable<any> {
+    return this.http.post<any>(`/cpu`, cpu);
+  }
+
+  deleteCpu(id): Observable<any> {
+    return this.http.delete<any>(`/cpu/` + id);
+  }
 }

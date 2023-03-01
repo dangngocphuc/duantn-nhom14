@@ -29,4 +29,7 @@ export class GpuService {
     return this.http.get<any>('/gpu/list', null)
   }
 
+  saveGpu(gpu): Observable<any> {
+    return this.http.post<any>(`/gpu`,gpu)
+  }
 }

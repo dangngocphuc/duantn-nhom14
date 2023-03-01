@@ -14,12 +14,12 @@
             <div class="col-md-5 grid-im">
                 <div class="flexslider">
                     <!-- <ul class="slides"> -->
-                        <!-- <li> -->
-                        <div class="thumb-image"> <ng-image-slider #nav [images]="productDetail?.product?.listImage"
-                                [infinite]="true" [autoSlide]="1" slideImage="1"
-                                [imageSize]="{width: '100%', height: 200}"></ng-image-slider>
-                        </div>
-                        <!-- </li> -->
+                    <!-- <li> -->
+                    <div class="thumb-image"> <ng-image-slider #nav [images]="productDetail?.product?.listImage"
+                            [infinite]="true" [autoSlide]="1" slideImage="1"
+                            [imageSize]="{width: '100%', height: 200}"></ng-image-slider>
+                    </div>
+                    <!-- </li> -->
                     <!-- </ul> -->
                 </div>
             </div>
@@ -100,24 +100,36 @@
                             <h2 class="resp-accordion" role="tab" aria-controls="tab_item-1"><span
                                     class="resp-arrow"></span>Additional Information</h2>
                             <div class="tab-1 resp-tab-content" aria-labelledby="tab_item-1">
-                                <h3>Thông số kỹ thuật chi tiết {{product?.productName}}</h3>
+                                <h3>Thông số Cấu hình & đặc điểm chi tiết {{productDetail?.productName}}</h3>
                                 <div class="facts1">
-                                    <table class="table table-hover table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col" width="5%">#</th>
-                                                <th scope="col" width="20%">Thuộc tính</th>
-                                                <th scope="col">Giá trị</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody *ngFor="let item of productDetail?.listProductDetailValue, index as i">
-                                            <tr>
-                                                <td>{{i+1}}</td>
-                                                <td>{{item?.option?.optionName}}:</td>
-                                                <td>{{item?.optionValue?.optionValue}}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex  align-items-center">
+                                            <img src="../../assets/img/cpu.png" alt=""> Vi xử lý (CPU) <i
+                                                class="fa fa-info-circle" aria-hidden="true"></i>
+                                            <span
+                                                class="badge badge-primary badge-pill">{{productDetail?.cpu?.cpu}}</span>
+                                        </li>
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <img src="../../assets/img/ram.png" alt=""> RAM <i class="fa fa-info-circle"
+                                                aria-hidden="true"></i>
+                                            <span
+                                                class="badge badge-primary badge-pill">{{productDetail?.ram?.ram}}</span>
+                                        </li>
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <img src="../../assets/img/rom.png" alt=""> Lưu trữ (ROM) <i
+                                                class="fa fa-info-circle" aria-hidden="true"></i>
+                                            <span
+                                                class="badge badge-primary badge-pill">{{productDetail?.rom?.rom}}</span>
+                                        </li>
+                                        <li class="list-group-item align-items-center">
+                                            <img src="../../assets/img/gpu.png" alt=""> Card đồ họa (GPU) <i
+                                                class="fa fa-info-circle" aria-hidden="true" style="color: blue;"></i>
+                                            <span
+                                                class="badge badge-primary badge-pill">{{productDetail?.gpu?.gpu}}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="facts1">
                                     <h3>Kích thước & trọng lượng</h3>
                                     <div class="color">
                                         <p>Kích thước</p>

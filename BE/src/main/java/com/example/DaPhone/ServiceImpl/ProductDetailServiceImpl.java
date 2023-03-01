@@ -157,6 +157,19 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 				if (productParam.getPriceTo() > 0) {
 					predicates.add(cb.and(cb.lessThanOrEqualTo(root.get("productPrice"), productParam.getPriceTo())));
 				}
+				
+				if (productParam.getToDate() != null) {
+					predicates.add(cb.greaterThanOrEqualTo(root.<Date>get("createDate"),
+							productParam.getToDate()));
+				}
+				if (productParam.getFromDate() != null) {
+//					Calendar calendar = commonUtils.dateToCalendar(hoSoUyQuyen.getDenNgay());
+//					calendar.add(Calendar.DAY_OF_MONTH, 1);
+					predicates.add(cb.lessThan(root.<Date>get("createDate"),
+							new Date(productParam.getFromDate().getTime() + (1000 * 60 * 60 * 24))));
+				}
+				
+				
 				if (productParam.isInventory()) {
 					predicates.add(cb.and(cb.greaterThan(root.get("productQuantily"), 0)));
 				}

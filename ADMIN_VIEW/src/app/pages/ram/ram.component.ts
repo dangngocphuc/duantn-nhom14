@@ -4,6 +4,7 @@ import { ModalManager } from 'ngb-modal';
 import { Action, Common } from 'src/app/commons/common';
 import { Ram, PageRam, PagesRequest } from 'src/app/models/type';
 import { RamService } from 'src/app/services/Ram.service';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -21,7 +22,7 @@ export class RamComponent implements OnInit {
   isView = false;
   Action = Action;
   pageSizes = [5, 10, 15, 20];
-  
+
   // RamRequest = new RamRequest();
   pageRequest = new PagesRequest();
   pageRam = new PageRam();
@@ -29,7 +30,7 @@ export class RamComponent implements OnInit {
   // lstProductDetail : ProductDetail[];
   common: Common = new Common();
   lstTrangThai = this.common.lstTrangThai;
-  
+
   option = new Option();
   formGroup: FormGroup;
   controlArray: Map<string, any> = new Map<string, any>();
@@ -40,17 +41,18 @@ export class RamComponent implements OnInit {
   constructor(private ramService: RamService, private modalService: ModalManager, private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    this.getRam();
+    this.getPageRam();
     this.formGroup = this.fb.group({
-      Ram: this.fb.group({
-        id: [{ value: '' }, Validators.required],
+      ram: this.fb.group({
+        id: [{ value: '' }],
         ram: [{ value: '', }, Validators.required],
+        status: [{ value: '', }, Validators.required],
       }),
     });
   }
 
 
-  getRam() {
+  getPageRam() {
     // get product
     // console.log(this.RamRequest)
     this.ramService.getPageRam(this.pageRequest).subscribe(
@@ -62,21 +64,21 @@ export class RamComponent implements OnInit {
           console.log(this.pageRam);
         }
       }, (error) => {
-         console.log(error);
+        console.log(error);
       }
     );
   }
   handlePageSizeChange(event: any) {
     this.pageRequest.size = event.target.value;
-    this.getRam();
+    this.getPageRam();
   }
   handlePageChange(event: any) {
     this.pageRequest.page = event - 1;
-    this.getRam();
+    this.getPageRam();
   }
 
   search() {
-    this.getRam();
+    this.getPageRam();
   }
 
   view(id) {
@@ -122,4 +124,23 @@ export class RamComponent implements OnInit {
     this.ram = new Ram();
   }
 
+  save() {
+    debugger;
+    console.log(this.ram);
+    console.log(this.formGroup);
+    this.isFormSubmit = true;
+    if (this.formGroup.status == "INVALID") {
+      return;
+    }
+    this.ramService.saveRam(this.ram).subscribe((respone) => {
+      // this.option = respone;
+      if (respone) {
+        Swal.fire('', '', 'success');
+        this.closeModal();
+        this.getPageRam()
+      }
+    }, (error) => {
+      Swal.fire('', error, 'error')
+    })
+  }
 }

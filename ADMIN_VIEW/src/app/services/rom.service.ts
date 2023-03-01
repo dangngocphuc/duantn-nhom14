@@ -27,4 +27,8 @@ export class RomService {
   getListRom(): Observable<any> {
     return this.http.get<any>('/rom/list', null)
   }
+
+  saveRom(rom): Observable<any> {
+    return this.http.post<any>(`/rom`, rom);
+  }
 }

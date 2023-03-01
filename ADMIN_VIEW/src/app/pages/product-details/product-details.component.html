@@ -38,19 +38,22 @@
                   <div class="col-md-4">
                     <div class="form-group align-self-center">
                       <span>Cpu</span>
-                      <ng-select [items]="listCpu" bindLabel="cpu" bindValue="id" [(ngModel)]="request.lstCpu" name="cpuId" [multiple]="true"></ng-select>
+                      <ng-select [items]="listCpu" bindLabel="cpu" bindValue="id" [(ngModel)]="request.lstCpu"
+                        name="cpuId" [multiple]="true"></ng-select>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group align-self-center">
                       <span>Gpu</span>
-                      <ng-select [items]="listGpu" bindLabel="gpu" bindValue="id" [(ngModel)]="request.lstGpu" name="gpuId" [multiple]="true"></ng-select>
+                      <ng-select [items]="listGpu" bindLabel="gpu" bindValue="id" [(ngModel)]="request.lstGpu"
+                        name="gpuId" [multiple]="true"></ng-select>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group align-self-center">
                       <span>Ram</span>
-                      <ng-select [items]="listRam" bindLabel="ram" bindValue="id" [(ngModel)]="request.lstRam" name="ramId" [multiple]="true"></ng-select>
+                      <ng-select [items]="listRam" bindLabel="ram" bindValue="id" [(ngModel)]="request.lstRam"
+                        name="ramId" [multiple]="true"></ng-select>
                     </div>
                   </div>
                 </div>
@@ -59,19 +62,28 @@
                   <div class="col-md-4">
                     <div class="form-group align-self-center">
                       <span>Rom</span>
-                      <ng-select [items]="listRom" bindLabel="rom" bindValue="id" [(ngModel)]="request.lstRom" name="romId" [multiple]="true"></ng-select>
+                      <ng-select [items]="listRom" bindLabel="rom" bindValue="id" [(ngModel)]="request.lstRom"
+                        name="romId" [multiple]="true"></ng-select>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group align-self-center">
                       <span>Ngày tạo từ</span>
-                      <input type="date" name="" id="" class="form-control">
+                      <!-- <datepicker styleClass="form-control" class="col-sm-4 p-0" label="Từ ngày" id="toDate"
+                        name="toDate" [(ngModel)]="request.toDate">
+                      </datepicker> -->
+                      <input class="form-control" type="date" name="toDate" id="toDate" [(ngModel)]="request.toDate"
+                        placeholder="Từ ngày">
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group align-self-center">
                       <span>Ngày tạo đến</span>
-                      <input type="date" name="" id="" class="form-control">
+                      <input class="form-control" type="date" name="fromDate" id="fromDate" [(ngModel)]="request.fromDate"
+                        placeholder="Đến ngày">
+                      <!-- <datepicker styleClass="form-control" class="col-sm-4 p-0" label="Đến ngày" id="fromDate"
+                        name="fromDate" [(ngModel)]="request.fromDate">
+                      </datepicker> -->
                     </div>
                   </div>
                 </div>

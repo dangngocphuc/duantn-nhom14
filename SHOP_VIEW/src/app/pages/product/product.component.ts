@@ -23,7 +23,7 @@ export class ProductComponent implements OnInit {
   price = [0, 30000000];
   listOfData: ProductDetail[] = [];
   pageSize = 9;
-  pageIndex = 1;
+  pageIndex = 0;
   totalProduct: Number;
   status: String = 'default';
   paramsBrand = [];
@@ -96,6 +96,7 @@ export class ProductComponent implements OnInit {
           this.pageProductDetail = data;
           this.totalProduct = this.pageProductDetail.totalElements;
           this.listOfData = data.content;
+          this.pageIndex = ++this.pageProductDetail.number;
         }
       },
       (error) => {
@@ -186,8 +187,8 @@ export class ProductComponent implements OnInit {
   priceChange(value: number[] | number): void {
     const priceFrom = value[0] || 0;
     const priceTo = value[1] || 0;
-    this.controlArray.set('pageIndex', 1);
-    this.controlArray.set('pageSize', 6);
+    this.controlArray.set('pageIndex', 0);
+    this.controlArray.set('pageSize', 9);
     this.controlArray.set('priceFrom', priceFrom);
     this.controlArray.set('priceTo', priceTo);
     this.getProductSort(this.controlArray);
@@ -195,6 +196,7 @@ export class ProductComponent implements OnInit {
 
   //load product
   onPageIndexChange(value: number): void {
+    console.log(value);
     this.controlArray.set('pageIndex', value);
     this.getProductSort(this.controlArray);
   }
@@ -205,6 +207,7 @@ export class ProductComponent implements OnInit {
   }
 
   filterByBrand(id, e) {
+    debugger;
     if(e?.target?.name == 'brand'){
       if (e?.target?.checked) {
         this.paramsBrand.push(id);
@@ -216,23 +219,23 @@ export class ProductComponent implements OnInit {
         });
       }
     }
-    if(e?.target?.name == 'optionValue'){
-      if (e?.target?.checked) {
-        this.paramsOptionValue.push(id);
-      } else {
-        this.paramsOptionValue = this.paramsOptionValue.filter((item) => {
-          return (
-            item !== id 
-          );
-        });
-      }
-    }
+    // if(e?.target?.name == 'optionValue'){
+    //   if (e?.target?.checked) {
+    //     this.paramsOptionValue.push(id);
+    //   } else {
+    //     this.paramsOptionValue = this.paramsOptionValue.filter((item) => {
+    //       return (
+    //         item !== id 
+    //       );
+    //     });
+    //   }
+    // }
 
     if (id) {   
-      this.controlArray.set('pageIndex', 1);
-      this.controlArray.set('pageSize', 6);
-      this.controlArray.set('brandID', this.paramsBrand.join(','));
-      this.controlArray.set('optionValueID', this.paramsOptionValue.join(','));
+      this.controlArray.set('pageIndex', 0);
+      this.controlArray.set('pageSize', 9);
+      this.controlArray.set('brandId', this.paramsBrand.join(','));
+      // this.controlArray.set('optionValueID', this.paramsOptionValue.join(','));
       this.getProductSort(this.controlArray);
     }
   }

@@ -27,4 +27,8 @@ export class RamService {
   getListRam(): Observable<any> {
     return this.http.get<any>('/ram/list', null)
   }
+
+  saveRam(ram): Observable<any> {
+    return this.http.post<any>(`/ram`, ram);
+  }
 }

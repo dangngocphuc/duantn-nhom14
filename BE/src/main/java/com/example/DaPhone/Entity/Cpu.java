@@ -1,6 +1,7 @@
 package com.example.DaPhone.Entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,4 +29,13 @@ public class Cpu implements Serializable {
 	@Column(name = "cpu")
 	private String cpu;
 
+	@Column(name = "create_date")
+	private Date createDate;
+
+	@Column(name = "update_date")
+	private Date updateDate;
+	
+	@Column(name = "status")
+	private Integer status;
+	
 }

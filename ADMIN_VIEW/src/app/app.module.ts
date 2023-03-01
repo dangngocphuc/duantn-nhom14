@@ -9,7 +9,7 @@ import { AppComponent } from './app.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 // import { CarouselModule } from 'ngx-owl-carousel-o';
-import { NgbCarouselModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbCarouselModule, NgbDateAdapter, NgbDateNativeAdapter, NgbDatepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
@@ -60,6 +60,8 @@ import { RamComponent } from './pages/ram/ram.component';
 import { RomComponent } from './pages/rom/rom.component';
 import { GpuComponent } from './pages/gpu/gpu.component';
 import { NgxCurrencyModule } from 'ngx-currency';
+import { NgDatepickerComponent } from './components/ng-datepicker/ng-datepicker.component';
+import { DatePipe } from '@angular/common';
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -88,7 +90,8 @@ import { NgxCurrencyModule } from 'ngx-currency';
     // ChartsModule
     NgStepperModule,
     NgImageSliderModule,
-    NgxCurrencyModule
+    NgxCurrencyModule,
+    NgbDatepickerModule
     // CarouselModule
     // CKEditorModule
     // ProgressbarModule.forRoot()
@@ -116,10 +119,14 @@ import { NgxCurrencyModule } from 'ngx-currency';
     RamComponent,
     RomComponent,
     GpuComponent,
+    NgDatepickerComponent
   ],
   providers: [
+    NgbActiveModal,
     CookieService,
     LoaderService,
+    DatePipe,
+    { provide: NgbDateAdapter, useClass: NgbDateNativeAdapter },
     { provide: NZ_I18N, useValue: en_US },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
   ],

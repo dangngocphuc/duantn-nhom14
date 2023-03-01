@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { clippingParents } from '@popperjs/core';
+import * as moment from 'moment';
 import { ModalManager } from 'ngb-modal';
 import { catchError, concat, debounceTime, distinctUntilChanged, forkJoin, lastValueFrom, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { Action, Common } from 'src/app/commons/common';
@@ -124,7 +125,8 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   search(){
-    // console.log(this.request.productId.toString());
+    console.log(this.request.toDate);
+    debugger;
     this.controlArray.set('pageIndex', this.pageRequest.page);
     this.controlArray.set('pageSize', this.pageRequest.size);
     this.controlArray.set('productId', this.request?.productId?.toString());
@@ -134,6 +136,8 @@ export class ProductDetailsComponent implements OnInit {
     this.controlArray.set('lstGpu', this.request?.lstGpu?.toString());
     this.controlArray.set('lstGpu', this.request?.lstGpu?.toString());
     this.controlArray.set('lstRom', this.request?.lstRom?.toString());
+    this.controlArray.set('toDate', moment(this.request.toDate).format('DD/MM/yyyy'));
+    this.controlArray.set('fromDate', moment(this.request.fromDate).format('DD/MM/yyyy'));
 
     this.productDetailService.getPageProductDetail(this.controlArray).subscribe(
       (data) => {

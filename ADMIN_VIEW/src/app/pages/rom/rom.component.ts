@@ -4,6 +4,7 @@ import { ModalManager } from 'ngb-modal';
 import { Action, Common } from 'src/app/commons/common';
 import { Rom, PageRom, PagesRequest } from 'src/app/models/type';
 import { RomService } from 'src/app/services/Rom.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-rom',
@@ -39,17 +40,17 @@ export class RomComponent implements OnInit {
   constructor(private romService: RomService, private modalService: ModalManager, private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    this.getRom();
+    this.getPageRom();
     this.formGroup = this.fb.group({
       rom: this.fb.group({
-        id: [{ value: '' }, Validators.required],
+        id: [{ value: '' }],
         rom: [{ value: '', }, Validators.required],
+        status: [{ value: '', }, Validators.required],
       }),
     });
   }
 
-
-  getRom() {
+  getPageRom() {
     // get product
     // console.log(this.RomRequest)
     this.romService.getPageRom(this.pageRequest).subscribe(
@@ -65,17 +66,19 @@ export class RomComponent implements OnInit {
       }
     );
   }
+
   handlePageSizeChange(event: any) {
     this.pageRequest.size = event.target.value;
-    this.getRom();
+    this.getPageRom();
   }
+
   handlePageChange(event: any) {
     this.pageRequest.page = event - 1;
-    this.getRom();
+    this.getPageRom();
   }
 
   search() {
-    this.getRom();
+    this.getPageRom();
   }
 
   view(id) {
@@ -119,6 +122,27 @@ export class RomComponent implements OnInit {
     this.modalService.close(this.modalRef);
     this.isFormSubmit = false;
     this.rom = new Rom();
+  }
+
+  save() {
+    debugger;
+    console.log(this.rom);
+    console.log(this.formGroup);
+    this.isFormSubmit = true;
+    if (this.formGroup.status == "INVALID") {
+      // Swal.fire('', error, 'error')
+      return;
+    }
+    this.romService.saveRom(this.rom).subscribe((respone) => {
+      // this.option = respone;
+      if (respone) {
+        Swal.fire('', '', 'success');
+        this.closeModal();
+        this.getPageRom()
+      }
+    }, (error) => {
+      Swal.fire('', error, 'error')
+    })
   }
 
 }

@@ -1,6 +1,7 @@
 package com.example.DaPhone.ServiceImpl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.example.DaPhone.Entity.Ram;
 import com.example.DaPhone.Entity.Rom;
 import com.example.DaPhone.Repository.RomRepository;
 import com.example.DaPhone.Service.RomService;
@@ -44,7 +46,14 @@ public class RomServiceImp implements RomService {
 
 	@Override
 	public boolean saveRom(Rom rom) {
-		romRepo.save(rom);
+		if (rom.getId() != null) {
+			rom.setUpdateDate(new Date());
+			romRepo.save(rom);
+		} else {
+			rom.setCreateDate(new Date());
+//			rom.setStatus(1);
+			romRepo.save(rom);
+		}
 		return true;
 	}
 
@@ -55,7 +64,16 @@ public class RomServiceImp implements RomService {
 
 	@Override
 	public List<Rom> getListRom() {
-		return romRepo.findAll();
+		List<Rom> list = romRepo.findAll(new Specification<Rom>() {
+			@Override
+			public Predicate toPredicate(Root<Rom> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+				query.distinct(true);
+				List<Predicate> predicates = new ArrayList<>();
+				predicates.add(cb.and(cb.equal(root.get("status"), 1)));
+				return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+		});
+		return list;
 	}
 
 }

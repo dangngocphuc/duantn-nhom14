@@ -24,19 +24,74 @@
                         </li>
                     </ul>
                 </div>
-                <div class="common-filter">
+                <div class="box">
                     <!-- <ng-select [items]="listOfBrand" [clearable]="false" bindLabel="tenHang">
                     </ng-select> -->
-                    <div class="head">Thương hiệu</div>
-                    <ul>
-                        <li *ngFor="let item of listOfBrand" class="filter-list"><input class="pixel-radio"
-                                type="checkbox" (click)="filterByBrand(item?.id,$event)" id="brand" name="brand"><label
-                                for="apple"><a>
-                                    {{item.tenHang}}
-                                </a></label></li>
+                    <span class="filter-header">
+                        Brands
+                    </span>
+                    <ul class="filter-list">
+                        <li *ngFor="let item of listOfBrand">
+                            <div class="group-checkbox">
+                                <input type="checkbox" (click)="filterByBrand(item?.id,$event)" id="brand" name="brand">
+                                <label for="apple">
+                                    {{item?.tenHang}}
+                                    <i class='bx bx-check'></i>
+                                </label>
+                            </div>
+                        </li>
                     </ul>
                 </div>
-                <div class="common-filter" *ngFor="let item of listOfOption">
+                <!-- <div class="box">
+                    <ul class="filter-list">
+                        <li>
+                            <div class="group-checkbox">
+                                <input type="checkbox" id="remember1" checked="checked">
+                                <label for="remember1">
+                                    JBL
+
+                                </label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="group-checkbox">
+                                <input type="checkbox" id="remember2">
+                                <label for="remember2">
+                                    Beat
+                                    <i class='bx bx-check'></i>
+                                </label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="group-checkbox">
+                                <input type="checkbox" id="remember3">
+                                <label for="remember3">
+                                    Logitech
+                                    <i class='bx bx-check'></i>
+                                </label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="group-checkbox">
+                                <input type="checkbox" id="remember4">
+                                <label for="remember4">
+                                    Samsung
+                                    <i class='bx bx-check'></i>
+                                </label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="group-checkbox">
+                                <input type="checkbox" id="remember5">
+                                <label for="remember5">
+                                    Sony
+                                    <i class='bx bx-check'></i>
+                                </label>
+                            </div>
+                        </li>
+                    </ul>
+                </div> -->
+                <!-- <div class="common-filter" *ngFor="let item of listOfOption">
                     <div class="head">{{item.optionName}}</div>
                     <ul>
                         <li *ngFor="let e of item?.listOptionValue" class="filter-list">
@@ -46,7 +101,7 @@
                             </label>
                         </li>
                     </ul>
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="col-xl-9 col-lg-8 col-md-7">

@@ -196,6 +196,9 @@ export class PageCpu {
 export class Cpu {
   id: number;
   cpu: String;
+  createDate : Date;
+  updateDate : Date;
+  status : number;
 }
 
 export class ImeiRequest {
@@ -244,6 +247,9 @@ export class PageRam {
 export class Ram {
   id: number;
   ram: String;
+  createDate : Date;
+  updateDate : Date;
+  status : number;
 }
 export class PageRom {
   content: Rom[];
@@ -256,6 +262,9 @@ export class PageRom {
 export class Rom {
   id: number;
   rom: String;
+  createDate : Date;
+  updateDate : Date;
+  status : number;
 }
 
 
@@ -270,6 +279,9 @@ export class PageGpu {
 export class Gpu {
   id: number;
   gpu: String;
+  createDate : Date;
+  updateDate : Date;
+  status : number;
 }
 
 export class ProductDetailRequest {
@@ -281,6 +293,6 @@ export class ProductDetailRequest {
   lstRam: String;
   lstGpu: String;
   lstRom: String;
-  toDate: String;
-  fromDate: String;
+  toDate: Date;
+  fromDate: Date;
 }

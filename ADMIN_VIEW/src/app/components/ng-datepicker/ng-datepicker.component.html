@@ -1,0 +1,6 @@
+<div class="input-group">
+  <span class="input-group-text input-icon">
+    <i class="far fa-calendar-alt"></i>
+  </span>
+  <input (blur)="changeValue(value)" type="text" style="text-align: center !important;" [disabled]="disabled" [name]="name" [(ngModel)]="value" class="form-control" [id]="inputId" [placeholder]="placeholder?placeholder:''">
+</div>

@@ -106,6 +106,45 @@ export class ProductDetail {
   productPrice: number;
   productMarketprice:number;
   quanlityBuy:number;
+  demand: String;
+  cpu: Cpu;
+  ram: Ram;
+  gpu: Gpu;
+  rom: Rom;
+  productSize: String;
+  productWeight: String;
+}
+
+export class Cpu {
+  id: number;
+  cpu: String;
+  createDate : Date;
+  updateDate : Date;
+  status : number;
+}
+
+export class Ram {
+  id: number;
+  ram: String;
+  createDate : Date;
+  updateDate : Date;
+  status : number;
+}
+
+export class Rom {
+  id: number;
+  rom: String;
+  createDate : Date;
+  updateDate : Date;
+  status : number;
+}
+
+export class Gpu {
+  id: number;
+  gpu: String;
+  createDate : Date;
+  updateDate : Date;
+  status : number;
 }
 
 export class ProductOption {

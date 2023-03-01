@@ -2,6 +2,9 @@ package com.example.DaPhone.Controller;
 
 import com.example.DaPhone.Entity.Ram;
 import com.example.DaPhone.Service.RamService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +33,10 @@ public class RamController {
     public ResponseEntity<Boolean> saveRam(@RequestBody Ram ram) {
         return new ResponseEntity<Boolean>(ramService.saveRam(ram), HttpStatus.OK);
     }
-
-
+    
+    @GetMapping(value = "/list")
+    public ResponseEntity<List<Ram>> getListImei() {
+        List<Ram> pageRam = ramService.getListRam();
+        return new ResponseEntity<List<Ram>>(pageRam, HttpStatus.OK);
+    }
 }

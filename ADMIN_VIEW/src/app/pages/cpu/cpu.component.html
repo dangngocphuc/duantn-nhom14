@@ -44,12 +44,12 @@
             <div class="card shadow">
                 <div class="card-header border-0">
                     <div>
-                        <h3 class="mb-0">Danh sách sản phẩm</h3>
+                        <h3 class="mb-0">Danh sách Cpu</h3>
                     </div>
-                    <!-- <div style="float: right;"><button (click)="openModal(Action.THEMMOI)"
+                    <div style="float: right;"><button (click)="openModal(Action.THEMMOI)"
                             class="btn btn-sm btn-success"><i class="fa fa-plus" aria-hidden="true"></i> Thêm
                             mới</button>
-                    </div> -->
+                    </div>
                 </div>
                 <div class="table-responsive">
                     <table class="table align-items-center table-flush">
@@ -59,6 +59,9 @@
                                 <th scope="col">cpu</th>
                                 <!-- <th scope="col">Tên chi tiết sản phẩm</th> -->
                                 <!-- <th scope="col">Trạng thái</th> -->
+                                <th scope="col">Ngày tạo</th>
+                                <th scope="col">Ngày cập nhật</th>
+                                <th scope="col" style="text-align: center;">Trạng thái</th>
                             </tr>
                         </thead>
                         <tbody *ngFor="let item of pageCpu?.content | paginate: { id: 'lst-option',
@@ -68,12 +71,19 @@
                             <tr>
                                 <td>{{i+1}}</td>
                                 <td><span class="link-text" (click)="view(item?.id)">{{item?.cpu}}</span></td>
+                                <td>{{item?.createDate | date : 'dd/MM/yyyy'}}</td>
+                                <td>{{item?.updateDate | date : 'dd/MM/yyyy'}}</td>
                                 <!-- <td>{{item?.productName}}</td> -->
-                                <!-- <td>
+                                <td style="text-align: center;">
                                     <span class="badge badge-dot mr-4">
-                                        {{setStatus(item?.status)}}
+                                        <i class="fa fa-check-circle" aria-hidden="true" *ngIf="item?.status == 1" style="color: green;"
+                                            title="Active"></i>
+                                        <!-- <i class="fa fa-check-circle" aria-hidden="true" ></i> -->
+                                        <!-- {{setStatus(item?.status)}} -->
+                                        <i class="fa fa-ban" aria-hidden="true" *ngIf="item?.status == 0" style="color: red;"
+                                            title="Inactive"></i>
                                     </span>
-                                </td> -->
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -102,26 +112,36 @@
 
 <modal #myModal>
     <modal-header>
-        <h4 *ngIf="action == Action.THEMMOI">Thêm mới Option</h4>
-        <h4 *ngIf="action == Action.CAPNHAT">Cập nhật Option</h4>
+        <h4 *ngIf="action == Action.THEMMOI">Thêm mới Cpu</h4>
+        <h4 *ngIf="action == Action.CAPNHAT">Cập nhật Cpu</h4>
     </modal-header>
     <modal-content>
         <form [formGroup]="formGroup">
             <fieldset formGroupName="cpu">
                 <div class="form-group">
                     <label for="ma">ID</label>
-                    <input type="text" class="form-control" formControlName="id" [(ngModel)]="cpu.id" >
-                    <div class="validation-alert"
+                    <input type="text" class="form-control" formControlName="id" [(ngModel)]="cpu.id" disabled="true">
+                    <!-- <div class="validation-alert"
                         *ngIf="isFormSubmit && formGroup.get('cpu')['controls']['id'].errors?.['required']">
+                        Không được để trống!
+                    </div> -->
+                </div>
+                <div class="form-group">
+                    <label for="trangThai">Tên</label>
+                    <input type="text" class="form-control" formControlName="cpu" [(ngModel)]="cpu.cpu">
+
+                    <div class="validation-alert"
+                        *ngIf="isFormSubmit &&  formGroup.get('cpu')['controls']['cpu'].errors?.['required']">
                         Không được để trống!
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="trangThai">Name</label>
-                    <input  type="text" class="form-control" formControlName="cpu" [(ngModel)]="cpu.cpu">
-                   
+                    <label for="trangThai">Trạng thái</label>
+                    <ng-select [items]="lstTrangThai" class="custom-ng-select" bindLabel="name" bindValue="value"
+                        formControlName="status" name="status" [(ngModel)]="cpu.status">
+                    </ng-select>
                     <div class="validation-alert"
-                        *ngIf="isFormSubmit &&  formGroup.get('cpu')['controls']['cpu'].errors?.['required']">
+                        *ngIf="isFormSubmit &&  formGroup.get('cpu')['controls']['status'].errors?.['required']">
                         Không được để trống!
                     </div>
                 </div>
@@ -129,8 +149,10 @@
         </form>
     </modal-content>
     <modal-footer>
-        <!-- <button class="btn btn-primary" (click)="save()"><i class="fa fa-file" aria-hidden="true"></i> Save</button> -->
-        <!-- <button class="btn btn-primary" (click)="delete()"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button> -->
+        <button class="btn btn-success" (click)="save()" *ngIf="checkButtonSave()"><i class="fa fa-file"
+                aria-hidden="true"></i> Save</button>
+        <!-- <button class="btn btn-danger" (click)="delete()"><i class="fa fa-trash" aria-hidden="true"
+                *ngIf="action == Action.CAPNHAT&&checkButtonDelete()"></i> Delete</button> -->
         <button class="btn btn-primary" (click)="closeModal()"><i class="fa fa-times" aria-hidden="true"></i>
             Close</button>
     </modal-footer>

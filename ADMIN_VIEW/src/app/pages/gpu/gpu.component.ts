@@ -4,6 +4,7 @@ import { ModalManager } from 'ngb-modal';
 import { Action, Common } from 'src/app/commons/common';
 import { Gpu, PageGpu, PageRom, PagesRequest } from 'src/app/models/type';
 import { GpuService } from 'src/app/services/Gpu.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-gpu',
@@ -38,16 +39,17 @@ export class GpuComponent implements OnInit {
   constructor(private gpuService: GpuService, private modalService: ModalManager, private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    this.getGpu();
+    this.getPageGpu();
     this.formGroup = this.fb.group({
       gpu: this.fb.group({
-        id: [{ value: '' }, Validators.required],
+        id: [{ value: '' }],
         gpu: [{ value: '', }, Validators.required],
+        status: [{ value: '', }, Validators.required],
       }),
     });
   }
 
-  getGpu() {
+  getPageGpu() {
     // get product
     // console.log(this.RomRequest)
     this.gpuService.getPageGpu(this.pageRequest).subscribe(
@@ -66,16 +68,16 @@ export class GpuComponent implements OnInit {
 
   handlePageSizeChange(event: any) {
     this.pageRequest.size = event.target.value;
-    this.getGpu();
+    this.getPageGpu();
   }
 
   handlePageChange(event: any) {
     this.pageRequest.page = event - 1;
-    this.getGpu();
+    this.getPageGpu();
   }
 
   search() {
-    this.getGpu();
+    this.getPageGpu();
   }
 
   view(id) {
@@ -119,6 +121,24 @@ export class GpuComponent implements OnInit {
     this.modalService.close(this.modalRef);
     this.isFormSubmit = false;
     this.gpu = new Gpu();
+  }
+
+  save(){
+    console.log(this.gpu);
+    console.log(this.formGroup);
+    this.isFormSubmit = true;
+    if (this.formGroup.status == "INVALID") {
+      return;
+    }
+    this.gpuService.saveGpu(this.gpu).subscribe((respone) => {
+      // this.option = respone;
+      Swal.fire('','','success');
+      this.closeModal();
+      this.getPageGpu()
+      
+    }, (error) => {
+        Swal.fire('',error,'error')
+    })
   }
 
 }
