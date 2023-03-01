@@ -199,4 +199,34 @@ export class PaymentComponent implements OnInit {
       }
     };
   }
+
+  paymentVnpay() {
+    this.bill.name = this.userName;
+    this.bill.phone = this.phone;
+    this.bill.address = this.address;
+    this.bill.payment = this.payment;
+    this.bill.total = this.total;
+    this.bill.user = this.currentUser;
+    let listBillDetailTemp = []
+    this.cart.forEach((e) => {
+      let billDetail = new BillDetail();
+      e.listImei = e.listImei.filter((e) => e.status == 1)
+      billDetail.productDetail = e;
+      billDetail.quantity = e.quanlityBuy;
+      billDetail.price = e.productPrice;
+      billDetail.listImei = e.listImei.slice(0, e.quanlityBuy);
+      listBillDetailTemp.push(billDetail);
+    })
+    this.bill.listBillDetail = listBillDetailTemp;
+    console.log(this.bill);
+    this.bill.products = this.cartString;
+    this.billService.paymentBillByVnpay(this.bill).subscribe((data) => {
+      console.log(data);
+      if(data.code == '00'){
+        // this.router.navigate([data.data]);
+        window.open(data.data)
+      }
+      // this.router.navigate(['/pay-success']);
+    })
+  }
 }

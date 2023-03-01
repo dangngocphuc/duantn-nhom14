@@ -20,4 +20,8 @@ export class BillService {
   saveBill(bill): Observable<any> {
     return this.http.post<any>(`/bill/payment`, bill);
   }
+
+  paymentBillByVnpay(bill): Observable<any> {
+    return this.http.post<any>(`/bill/payment/vnpay`, bill);
+  }
 }
