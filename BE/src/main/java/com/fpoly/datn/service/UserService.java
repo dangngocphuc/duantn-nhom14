@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.fpoly.datn.dto.UserDTO;
 import com.fpoly.datn.entity.User;
 import com.fpoly.datn.model.LoginRequest;
 import com.fpoly.datn.request.UserRequest;
@@ -16,6 +17,7 @@ import com.fpoly.datn.request.UserRequest;
 public interface UserService {
 	public Page<User> findUser(UserRequest userParam, Pageable pageable);
 	public User saveUser(User user);
+	public Boolean updateUser(UserDTO user);
 	public User findUserById(Long id);
 	public void deleteUser(Long id);
 	public Long loginUser(LoginRequest loginRequest);

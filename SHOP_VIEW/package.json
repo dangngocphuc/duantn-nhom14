@@ -33,13 +33,14 @@
     "font-awesome": "^4.7.0",
     "ng-image-slider": "^5.0.0",
     "ng-zorro-antd": "^11.4.2",
+    "ngb-modal": "^2.0.3",
     "ngx-cookie-service": "^13.1.2",
     "ngx-paypal": "^9.0.0",
     "rxjs": "^7.4.0",
+    "sweetalert2": "^11.5.2",
     "tslib": "^2.4.0",
     "vn-payments": "^1.1.0",
-    "zone.js": "^0.11.5",
-    "sweetalert2": "^11.5.2"
+    "zone.js": "^0.11.5"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^13.3.4",

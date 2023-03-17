@@ -18,7 +18,8 @@ public interface BillService {
 	public List<Long> statisticBillByMonth();
 	public ByteArrayInputStream exportExcel(BillRequest billParam) throws IOException;
 	public boolean saveBill(Bill bill);
-	public void cancelBill(Bill bill);
+	public void cancelBill(Long id);
 	public void deleteBill(Long id);
+	public Bill getById(Long id);
 	public boolean paymentBill(Bill bill);
 }

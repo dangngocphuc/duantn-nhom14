@@ -34,13 +34,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fpoly.datn.common.CommonUtils;
 import com.fpoly.datn.entity.Bill;
 import com.fpoly.datn.entity.BillDetail;
+import com.fpoly.datn.entity.Transactions;
 import com.fpoly.datn.model.Response;
+import com.fpoly.datn.model.TransactionRequest;
+import com.fpoly.datn.repository.BillRepo;
+import com.fpoly.datn.repository.TransactionRepository;
 import com.fpoly.datn.request.BillRequest;
 import com.fpoly.datn.service.BillService;
 import com.google.gson.Gson;
@@ -52,6 +55,12 @@ public class BillController {
 
 	@Autowired
 	private BillService billService;
+
+	@Autowired
+	private BillRepo billRepo;
+	
+	@Autowired
+	private TransactionRepository transactionRepo;
 
 	// search
 	@GetMapping(value = "")
@@ -93,6 +102,12 @@ public class BillController {
 		return new ResponseEntity<Response<Bill>>(new Response<Bill>("xoa thanh cong", "200"), HttpStatus.OK);
 	}
 
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<Bill> getBillById(@PathVariable(name = "id") Long id) {
+		Bill bill = billService.getById(id);
+		return new ResponseEntity<Bill>(bill, HttpStatus.OK);
+	}
+
 	// payment service
 	@PostMapping(value = "/payment")
 	public ResponseEntity<Boolean> paymentBill(@RequestBody Bill bill) {
@@ -119,10 +134,10 @@ public class BillController {
 	}
 
 	// cancel bill
-	@PostMapping(value = "/cancel")
-	public ResponseEntity<Response<BillDetail>> cancelBill(@RequestBody Bill bill) {
-		if (bill != null) {
-			billService.cancelBill(bill);
+	@GetMapping(value = "/cancel/{id}")
+	public ResponseEntity<Response<BillDetail>> cancelBill(@PathVariable(name = "id") Long id) {
+		if (id != null) {
+			billService.cancelBill(id);
 			return new ResponseEntity<Response<BillDetail>>(new Response<BillDetail>("1002", "oke"), HttpStatus.OK);
 		}
 		return new ResponseEntity<Response<BillDetail>>(new Response<BillDetail>("loi", "10001"), HttpStatus.OK);
@@ -148,11 +163,12 @@ public class BillController {
 
 		String vnp_Version = "2.1.0";
 		String vnp_Command = "pay";
-		String vnp_OrderInfo = "Thanh toan cho don hang";
+
 		String orderType = "other";
 		String vnp_TxnRef = CommonUtils.getRandomNumber(8);
 		String vnp_IpAddr = CommonUtils.getIpAddress(req);
 		String vnp_TmnCode = CommonUtils.vnp_TmnCode;
+		String vnp_OrderInfo = "Thanh toan cho don hang " + vnp_TxnRef;
 
 		int amount = (int) (bill.getTotal().doubleValue() * 100);
 
@@ -191,6 +207,14 @@ public class BillController {
 		String vnp_ExpireDate = formatter.format(cld.getTime());
 		// Add Params of 2.1.0 Version
 		vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
+
+		bill.setDate(new Date());
+		bill.setStatus(CommonUtils.WAITING);
+		bill.setBillCode(CommonUtils.generateBillNumber());
+		for (BillDetail billDetail : bill.getListBillDetail()) {
+			billDetail.setBill(bill);
+		}
+		Bill billSave = billRepo.save(bill);
 
 		// Billing
 //		vnp_Params.put("vnp_Bill_Mobile", req.getParameter("txt_billing_mobile"));
@@ -257,7 +281,143 @@ public class BillController {
 	}
 
 	@GetMapping(value = "/payment/results")
-	public ResponseEntity<Map<String, String>> showRespond(@RequestParam Map<String, String> allParam) {
-		return ResponseEntity.ok(allParam);
+	public ResponseEntity<TransactionRequest> showRespond(TransactionRequest transactionRequest,
+			HttpServletRequest request) {
+		try {
+			Map<String, Object> fields = CommonUtils.objectToMap(transactionRequest);
+			System.out.println(fields);
+			String vnp_SecureHash = transactionRequest.getVnp_SecureHash();
+			if (fields.containsKey("vnp_SecureHashType")) {
+				fields.remove("vnp_SecureHashType");
+			}
+			if (fields.containsKey("vnp_SecureHash")) {
+				fields.remove("vnp_SecureHash");
+			}
+			
+			Transactions transactions = new Transactions();
+			transactions.setVnp_Amount(transactionRequest.getVnp_Amount());
+			transactions.setVnp_BankCode(transactionRequest.getVnp_BankCode());
+			transactions.setVnp_CardType(transactionRequest.getVnp_CardType());
+			transactions.setVnp_OrderInfo(transactionRequest.getVnp_OrderInfo());
+			transactions.setVnp_PayDate(transactionRequest.getVnp_PayDate());
+			transactions.setVnp_ResponseCode(transactionRequest.getVnp_ResponseCode());
+			transactions.setVnp_SecureHash(transactionRequest.getVnp_SecureHash());
+			transactions.setVnp_TmnCode(transactionRequest.getVnp_TmnCode());
+			transactions.setVnp_TransactionNo(transactionRequest.getVnp_TransactionNo());
+			transactions.setVnp_TransactionStatus(transactionRequest.getVnp_TransactionStatus());
+			transactions.setVnp_TxnRef(transactionRequest.getVnp_TxnRef());
+			
+			transactionRepo.save(transactions);
+			
+			String signValue = CommonUtils.hashAllFields(fields);
+//			if (signValue.equals(vnp_SecureHash)) {
+			if ("00".equals(transactionRequest.getVnp_ResponseCode())) {
+//				System.out.println("Giao dịch thành công");
+				Bill bill = billRepo.findBillByCode(transactionRequest.getVnp_TxnRef());
+				if(bill != null) {
+					bill.setPaymentStatus(CommonUtils.PaymentStatus.ERROR.getValue());
+				}else {
+					System.out.println("không tìm thấy thông tin hóa đơn");
+				}
+				
+			} else if ("07".equals(transactionRequest.getVnp_ResponseCode())) {
+				System.out.println(
+						"Trừ tiền thành công. Giao dịch bị nghi ngờ (liên quan tới lừa đảo, giao dịch bất thường).");
+				Bill bill = billRepo.findBillByCode(transactionRequest.getVnp_TxnRef());
+				billService.cancelBill(bill.getId());
+			} else if ("09".equals(transactionRequest.getVnp_ResponseCode())) {
+				Bill bill = billRepo.findBillByCode(transactionRequest.getVnp_TxnRef());
+				billService.cancelBill(bill.getId());
+				System.out.println(
+						"Giao dịch không thành công do: Thẻ/Tài khoản của khách hàng chưa đăng ký dịch vụ InternetBanking tại ngân hàng.");
+			} else if ("10".equals(transactionRequest.getVnp_ResponseCode())) {
+				Bill bill = billRepo.findBillByCode(transactionRequest.getVnp_TxnRef());
+				billService.cancelBill(bill.getId());
+				System.out.println(
+						"Giao dịch không thành công do: Khách hàng xác thực thông tin thẻ/tài khoản không đúng quá 3 lần");
+			} else if ("11".equals(transactionRequest.getVnp_ResponseCode())) {
+				Bill bill = billRepo.findBillByCode(transactionRequest.getVnp_TxnRef());
+				billService.cancelBill(bill.getId());
+				System.out.println(
+						"Giao dịch không thành công do: Đã hết hạn chờ thanh toán. Xin quý khách vui lòng thực hiện lại giao dịch.");
+			} else if ("12".equals(transactionRequest.getVnp_ResponseCode())) {
+				Bill bill = billRepo.findBillByCode(transactionRequest.getVnp_TxnRef());
+				billService.cancelBill(bill.getId());
+				System.out.println("Giao dịch không thành công do: Thẻ/Tài khoản của khách hàng bị khóa.");
+			} else if ("13".equals(transactionRequest.getVnp_ResponseCode())) {
+				Bill bill = billRepo.findBillByCode(transactionRequest.getVnp_TxnRef());
+				billService.cancelBill(bill.getId());
+				System.out.println(
+						"Giao dịch không thành công do Quý khách nhập sai mật khẩu xác thực giao dịch (OTP). Xin quý khách vui lòng thực hiện lại giao dịch.");
+			} else if ("24".equals(transactionRequest.getVnp_ResponseCode())) {
+				Bill bill = billRepo.findBillByCode(transactionRequest.getVnp_TxnRef());
+				billService.cancelBill(bill.getId());
+				System.out.println("Giao dịch không thành công do: Khách hàng hủy giao dịch");
+			} else if ("51".equals(transactionRequest.getVnp_ResponseCode())) {
+				Bill bill = billRepo.findBillByCode(transactionRequest.getVnp_TxnRef());
+				billService.cancelBill(bill.getId());
+				System.out.println(
+						"Giao dịch không thành công do: Tài khoản của quý khách không đủ số dư để thực hiện giao dịch.");
+			} else if ("65".equals(transactionRequest.getVnp_ResponseCode())) {
+				Bill bill = billRepo.findBillByCode(transactionRequest.getVnp_TxnRef());
+				billService.cancelBill(bill.getId());
+				System.out.println(
+						"Giao dịch không thành công do: Tài khoản của Quý khách đã vượt quá hạn mức giao dịch trong ngày.");
+			} else if ("75".equals(transactionRequest.getVnp_ResponseCode())) {
+				Bill bill = billRepo.findBillByCode(transactionRequest.getVnp_TxnRef());
+				billService.cancelBill(bill.getId());
+				System.out.println("Ngân hàng thanh toán đang bảo trì.");
+			} else if ("79".equals(transactionRequest.getVnp_ResponseCode())) {
+				Bill bill = billRepo.findBillByCode(transactionRequest.getVnp_TxnRef());
+				billService.cancelBill(bill.getId());
+				System.out.println(
+						"Giao dịch không thành công do: KH nhập sai mật khẩu thanh toán quá số lần quy định. Xin quý khách vui lòng thực hiện lại giao dịch");
+			} else if ("99".equals(transactionRequest.getVnp_ResponseCode())) {
+				Bill bill = billRepo.findBillByCode(transactionRequest.getVnp_TxnRef());
+				billService.cancelBill(bill.getId());
+				System.out.println("Các lỗi khác (lỗi còn lại, không có trong danh sách mã lỗi đã liệt kê)");
+			} else {
+				Bill bill = billRepo.findBillByCode(transactionRequest.getVnp_TxnRef());
+				billService.cancelBill(bill.getId());
+				System.out.println("Các lỗi khác (lỗi còn lại, không có trong danh sách mã lỗi đã liệt kê)");
+				System.out.println("Lỗi không xác định");
+			}
+//			} else {
+//				System.out.println("Chu ky khong hop le");
+//			}
+
+		} catch (
+
+		IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		Map fields = new HashMap();
+//		for (Enumeration params = request.getParameterNames(); params.hasMoreElements();) {
+//			String fieldName = (String) params.nextElement();
+//			String fieldValue = request.getParameter(fieldName);
+//			if ((fieldValue != null) && (fieldValue.length() > 0)) {
+//				fields.put(fieldName, fieldValue);
+//			}
+//		}
+//		String vnp_SecureHash = request.getParameter("vnp_SecureHash");
+//		if (fields.containsKey("vnp_SecureHashType")) {
+//			fields.remove("vnp_SecureHashType");
+//		}
+//		if (fields.containsKey("vnp_SecureHash")) {
+//			fields.remove("vnp_SecureHash");
+//		}
+//		String signValue = CommonUtils.hashAllFields(fields);
+//		if (signValue.equals(vnp_SecureHash)) {
+//			if ("00".equals(transactionRequest.getVnp_TransactionStatus())) {
+//				System.out.println("GD Thanh cong");
+//			} else {
+//				System.out.println("GD Khong thanh cong");
+//			}
+//
+//		} else {
+//			System.out.println("Chu ky khong hop le");
+//		}
+		return ResponseEntity.ok(transactionRequest);
 	}
 }

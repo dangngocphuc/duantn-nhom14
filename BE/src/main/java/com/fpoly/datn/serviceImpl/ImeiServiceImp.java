@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.fpoly.datn.entity.Imei;
 import com.fpoly.datn.entity.Option;
+import com.fpoly.datn.entity.Product;
 import com.fpoly.datn.entity.ProductDetail;
 import com.fpoly.datn.repository.ImeiRepository;
 import com.fpoly.datn.request.ImeiRequest;
@@ -77,6 +78,32 @@ public class ImeiServiceImp implements ImeiService {
 	public boolean deleteImei(Long id) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public List<Imei> getListImeiByProductDetail(ImeiRequest req, Pageable pageable) {
+		Page<Imei> page = imeiRepo.findAll(new Specification<Imei>() {
+			@Override
+			public Predicate toPredicate(Root<Imei> root, CriteriaQuery<?> query,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicates = new ArrayList<>();
+				if (req != null) {
+					if (req.getImei() != null && !(req.getImei().equals(""))) {
+						predicates.add(criteriaBuilder.or(
+								criteriaBuilder.like(criteriaBuilder.upper(root.<String>get("imei")),
+												"%" + req.getImei().trim().toUpperCase() + "%")
+						));
+					}
+					if (req.getProductId() != null && !(req.getProductId().equals(""))) {
+						predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("productDetail").get("id"), req.getProductId())));
+					}
+				}
+				
+				predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("status"), 1)));
+				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+		}, pageable);
+		return page.getContent();
 	}
 
 }

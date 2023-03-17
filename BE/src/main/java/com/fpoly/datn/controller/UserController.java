@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fpoly.datn.auth.UserDetail;
+import com.fpoly.datn.dto.UserDTO;
 import com.fpoly.datn.entity.Review;
 import com.fpoly.datn.entity.User;
 import com.fpoly.datn.model.Response;
@@ -65,7 +68,13 @@ public class UserController {
 		return new ResponseEntity<Response<User>>(new Response<User>(count, lists), HttpStatus.OK);
 	}
 
-	@PostMapping(value = "/save")
+	@PutMapping(value = "")
+	public ResponseEntity<Boolean> updateUser(@RequestBody UserDTO user) {
+		Boolean res = userService.updateUser(user);
+		return new ResponseEntity<Boolean>(res, HttpStatus.OK);
+	}
+	
+	@PostMapping(value = "")
 	public ResponseEntity<Response<User>> saveUser(@RequestBody User user) {
 		if (user != null) {
 			if (userRepo.existsByUserName(user.getUsername())) {
@@ -80,8 +89,14 @@ public class UserController {
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Response<User>> getUser(@PathVariable(name = "id") Long id) {
-		return new ResponseEntity<Response<User>>(new Response<User>(userService.findUserById(id)), HttpStatus.OK);
+	public ResponseEntity<Response<UserDetail>> getUser(@PathVariable(name = "id") Long id) {
+		User user = userService.findUserById(id);
+		UserDetail userDetail = new UserDetail();
+		userDetail.setUsername(user.getUsername());
+		userDetail.setUserID(user.getUserID());
+		userDetail.setPhoneNumber(user.getUserPhone().toString());
+		userDetail.setListAddress(user.getListAddress());
+		return new ResponseEntity<Response<UserDetail>>(new Response<UserDetail>(userDetail), HttpStatus.OK);
 	}
 
 	@DeleteMapping(value = "/delete/{id}")

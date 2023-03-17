@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -38,9 +37,9 @@ public class Imei implements Serializable {
 	@JsonBackReference
 	private ProductDetail productDetail;
 	
-	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "bill_detail_id")
+//	@JsonBackReference
 	private BillDetail billDetail;
 
 	private String imei;

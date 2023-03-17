@@ -50,7 +50,7 @@ export class HomeComponent implements OnInit {
       console.log(this.lenthCompare);
     }
     this.getProducts(this.pageIndex, this.pageSize, 'productID', 'descend')
-    this.getProductSales(this.pageIndex,this.pageSize, 'productID', 'ascend');
+    this.getProductSales(this.pageIndex, this.pageSize, 'productID', 'ascend');
   }
   createNotification(type: string, title: string, message: string): void {
     this.notification.create(type, title, message);
@@ -124,6 +124,7 @@ export class HomeComponent implements OnInit {
     if (!duplicate) {
       debugger;
       product.quanlityBuy = 1;
+
       this.cart.push(product);
       this.updateCart();
       this.createNotification(
@@ -133,12 +134,28 @@ export class HomeComponent implements OnInit {
       );
       window.location.reload();
       // window.location.href = '/mycart'
-    } else {
-      this.createNotification(
-        'info',
-        'Sản phẩm đã có trong giỏ hàng',
-        ''
-      );
+    }
+    else {
+      this.cart.forEach((ele) => {
+        if (ele.id == product.id) {
+          if(ele.quanlityBuy == ele.quantity){
+            this.createNotification(
+              'warning',
+              'bạn đã thêm tối đa sản phẩm',
+              ''
+            );
+          }else{
+            ele.quanlityBuy = ele.quanlityBuy + 1;
+            this.createNotification(
+              'success',
+              'Sản phẩm đã thêm vào giỏ hàng',
+              ''
+            );
+            this.updateCart();
+            window.location.reload();
+          }
+        }
+      });
     }
   }
 

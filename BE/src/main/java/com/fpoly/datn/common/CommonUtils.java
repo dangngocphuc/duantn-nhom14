@@ -1,6 +1,7 @@
 package com.fpoly.datn.common;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -190,14 +191,20 @@ public class CommonUtils {
 	// response exception
 	public static final String GIUPVIEC_HVT = "GIUPVIEC_HVT";
 	public static final Long LOGIN_FAIL = 10L;
+	public static final String WAITING = "Waiting";
 	public static final String PROCESS = "Process";
+	public static final String PROCESSED = "Processed";
 	public static final String DELIVERY = "Delivery";
 	public static final String DELIVERED = "Delivered";
 	public static final String CANCEL = "Cancel";
 	public static final Long LOGIN_SUCCESS = 0L;
 	public static final String ROOT_IMAGES_BACKEND = "D:/Linh_tinh/work-to-do/ki 2 nam 4/DoAnTotNghiep/do_an_code/be/src/assets/images/";
 	public static final String ROOT_IMAGES_FRONTEND = "D:/Linh_tinh/work-to-do/ki 2 nam 4/DoAnTotNghiep/do_an_code/fe/src/assets/images/";
-
+	public static final String THAMSO_JOB = "0";
+	
+	
+	
+	
 	public static String Sha1EncryptText(String sInputText) {
 		try {
 			return DigestUtils.sha1Hex(sInputText);
@@ -241,6 +248,65 @@ public class CommonUtils {
 		}
 
 		private TrangThai(Integer value, String name) {
+			this.value = value;
+			this.name = name;
+		}
+	}
+	
+	public static enum PaymentStatus {
+
+		SUCCESS("00", "Đã Thanh toán"), ERROR("01", "Chưa Thanh toán");
+
+		private String value;
+		private String name;
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		private PaymentStatus(String value, String name) {
+			this.value = value;
+			this.name = name;
+		}
+	}
+	
+	public static enum ResponeVNP {
+
+		SUCCESS("00", "Đã Thanh toán"),
+		ERROR("07", "Chưa Thanh toán");
+
+		private String value;
+		private String name;
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		private ResponeVNP(String value, String name) {
 			this.value = value;
 			this.name = name;
 		}
@@ -406,5 +472,17 @@ public class CommonUtils {
             sb.append(chars.charAt(rnd.nextInt(chars.length())));
         }
         return sb.toString();
+    }
+    
+    public static Map<String, Object> objectToMap(Object obj) throws IllegalAccessException {
+        Map<String, Object> map = new HashMap<>();
+        Class<?> clazz = obj.getClass();
+        for (Field field : clazz.getDeclaredFields()) {
+            field.setAccessible(true);
+            String fieldName = field.getName();
+            Object fieldValue = field.get(obj);
+            map.put(fieldName, fieldValue);
+        }
+        return map;
     }
 }

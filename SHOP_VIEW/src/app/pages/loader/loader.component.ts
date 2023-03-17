@@ -13,7 +13,7 @@ export class LoaderComponent implements OnInit {
 
   ngOnInit(): void {
     // debugger;
-    console.log('isLoading :>> ',this.isLoading);
+    // console.log('isLoading :>> ',this.isLoading);
   }
 
 }

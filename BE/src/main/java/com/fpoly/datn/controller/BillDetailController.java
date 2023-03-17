@@ -31,7 +31,7 @@ public class BillDetailController {
 			};
 //			e.getProductDetail().setListProductDetailValue(null);
 			e.getProductDetail().setProduct(null);
-			e.getProductDetail().setListImei(null);
+//			e.getProductDetail().setListImei(null);
 		});
 		
 		Long count = (long) billDetails.size();

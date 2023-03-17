@@ -1,5 +1,7 @@
 package com.fpoly.datn.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fpoly.datn.entity.Imei;
 import com.fpoly.datn.request.ImeiRequest;
+import com.fpoly.datn.request.ProductRequest;
 import com.fpoly.datn.service.ImeiService;
 
 @RestController
@@ -30,6 +33,12 @@ public class ImeiController {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Imei> getOption(@PathVariable(name = "id") Long id) {
 		return new ResponseEntity<Imei>(toResponse(imeiService.findById(id)), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/list")
+	public ResponseEntity<List<Imei>> getListImei(Pageable pageable,ImeiRequest req) {
+		List<Imei> pageImei = imeiService.getListImeiByProductDetail(req, pageable);
+		return new ResponseEntity<List<Imei>>(pageImei, HttpStatus.OK);
 	}
 	
 	public Imei toResponse(Imei entity) {

@@ -28,6 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fpoly.datn.common.CommonUtils;
+import com.fpoly.datn.dto.UserDTO;
+import com.fpoly.datn.entity.Address;
 import com.fpoly.datn.entity.Role;
 import com.fpoly.datn.entity.User;
 import com.fpoly.datn.model.LoginRequest;
@@ -38,11 +40,11 @@ import com.fpoly.datn.request.UserRequest;
 import com.fpoly.datn.service.UserService;
 
 @Service
-public class UserServiceImpl implements UserService,UserDetailsService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Autowired
 	private UserRepo userRepo;
-	
+
 	@Autowired
 	private RoleRepository roleRepository;
 
@@ -53,7 +55,7 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 	public void setDataSource(DataSource dataSource) {
 		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
-	
+
 	@Autowired
 	PasswordEncoder encoder;
 
@@ -123,7 +125,7 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 				e.printStackTrace();
 				return CommonUtils.LOGIN_FAIL;
 			}
-			
+
 		}
 		return result;
 
@@ -193,10 +195,32 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 		newUser.setUserName(user.get().getUsername());
 		newUser.setUserPhone(user.get().getUserPhone());
 		newUser.setRoles(user.get().getRoles());
-		for(Role role: user.get().getRoles()) {
+		for (Role role : user.get().getRoles()) {
 			role.setUsers(null);
 		}
 		return user.get();
+	}
+
+	@Override
+	@Transactional
+	public Boolean updateUser(UserDTO user) {
+		User users = userRepo.findById(user.getUserID()).get();
+//		if(user.getListAddress().get(0).getDefaults() == null) {
+//			user.getListAddress().get(0).setDefaults(0L);
+//		}else {
+//			users.getListAddress().forEach(e->{
+//				e.setDefaults(0L);
+//			});
+//		}
+		if (user.getListAddress() != null) {
+			users.getListAddress().clear();
+			users.getListAddress().addAll(user.getListAddress());
+			for(Address address: users.getListAddress()) {
+				address.setUser(users);
+			}
+			userRepo.save(users);
+		}
+		return true;
 	}
 
 }

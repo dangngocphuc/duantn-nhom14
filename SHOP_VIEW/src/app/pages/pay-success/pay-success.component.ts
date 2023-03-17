@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { BillService } from 'src/app/services/bill.service';
 
 @Component({
   selector: 'app-pay-success',
@@ -8,12 +9,16 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class PaySuccessComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(
+    private billService : BillService,
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.route.queryParams
       .subscribe(params => {
-        console.log(params); // { orderby: "price" }
+       this.billService.paymentBillByVnpayResponse(params).subscribe((data)=>{
+          console.log(data);
+       })
       }
     );
   }

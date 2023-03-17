@@ -11,6 +11,7 @@ import { HttpBaseService } from './http-base.service';
 export class ImeiService {
 
   constructor(private http: HttpBaseService, private authen: AuthenticationService) { }
+
   getImei(page: PagesRequest, request: ImeiRequest): Observable<PageImei> {
     let query = {};
     query['page'] = page.page;
@@ -27,6 +28,21 @@ export class ImeiService {
 
   getImeiById(id): Observable<any> {
     return this.http.get<any>(`/imei/` + id, null);
+  }
+
+  getListImeiByProductDetail(page: PagesRequest, data): Observable<any> {
+    debugger;
+    let query = {};
+    if (page.page) query['page'] = page.page;
+    if (page.size) query['size'] = page.size;
+    query['sort'] = 'id,desc';
+    if (data && data.imei && data.imei != '')
+      query['imei'] = data.imei.toString();
+    if (data && data.productId && data.productId != '')
+      query['productId'] = data.productId.toString();
+    let params = new HttpParams({ fromObject: query });
+
+    return this.http.get<any>(`/imei/list/`, params);
   }
 
 }

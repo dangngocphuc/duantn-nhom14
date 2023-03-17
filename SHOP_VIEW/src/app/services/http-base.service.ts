@@ -26,10 +26,10 @@ export class HttpBaseService {
       }
     }
     return new HttpHeaders(headers);
-    
   }
   get<T>(url: string, params: any): Observable<T> {
     if (params) {
+      debugger;
       let param = new HttpParams();
       params.forEach((values, keys) => {
         if (values) {
@@ -87,7 +87,6 @@ export class HttpBaseService {
     if (method == 'GET') {
       // console.log(httpOptions);
       return this.http.get<T>(url, httpOptions);
-      
     }
     if (method == 'POST') {
       return this.http.post<T>(url, body, httpOptions);

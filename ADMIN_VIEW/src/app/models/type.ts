@@ -176,6 +176,7 @@ export class Imei {
   productDetail: ProductDetail;
   status: number;
   productName: String;
+  supplier : number;
 }
 export class PageImei {
   content: Imei[];
@@ -217,6 +218,7 @@ export class Bill {
   status: string;
   listBillDetail: BillDetail[];
   billCode: String;
+  note: String;
 }
 export class BillDetail {
   id: number;
@@ -225,6 +227,7 @@ export class BillDetail {
   price: number;
   quantity: number;
   listImei: Imei[];
+  listImeiValue : any;
 }
 export class Review {
   id: number;

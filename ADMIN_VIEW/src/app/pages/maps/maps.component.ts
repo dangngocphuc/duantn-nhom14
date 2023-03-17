@@ -5,10 +5,13 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { ModalManager } from 'ngb-modal';
 import { Action } from 'src/app/commons/common';
-import { Bill, BillDetail, ProductDetail } from 'src/app/models/type';
+import { Bill, BillDetail, PagesRequest, ProductDetail } from 'src/app/models/type';
 import { BillService } from 'src/app/services/bill.service';
 import { ProductDetailService } from 'src/app/services/productDetail.service';
+import { ImeiService } from 'src/app/services/imei.service';
 import Swal from 'sweetalert2';
+import { catchError, concat, debounceTime, distinctUntilChanged, map, Observable, of, Subject, switchMap, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 declare const google: any;
 
 @Component({
@@ -28,6 +31,7 @@ export class MapsComponent implements OnInit {
   controlArray: Map<string, any> = new Map<string, any>();
   listOfBillDetail: any;
   billId: string;
+  billCode: String;
   bill: Bill;
   Action = Action;
   action: Action;
@@ -37,12 +41,27 @@ export class MapsComponent implements OnInit {
   totalPrice = 0;
   newBill = new Bill();
 
+  lstImei: Observable<any[]>;
+  loadlstImei = false;
+  textInput_imei$ = new Subject<string>();
+
+  disabled;
+
   @ViewChild('myModal') myModal;
+
+  @ViewChild('Modal') Modal;
+
   private modalRef;
   constructor(private fb: FormBuilder, private notification: NzNotificationService,
+    private imeiService: ImeiService, 
     private modal: NzModalService, private modalService: ModalManager,
     private productDetailService: ProductDetailService,
     private billService: BillService) { }
+
+
+
+  
+
 
   ngOnInit() {
     this.searchForm = this.fb.group({
@@ -57,6 +76,7 @@ export class MapsComponent implements OnInit {
   createNotification(type: string, title: string, message: string): void {
     this.notification.create(type, title, message);
   }
+
 
   search() {
     const billId = this.searchForm.controls.billID.value;
@@ -131,10 +151,23 @@ export class MapsComponent implements OnInit {
   }
 
 
-  showModal(id): void {
+  showModal(data): void {
     this.isVisible = true;
-    this.billId = id;
-    this.getBillDetail(id);
+    this.billId = data.id;
+    this.billCode = data.billCode;
+    // this.getBillDetail(data.id);
+    this.billService.getBillById(data.id).subscribe((data) => {
+      console.log(data);
+      this.bill = data;
+      this.bill.listBillDetail.forEach((e) => {
+        this.loadImei(e);
+      })
+      if (!(this.bill.status == 'Process')) {
+        this.disabled = true;
+      } else {
+        this.disabled = false;
+      }
+    })
   }
 
   getBillDetail(id) {
@@ -155,11 +188,12 @@ export class MapsComponent implements OnInit {
   }
 
   handleOk() {
+    this.bill = new Bill();
     this.isVisible = false;
   }
 
   changeStatus(e, bill) {
-    debugger;
+    // debugger;
     this.bill = bill;
     this.bill.status = e;
     this.bill.user = null;
@@ -181,11 +215,11 @@ export class MapsComponent implements OnInit {
   }
 
 
-  openModal(action) {
+  openMyModal(modal?, action?) {
     // this.loadOption();
     this.getListProductDetail();
     this.action = action;
-    this.modalRef = this.modalService.open(this.myModal, {
+    this.modalRef = this.modalService.open(modal, {
       size: "xl",
       modalClass: 'mymodal',
       hideCloseButton: false,
@@ -198,6 +232,40 @@ export class MapsComponent implements OnInit {
     })
   }
 
+  openModal(data) {
+    // this.loadOption();
+    // this.getListProductDetail();
+    this.billId = data.id;
+    this.billCode = data.billCode;
+    // this.getBillDetail(data.id);
+    this.billService.getBillById(data.id).subscribe((data) => {
+      console.log(data);
+      this.bill = data;
+      this.bill.listBillDetail.forEach((e) => {
+        this.loadImei(e);
+      })
+      if (!(this.bill.status == 'Process')) {
+        this.disabled = true;
+      } else {
+        this.disabled = false;
+      }
+    })
+    // this.action = action;
+    this.modalRef = this.modalService.open(this.Modal, {
+      size: "xl",
+      modalClass: 'mymodal',
+      hideCloseButton: false,
+      centered: false,
+      backdrop: true,
+      animation: true,
+      keyboard: false,
+      closeOnOutsideClick: false,
+      backdropClass: "modal-backdrop"
+    })
+  }
+
+
+
   getListProductDetail() {
     this.productDetailService.getListProductDetail().subscribe((response) => {
       this.lstProductDetail = response;
@@ -208,7 +276,7 @@ export class MapsComponent implements OnInit {
     debugger;
     this.listOfProductDetail.forEach((element) => {
       debugger;
-      if (element.id == item.id &&  item.quanlityBuy < element.quantity ) {
+      if (element.id == item.id && item.quanlityBuy < element.quantity) {
         element.quanlityBuy += 1;
       }
     });
@@ -234,7 +302,7 @@ export class MapsComponent implements OnInit {
   }
 
   addProduct() {
-    if(this.productDetail.id){
+    if (this.productDetail.id) {
       this.productDetail.quanlityBuy = 1;
       let duplicate = false;
       this.listOfProductDetail.forEach((e) => {
@@ -242,17 +310,17 @@ export class MapsComponent implements OnInit {
           duplicate = true;
         }
       })
-      if(!duplicate){
+      if (!duplicate) {
         // debugger;
         this.productDetail.quanlityBuy = 1;
         this.listOfProductDetail.push(this.productDetail);
         this.updateBill();
-      }else{
-        Swal.fire('','Sản phẩm đã có trong giỏ hàng','info');
+      } else {
+        Swal.fire('', 'Sản phẩm đã có trong giỏ hàng', 'info');
       }
     }
   }
-  updateBill(){
+  updateBill() {
     this.totalPrice = 0;
     this.listOfProductDetail.forEach((element) => {
       this.totalPrice += element.quanlityBuy * element.productPrice;
@@ -261,20 +329,21 @@ export class MapsComponent implements OnInit {
     });
   }
 
-  payment(){
+  payment() {
     // console.log(this.newBill);
+    debugger;
     let listBillDetailTemp = []
     this.listOfProductDetail.forEach((e) => {
       let billDetail = new BillDetail();
-      e.listImei = e.listImei.filter((e) => e.status == 1)
+      // e.listImei = e.listImei.filter((e) => e.status == 1)
       billDetail.productDetail = e;
       billDetail.quantity = e.quanlityBuy;
       billDetail.price = e.productPrice;
-      billDetail.listImei = e.listImei.slice(0, e.quanlityBuy);
+      // billDetail.listImei = e.listImei.slice(0, e.quanlityBuy);
       listBillDetailTemp.push(billDetail);
     })
     this.newBill.total = this.totalPrice;
-    this.newBill.listBillDetail=listBillDetailTemp;
+    this.newBill.listBillDetail = listBillDetailTemp;
     console.log(this.newBill);
     this.saveBill(this.newBill);
   }
@@ -295,5 +364,119 @@ export class MapsComponent implements OnInit {
         );
       }
     );
+  }
+
+  cancelBill(data) {
+    this.modal.confirm({
+      nzTitle: 'Bạn có chắc chắn muốn hủy đơn?',
+      nzContent: '',
+      nzOkText: 'Yes',
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => {
+        if (data.status === 'Delivered') {
+          this.createNotification(
+            'warning',
+            'Đơn hàng đã giao không thể hủy!',
+            ''
+          );
+        } else {
+          this.billService.cancelBill(data.id).subscribe(
+            (data) => {
+              if (data && data.errorCode === '1002') {
+                this.createNotification('success', 'Hủy thành công!', '');
+              }
+            },
+            (error) => {
+              this.createNotification(
+                'error',
+                'Có lỗi xảy ra!',
+                'Vui lòng liên hệ quản trị viên.'
+              );
+            },
+            () => {
+              this.getBills(this.pageIndex, this.pageSize, null, null);
+            }
+          );
+        }
+      },
+      nzCancelText: 'No',
+      nzOnCancel: () => console.log('Cancel'),
+    });
+  }
+
+
+  loadImei(e) {
+    console.log(e.productDetail.id);
+    this.lstImei = concat(
+      this.imeiService.getListImeiByProductDetail(new PagesRequest(0, 10), { imei: null, productId: e.productDetail.id }), // default items
+      this.textInput_imei$.pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        tap(() => (this.loadlstImei = true)),
+        switchMap((term) =>
+          this.imeiService
+            .getListImeiByProductDetail(new PagesRequest(0, 10), { imei: term, productId: e.productDetail.id })
+            .pipe(
+              catchError(() => of([])), // empty list on error
+              tap(() => (this.loadlstImei = false))
+            )
+        )
+      )
+    );
+    this.lstImei.subscribe(data => {
+      e.listImeiValue = data;
+    })
+  }
+
+  handle() {
+    console.log(this.bill);
+    if (this.bill.listBillDetail) {
+      this.bill.listBillDetail.forEach((e) => {
+        if (e.listImei.length != e.quantity) {
+          this.createNotification(
+            'warning',
+            'Lưu thất bại!',
+            'Nhập Imei bằng với số lượng sản phẩm'
+          );
+        }
+        else {
+          this.bill.user = null;
+          this.saveBill(this.bill);
+        }
+      })
+    }
+  }
+
+  handlePrint(): void {
+    let printContents, popupWin;
+    printContents = document.getElementById('print-section').innerHTML;
+    popupWin = window.open('', '_blank');
+    popupWin.document.open();
+    popupWin.document.write(`
+      <html>
+        <head>
+          <title>Hóa đơn Lapware</title>
+        </head>
+        <style>
+          .ant-table table {
+            width: 100%;
+            text-align: left;
+            border-radius: 2px 2px 0 0;
+            border-collapse: separate;
+            border-spacing: 0;
+          }
+        </style>
+      <body onload="window.print();window.close()">${printContents}</body>
+      </html>`
+    );
+    popupWin.document.close();
+  }
+
+  checkButton() {
+    if (!(this.bill.status == 'Process')) {
+      return false;
+    }
+    return true;
   }
 }

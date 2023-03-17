@@ -40,22 +40,27 @@ export class OrderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+
   }
 
   showModal(data): void {
     this.isVisible = true;
     debugger;
-    this.billId = data.id;
+    this.billId = data.billCode;
     this.getBillDetail(data.id);
-    this.status =
-      data.status == 'Process'
-        ? 1
-        : data.status == 'Delivery'
-        ? 2
-        : data.status == 'Delivered'
-        ? 3
-        : 4;
+    if (data.status == 'Waiting') {
+      this.status = 1;
+    } else if (data.status == 'Processed') {
+      this.status = 2;
+    } else if (data.status == 'Delivery') {
+      this.status = 3;
+    } else if (data.status == 'Delivered') {
+      this.status = 4;
+    }
+    else {
+      this.status = 5;
+    }
+
   }
 
   handleOk() {
@@ -63,7 +68,7 @@ export class OrderComponent implements OnInit {
   }
 
   onQueryParamsChange(params: NzTableQueryParams): void {
-    
+
     const { pageSize, pageIndex, sort } = params;
     const currentSort = sort.find((item) => item.value !== null);
     const sortField = (currentSort && currentSort.key) || null;
@@ -120,5 +125,20 @@ export class OrderComponent implements OnInit {
     );
   }
 
-  
+  setStatus(e) {
+    if (e == 'Waiting') {
+      return "Chờ xác nhận"
+    } else if (e == 'Processed') {
+      return "Đã xác nhận"
+    } else if (e == 'Delivery') {
+      return "Đang giao hàng"
+    } else if (e == 'Delivered') {
+      return "Đã giao hàng"
+    }
+    else {
+      return "Đã hủy"
+    }
+  }
+
+
 }

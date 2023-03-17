@@ -56,12 +56,12 @@ export class HeaderComponent implements OnInit {
       this.user = JSON.parse(user);
       this.userName = this.user.username;
     }
-    console.log(this.user);
+    // console.log(this.user);
     const cart = localStorage.getItem('cart') || '';
      if (cart) {
        this.cart = JSON.parse(cart);
        this.totalProduct = this.cart.length;
-       console.log(this.totalProduct)
+      //  console.log(this.totalProduct)
      }
   }
   createNotification(type: string, title: string, message: string): void {
@@ -87,7 +87,7 @@ export class HeaderComponent implements OnInit {
   getBrand(){
     this.brandService.getListBrand().subscribe((res)=>{
       this.listOfBrand = res;
-      console.log(this.listOfBrand);
+      // console.log(this.listOfBrand);
     })
   }
 

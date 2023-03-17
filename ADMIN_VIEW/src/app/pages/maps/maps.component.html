@@ -70,23 +70,25 @@
           <div>
             <h3 class="mb-0">Danh sách Đơn hàng</h3>
           </div>
-          <div style="float: right;"><button (click)="openModal(Action.THEMMOI)" class="btn btn-sm btn-success">Thêm
+          <div style="float: right;"><button (click)="openMyModal(myModal,Action.THEMMOI)"
+              class="btn btn-sm btn-success">Thêm
               mới</button>
           </div>
         </div>
-        <nz-table class="table table-bordered table-striped table-hover mr-0" nzShowSizeChanger [nzData]="listOfData"
-          [nzFrontPagination]="false" [nzLoading]="loading" [nzTotal]="total" [nzPageSize]="pageSize"
-          [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)">
+        <nz-table nzShowSizeChanger [nzData]="listOfData" [nzFrontPagination]="false" [nzLoading]="loading"
+          [nzTotal]="total" [nzPageSize]="pageSize" [nzPageIndex]="pageIndex"
+          (nzQueryParams)="onQueryParamsChange($event)">
           <thead>
             <tr>
               <th nzColumnKey="id" [nzSortFn]="true" style="text-align: center;">Mã Bill</th>
-              <th style="text-align: center;">Tên</th>
-              <th nzColumnKey="total" [nzSortFn]="true" style="text-align: center;">Tổng hóa đơn</th>
-              <th style="text-align: center;">Thanh toán</th>
-              <th nzColumnKey="date" [nzSortFn]="true" style="text-align: center;">Ngày bán</th>
-              <th style="text-align: center;">Địa chỉ</th>
-              <th style="text-align: center;">Tình trạng</th>
-              <th style="text-align: center;">Thao tác</th>
+              <th style="text-align: center">Tên</th>
+              <th nzColumnKey="total" [nzSortFn]="true" style="text-align: center">Tổng hóa đơn</th>
+              <th style="text-align: center">Thanh toán</th>
+              <th nzColumnKey="date" [nzSortFn]="true" style="text-align: center">Ngày bán</th>
+              <th style="text-align: center">Địa chỉ</th>
+              <!-- <th style="text-align: center">Ghi chú</th> -->
+              <th style="text-align: center">Tình trạng</th>
+              <th style="text-align: center">Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -97,23 +99,29 @@
               <td>{{data?.payment}}</td>
               <td>{{data?.date|date:'dd/MM/yyyy'}}</td>
               <td>{{data?.address}}</td>
+              <!-- <td>{{data?.note}}</td> -->
               <td>
                 <nz-select *ngIf=" data.status != 'Cancel'; else elseBlock" ngModel="{{data.status}}"
                   (ngModelChange)="changeStatus($event,data)">
-                  <nz-option nzValue="Process" nzLabel="Đang xử lý"></nz-option>
+                  <nz-option nzValue="Waiting" nzLabel="Chờ xác nhận"></nz-option>
+                  <!-- <nz-option nzValue="Process" nzLabel="Đang xác nhận"></nz-option> -->
+                  <nz-option nzValue="Processed" nzLabel="Đã xác nhận"></nz-option>
                   <nz-option nzValue="Delivery" nzLabel="Đang giao hàng"></nz-option>
                   <nz-option nzValue="Delivered" nzLabel="Đã giao hàng"></nz-option>
+                  <!-- <nz-option nzValue="Delivered" nzLabel="Đang hoàn"></nz-option>
+                  <nz-option nzValue="Delivered" nzLabel="Đang hoàn"></nz-option> -->
                 </nz-select>
                 <ng-template #elseBlock>
                   <p class="red">Đơn hàng đã hủy</p>
                 </ng-template>
               </td>
-              <td style="text-align: center;">
-                <button (click)="showModal(data.id)" class="btn btn-primary">Xem </button>
-                <!-- <nz-divider nzType="vertical"></nz-divider> -->
+              <td>
+                <button (click)="showModal(data)" class="btn btn-primary">Xem </button>
+                <button (click)="openModal(data)" class="btn btn-info">Đổi hàng</button>
+                <nz-divider nzType="vertical"></nz-divider>
                 <button *ngIf=" data.status != 'Cancel'" (click)="cancelBill(data)" class="btn btn-danger" nzDanger>Hủy
                   đơn</button>
-                <!-- <nz-divider nzType="vertical"></nz-divider> -->
+                <nz-divider nzType="vertical"></nz-divider>
               </td>
             </tr>
           </tbody>
@@ -127,7 +135,7 @@
       <div class="m-container" id="print-section">
         <div>
           <h2>Mã đơn: </h2>
-          <h2>{{this.billId}}</h2>
+          <h2>{{this.billCode}}</h2>
         </div>
         <nz-divider nzPlain nzText="Chi tiết"></nz-divider>
         <nz-table nzTemplateMode>
@@ -135,30 +143,35 @@
             <tr>
               <th style="text-align: center;">STT</th>
               <th style="text-align: center;">Tên sản phẩm</th>
+              <th style="text-align: center;">Imei</th>
               <th style="text-align: center;">Giá</th>
               <th style="text-align: center;">Số lượng</th>
-
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let data of listOfBillDetail; ; let i = index">
+            <tr *ngFor="let item of bill?.listBillDetail; ; let i = index">
               <td style="text-align: center;">{{i+1}}</td>
-              <td style="text-align: center;">{{data?.productDetail?.productName}}</td>
-              <td style="text-align: center;">{{data?.productDetail?.productPrice| number}}</td>
-              <td style="text-align: center;">{{data?.quantity}}</td>
+              <td style="text-align: center;">{{item?.productDetail?.productName}}</td>
+              <td>
+                <ng-select [items]="item.listImeiValue" class="custom-ng-select" bindLabel="imei" name="listImei"
+                  [multiple]="true" [hideSelected]="true" [loading]="loadlstImei" [typeahead]=" textInput_imei$"
+                  [disabled]="disabled" [(ngModel)]="item.listImei">
+                </ng-select>
+              </td>
+              <td style="text-align: center;">{{item?.productDetail?.productPrice| number}}</td>
+              <td style="text-align: center;">{{item?.quantity}}</td>
             </tr>
           </tbody>
         </nz-table>
       </div>
     </ng-container>
     <div *nzModalFooter>
+      <button nz-button (click)="handle()" *ngIf="checkButton()">Lưu xử lý</button>
       <button nz-button nzType="default" (click)="handlePrint()"><i nz-icon nzType="printer"
           nzTheme="outline"></i>&nbsp;In hóa đơn</button>
-      <button nz-button nzType="primary" (click)="handleOk()">OK</button>
+      <button nz-button nzType="primary" (click)="handleOk()">Thoát</button>
     </div>
   </nz-modal>
-
-
   <modal #myModal>
     <modal-header>
       <h4 *ngIf="action == Action.THEMMOI">Thêm mới hóa đơn</h4>
@@ -175,27 +188,28 @@
             <div class="col-1"></div>
             <div class="col-10">
               <div class="form-group">
-                <label for="danhMuc">Sản phẩm</label>
+                <label for="danhMuc">Danh mục Sản phẩm</label>
                 <ng-select [items]="lstProductDetail" class="custom-ng-select" bindLabel="productName"
                   [(ngModel)]="productDetail" name="product-detail" [hideSelected]="true">
                 </ng-select>
               </div>
-              <button class="btn btn-primary" (click)="addProduct()">Thêm sản phẩm</button>
+              <button class="btn btn-primary" (click)="addProduct()" style="margin-bottom: 5px;">Thêm sản phẩm</button>
+              <br />
               <div class="form-group">
                 <ng-container *ngIf="listOfProductDetail.length">
                   <table class="table animated wow fadeInLeft" data-wow-delay=".5s">
                     <tr>
-                      <th class="t-head">Hình ảnh</th>
+                      <!-- <th class="t-head">Hình ảnh</th> -->
                       <th class="t-head ">Mặt Hàng</th>
                       <th class="t-head">Giá</th>
                       <th class="t-head">Số Lượng</th>
                       <th class="t-head">Thao tác</th>
                     </tr>
                     <tr *ngFor="let item of listOfProductDetail" class="cross1">
-                      <td class="t-data" style="width:  30%;">
+                      <!-- <td class="t-data" style="width:  30%;">
                         <ng-image-slider #nav [images]="item?.product?.listImage" [infinite]="true" [autoSlide]="1"
                           slideImage="1" [imageSize]="{width: '100%', height: 10}"></ng-image-slider>
-                      </td>
+                      </td> -->
                       <td class="t-data" style="width:  20%;">
                         <h3>
                           {{item.productName}}
@@ -207,11 +221,13 @@
                       <td class="t-data">
                         <div class="quantity">
                           <div class="quantity-select">
-                            <div (click)="minusProduct(item)" class="entry value-minus">&nbsp;</div>
-                            <div class="entry value">
-                              {{item.quanlityBuy | number}}
-                            </div>
-                            <div (click)="plusProduct(item)" class="entry value-plus active">&nbsp;</div>
+                            <!-- <div (click)="minusProduct(item)" class="entry value-minus">&nbsp;</div> -->
+                            <!-- <div class="entry value"> -->
+                            <input type="text" class="form-control" [value]="item.quanlityBuy"
+                              style="width: 60px;text-align: center;">
+                            <!-- {{ | number}} -->
+                            <!-- </div> -->
+                            <!-- <div (click)="plusProduct(item)" class="entry value-plus active">&nbsp;</div> -->
                           </div>
                         </div>
                       </td>
@@ -301,5 +317,65 @@
     <modal-footer>
       <!-- <button class="btn btn-primary" (click)="save()">Lưu</button>
     <button class="btn btn-primary" (click)="closeModal()">close</button> -->
+    </modal-footer>
+  </modal>
+ <modal #Modal>
+    <modal-header>
+      <!-- <h4 *ngIf="action == Action.THEMMOI">Thêm mới Option</h4>
+      <h4 *ngIf="action == Action.CAPNHAT">Cập nhật Option</h4> -->
+    </modal-header>
+    <modal-content>
+      <div class="m-container" id="print-section">
+        <div>
+          <!-- <h2>Mã đơn: </h2>
+          <h2>{{this.billCode}}</h2> -->
+        </div>
+        <nz-divider nzPlain nzText="Chi tiết"></nz-divider>
+        <nz-table nzTemplateMode>
+          <thead>
+            <tr>
+              <th style="text-align: center;">STT</th>
+              <th style="text-align: center;">Tên sản phẩm</th>
+              <th style="text-align: center;">Imei</th>
+              <th style="text-align: center;">Số lượng</th>
+              <th style="text-align: center;">Giá</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of bill?.listBillDetail; ; let i = index">
+              <td style="text-align: center;">{{i+1}}</td>
+              <td style="text-align: center;">{{item?.productDetail?.productName}}</td>
+              <td>
+                <ng-select [items]="item.listImeiValue" class="custom-ng-select" bindLabel="imei" name="listImei"
+                  [multiple]="true" [hideSelected]="true" [loading]="loadlstImei" [typeahead]=" textInput_imei$"
+                  [(ngModel)]="item.listImei">
+                </ng-select>
+              </td>
+              <td style="text-align: center;">
+                <input type="text" class="form-control" [(ngModel)]="item.quantity"
+                  style="width: 60px;text-align: center;">
+              </td>
+              <td style="text-align: center;">
+                {{item?.productDetail?.productPrice | number}}
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <ul class="total_price">
+        <li class="last_price">
+          <h4>Tổng Tiền trả khách</h4>
+        </li>
+        <li class="last_price"><span>
+            {{bill?.total| number}} VNĐ
+          </span></li>
+        <div class="clearfix"></div>
+      </ul>
+    </modal-content>
+    <modal-footer>
+      <!-- <button class="btn btn-primary" (click)="save()"><i class="fa fa-file" aria-hidden="true"></i> Save</button> -->
+      <!-- <button class="btn btn-primary" (click)="delete()"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button> -->
+      <!-- <button class="btn btn-primary" (click)="closeModal()"><i class="fa fa-times" aria-hidden="true"></i>
+        Close</button> -->
     </modal-footer>
   </modal>

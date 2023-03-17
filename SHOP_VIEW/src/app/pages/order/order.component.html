@@ -31,7 +31,7 @@
                 <td>{{data?.date|date:'dd/MM/yyyy'}}</td>
                 <td>{{data?.address}}</td>
                 <td> 
-                    {{data?.status == 'Process'?'Đang xử lý':((data?.status == 'Delivery')?'Đang giao hàng':'Đã giao hàng')}} 
+                    {{setStatus(data?.status)}} 
                 </td>
             </tr>
         </tbody>
@@ -65,14 +65,15 @@
                 </tbody>
             </nz-table>
             <nz-divider nzPlain nzText="Tình trạng đơn hàng"></nz-divider>
-            <div *ngIf="status != 4" class="container mb-5">
+            <div *ngIf="status != 5" class="container mb-5">
                 <nz-steps  [nzCurrent]="status">
-                    <nz-step nzTitle="Đang xử lý"  nzDescription="Đơn hàng đang chờ xử lý."></nz-step>
+                    <nz-step nzTitle="Chờ xác nhận"  nzDescription="Đơn hàng chờ xác nhận."></nz-step>
+                    <nz-step nzTitle="Đã xác nhận"  nzDescription="Đơn hàng đã xác nhận."></nz-step>
                     <nz-step nzTitle="Đang giao hàng" nzDescription="Đơn hàng đang được giao."></nz-step>
                     <nz-step nzTitle="Đã giao hàng" nzDescription="Đơn hàng đã được giao."></nz-step>
                 </nz-steps>
             </div>
-            <nz-result *ngIf="status == 4"
+            <nz-result *ngIf="status == 5"
             nzTitle="Đơn hàng đã bị hủy"
             nzStatus="error"
             nzSubTitle="Vui lòng liên hệ quản trị viên để biết thêm chi tiết!"
@@ -92,7 +93,6 @@
             </div>
           </nz-result>
         </div>
-
     </ng-container>
     <div *nzModalFooter>
         <button class="btn btn-outline-success" (click)="handleOk()">Đóng</button>

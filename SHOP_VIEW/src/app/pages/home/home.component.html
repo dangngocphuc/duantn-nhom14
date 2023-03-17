@@ -98,7 +98,7 @@
                                     <span *ngIf="item?.quantity == 0 " class="text-danger">Đã hết hàng</span>
                                 </div>
                                 <div class="prd-bottom">
-                                    <a *ngIf="item.quantity > 0" (click)="addToCart(item)" class="social-info">
+                                    <a *ngIf="item?.quantity > 0" (click)="addToCart(item)" class="social-info">
                                         <span class="ti-shopping-cart"></span>
                                         <p class="hover-text">Thêm vào giỏ</p>
                                     </a>

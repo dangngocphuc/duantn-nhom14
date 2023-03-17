@@ -18,6 +18,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +32,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIdentityInfo(scope = Bill.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Bill implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -62,6 +66,12 @@ public class Bill implements Serializable{
 	
 	@Column(name = "status")
     private String status;
+	
+	@Column(name = "note")
+    private String note;
+	
+	@Column(name = "payment_status")
+    private String paymentStatus;
 	
 	@Transient
 	private String products;

@@ -26,4 +26,7 @@ export class UserService {
   public google(tokenDto: TokenDto): Observable<any> {
     return this.http.post<TokenDto>('/oauth2/google', tokenDto);
   }
+  updateUser(user): Observable<any> {
+    return this.http.put<any>(`/user`, user);
+  }
 }

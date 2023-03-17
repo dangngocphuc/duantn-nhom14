@@ -76,6 +76,10 @@ public class User implements UserDetails {
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
 	private List<Bill> listBill = new ArrayList<>();
+	
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Address> listAddress;
 
 //	@Enumerated(EnumType.STRING)
 //	@Column(name = "auth_povider")

@@ -32,7 +32,7 @@ import { PopupModule } from '@progress/kendo-angular-popup';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxPayPalModule } from 'ngx-paypal';
 import { NgSelectModule } from '@ng-select/ng-select';
-
+import { ModalModule } from 'ngb-modal';
 
 import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login';
 import { GoogleLoginProvider } from 'angularx-social-login';
@@ -80,6 +80,7 @@ const googleLoginOptions = {
     CaptchaModule,
     PopupModule,
     NgbModule,
+    ModalModule,
     NgxPayPalModule,
     NgSelectModule,
     SocialLoginModule,

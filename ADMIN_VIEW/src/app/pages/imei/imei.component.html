@@ -56,8 +56,9 @@
                         <thead class="thead-light">
                             <tr>
                                 <th scope="col">STT</th>
-                                <th scope="col">Imei</th>
                                 <th scope="col">Tên chi tiết sản phẩm</th>
+                                <th scope="col">Imei</th>
+                                <th scope="col">Nhà cung cấp</th>
                                 <th scope="col">Trạng thái</th>
                             </tr>
                         </thead>
@@ -67,8 +68,9 @@
                             totalItems: pageImei?.totalElements }; index as i">
                             <tr>
                                 <td>{{i+1}}</td>
-                                <td><span class="link-text" (click)="view(item?.id)">{{item?.imei}}</span></td>
                                 <td>{{item?.productName}}</td>
+                                <td><span class="link-text" (click)="view(item?.id)">{{item?.imei}}</span></td>
+                                <td></td>
                                 <td>
                                     <span class="badge badge-dot mr-4">
                                         {{setStatus(item?.status)}}
@@ -128,8 +130,20 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="ten">Nhà cung cấp</label>
+                    <!-- <input type="text" class="form-control" [(ngModel)]="imei.productDetail" formControlName="productDetail"> -->
+                    <ng-select [items]="lstSupplier" [(ngModel)]="imei.supplier" bindLabel="name" bindValue="value"
+                        formControlName="supplier">
+                    </ng-select>
+                    <div class="validation-alert"
+                        *ngIf="isFormSubmit &&  formGroup.get('imei')['controls']['supplier'].errors?.['required']">
+                        Không được để trống!
+                    </div>
+                </div>
+                <div class="form-group">
                     <label for="trangThai">Trạng Thái</label>
-                    <ng-select [items]="lstTrangThai" formControlName="status" [(ngModel)]="imei.status" bindLabel="name" bindValue="value">
+                    <ng-select [items]="lstTrangThaiImei" formControlName="status" [(ngModel)]="imei.status"
+                        bindLabel="name" bindValue="value">
                     </ng-select>
                     <div class="validation-alert"
                         *ngIf="isFormSubmit &&  formGroup.get('imei')['controls']['status'].errors?.['required']">
@@ -146,3 +160,4 @@
             Close</button>
     </modal-footer>
 </modal>
+

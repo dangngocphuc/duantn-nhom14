@@ -15,7 +15,7 @@
                     <th class="t-head" style="text-align: center;">Số Lượng</th>
                     <th class="t-head" style="text-align: center;"></th>
                 </tr>
-                <tr *ngFor="let item of listOfProduct" class="cross1">
+                <tr *ngFor="let item of listOfProduct, index as i" class="cross1">
                     <td class="t-data" style="width: 25%;">
                         <!-- <a href="product-detail/{{item?.id}}" class="at-in"> -->
                         <ng-image-slider #nav [images]="item?.product?.listImage" [infinite]="true" [autoSlide]="1"
@@ -35,7 +35,9 @@
                             <div class="quantity-select">
                                 <div (click)="minusProduct(item)" class="entry value-minus">&nbsp;</div>
                                 <div class="entry value">
-                                    {{item?.quanlityBuy | number}}
+                                    <input style="width: 43px;text-align: center;border: none;" type="text" name="quanlityBuy" id="quanlityBuy" (blur)="changeQuanlity($event,i)"
+                                        [value]="item?.quanlityBuy">
+                                    <!-- {{item?.quanlityBuy | number}} -->
                                 </div>
                                 <div (click)="plusProduct(item)" class="entry value-plus active">&nbsp;</div>
                             </div>

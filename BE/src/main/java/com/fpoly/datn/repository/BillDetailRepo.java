@@ -9,5 +9,7 @@ import com.fpoly.datn.entity.Bill;
 import com.fpoly.datn.entity.BillDetail;
 @Repository
 public interface BillDetailRepo extends JpaRepository<BillDetail, Long>{
+	
 	public List<BillDetail> findByBill(Bill bill);
+	
 }

@@ -19,8 +19,8 @@ export class BillService {
   deleteBill(id): Observable<any> {
     return this.http.delete<any>(`/bill/` + id);
   }
-  cancelBill(bill): Observable<any> {
-    return this.http.post<any>(`/bill/cancel-bill`, bill);
+  cancelBill(id): Observable<any> {
+    return this.http.get<any>(`/bill/cancel/` + id, null);
   }
   saveBill(bill): Observable<any> {
     return this.http.post<any>(`/bill/save`, bill);
@@ -34,5 +34,9 @@ export class BillService {
 
   paymentBill(bill): Observable<any> {
     return this.http.post<any>(`/bill/payment`, bill);
+  }
+
+  getBillById(id): Observable<any> {
+    return this.http.get<any>(`/bill/` + id,null);
   }
 }

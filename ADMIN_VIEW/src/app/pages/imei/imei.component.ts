@@ -12,6 +12,7 @@ import { ProductDetailService } from 'src/app/services/productDetail.service';
   styleUrls: ['./imei.component.scss']
 })
 export class ImeiComponent implements OnInit {
+
   isVisible = false;
   closeResult = '';
   action: Action;
@@ -25,14 +26,19 @@ export class ImeiComponent implements OnInit {
   pageRequest = new PagesRequest();
   pageImei = new PageImei();
   imei = new Imei();
+
   lstProductDetail : ProductDetail[];
   common: Common = new Common();
-  lstTrangThai = this.common.lstTrangThai;
+
+  lstTrangThaiImei = this.common.lstTrangThaiImei;
+  lstSupplier = this.common.lstSupplier;
   
   option = new Option();
   formGroup: FormGroup;
+
   controlArray: Map<string, any> = new Map<string, any>();
   isFormSubmit = false;
+
   @ViewChild('myModal') myModal;
   private modalRef;
 
@@ -45,6 +51,7 @@ export class ImeiComponent implements OnInit {
       imei: this.fb.group({
         imei: [{ value: '' }, Validators.required],
         productDetail: [{ value: '', }, Validators.required],
+        supplier: [{ value: '', }, Validators.required],
         status: [{ value: '', }, Validators.required]
       }),
     });

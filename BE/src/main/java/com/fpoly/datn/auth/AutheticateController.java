@@ -74,6 +74,7 @@ public class AutheticateController {
 			userDetail.setUsername(user.getUsername());
 			userDetail.setUserID(user.getUserID());
 			userDetail.setPermissions(permissions);
+			userDetail.setListAddress(user.getListAddress());
 
 			loginResponse.setUserDetail(userDetail);
 			loginResponse.setAuthorization(auth);
@@ -114,7 +115,8 @@ public class AutheticateController {
 			userDetail.setUsername(user.getUsername());
 			userDetail.setUserID(user.getUserID());
 			userDetail.setPermissions(permissions);
-			
+			userDetail.setPhoneNumber(user.getUserPhone().toString());
+			userDetail.setListAddress(user.getListAddress());
 			loginResponse.setUserDetail(userDetail);
 			loginResponse.setAuthorization(auth);
 			loginResponse.setAuthenticated(true);

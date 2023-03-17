@@ -26,7 +26,7 @@ export class CartComponent implements OnInit {
   ngOnInit(): void {
     const cart = localStorage.getItem('cart') || '';
     if (cart) {
-      debugger;
+      // debugger;
       this.listOfProduct = JSON.parse(cart);
       console.log(this.listOfProduct);
       this.listOfProduct.forEach((element) => {
@@ -37,6 +37,8 @@ export class CartComponent implements OnInit {
   }
 
   plusProduct(item) {
+    debugger;
+    console.log(item);
     this.listOfProduct.forEach((element) => {
       if (element.id == item.id &&  item.quanlityBuy < element.quantity ) {
         element.quanlityBuy += 1;
@@ -71,13 +73,15 @@ export class CartComponent implements OnInit {
     });
     localStorage.setItem('total', this.totalPrice.toString());
     localStorage.setItem('cart', JSON.stringify(this.listOfProduct));
+    // window.location.reload();
   }
 
   payment() {
     const userAuth = localStorage.getItem('Authorization') || '';
+    debugger;
     if (userAuth) {
-      this.router.navigate(['/payment']);
-      this.updateCart();
+       this.updateCart();
+       this.router.navigate(['/payment']);
     } else {
       this.modal.confirm({
         nzTitle: 'Bạn cần đăng nhập để thanh toán!',
@@ -93,5 +97,26 @@ export class CartComponent implements OnInit {
         nzOnCancel: () => console.log('Cancel'),
       });
     }
+  }
+
+  changeQuanlity(e,index){
+    console.log(index);
+    console.log(e?.target?.value);
+
+    this.listOfProduct.forEach((element,i)=>{
+      // console.log(i);
+      if(index==i){
+        if(e?.target?.value > element.quantity){
+          element.quanlityBuy = element.quantity
+        }
+        else if(e?.target?.value < 0){
+          element.quanlityBuy = 1
+        }
+        else{
+          element.quanlityBuy = e?.target?.value
+        }
+      }
+    })
+    this.updateCart();
   }
 }
