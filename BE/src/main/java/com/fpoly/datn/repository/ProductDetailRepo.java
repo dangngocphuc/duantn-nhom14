@@ -1,7 +1,5 @@
 package com.fpoly.datn.repository;
 
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,4 +19,7 @@ public interface ProductDetailRepo  extends JpaRepository<ProductDetail, Long>,J
 	
 	@Query("Select t From ProductDetail t  Where t.id =:id ")
 	ProductDetail getById(Long id);
+	
+	@Query("Select t From ProductDetail t  Where t.productCode =:code ")
+	ProductDetail getByMa(String code);
 }

@@ -39,6 +39,7 @@ import com.fpoly.datn.entity.BillDetail;
 import com.fpoly.datn.entity.Config;
 import com.fpoly.datn.entity.EmailJob;
 import com.fpoly.datn.entity.Imei;
+import com.fpoly.datn.entity.Promotion;
 import com.fpoly.datn.entity.User;
 import com.fpoly.datn.repository.BillDetailRepo;
 import com.fpoly.datn.repository.BillRepo;
@@ -46,6 +47,7 @@ import com.fpoly.datn.repository.ConfigRepo;
 import com.fpoly.datn.repository.EmailJobRepo;
 import com.fpoly.datn.repository.ImeiRepository;
 import com.fpoly.datn.repository.ProductRepo;
+import com.fpoly.datn.repository.PromotionRepo;
 import com.fpoly.datn.request.BillRequest;
 import com.fpoly.datn.service.BillService;
 import com.google.gson.Gson;
@@ -65,6 +67,8 @@ public class BillServiceImpl implements BillService {
 	private EmailJobRepo emailJobRepo;
 	@Autowired
 	private ImeiRepository imeiRepo;
+	@Autowired
+	private PromotionRepo promotionRepo;
 
 	public Page<Bill> findBill(BillRequest billParam, Pageable pageable) {
 
@@ -259,7 +263,7 @@ public class BillServiceImpl implements BillService {
 						imei.setStatus(0);
 					}
 				}		
-				Bill billSave = billRepo.save(bills);
+				
 				return true;	
 			}else {
 				Gson g = new Gson();
@@ -268,6 +272,13 @@ public class BillServiceImpl implements BillService {
 				bill.setBillCode(CommonUtils.generateBillNumber());
 				for (BillDetail billDetail : bill.getListBillDetail()) {
 					billDetail.setBill(bill);
+				}
+				if(bill.getPromotion() != null) {
+					Promotion promotion = promotionRepo.findByCode(bill.getPromotion().getCode());
+					if(promotion.getQuantity()> (promotion.getCount()!=null?promotion.getCount():0)) {
+						promotion.setCount((promotion.getCount()!=null?promotion.getCount():0)+1);
+					}
+					promotionRepo.save(promotion);
 				}
 				Bill billSave = billRepo.save(bill);
 				StringBuilder content = new StringBuilder();

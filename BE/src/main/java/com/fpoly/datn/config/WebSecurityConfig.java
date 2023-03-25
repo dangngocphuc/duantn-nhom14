@@ -99,7 +99,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				.antMatchers("/api/authenticate/**", "/api/authenticate/user/login", "/api/getsession",
 						"/api/option/**", "/api/productVariant/**", "/api/imei/**", "/api/user/**", "/api/brand/**","/api/bill/**",
-						"/api/bill-detail/**","/api/cpu/**","/api/ram/**","/api/rom/**","/api/gpu/**","/api/user/reviews",
+						"/api/bill-detail/**","/api/cpu/**","/api/ram/**","/api/rom/**","/api/gpu/**","/api/user/reviews","/api/promotion/**",
 						"/rest-service/*", "/api/product/**", "/api/category/**", "/api/oauth2/google")
 				.permitAll().antMatchers("/admin").hasAuthority("ADMIN").anyRequest().authenticated();
 

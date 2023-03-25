@@ -3,12 +3,16 @@ import { ActivatedRoute } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Category } from 'src/app/entity/Category';
 
-import { Brand, Option, PageProductDetail, ProductDetail } from 'src/app/models/type';
+import { Brand, Cpu, Gpu, Option, PageProductDetail, ProductDetail, Ram, Rom } from 'src/app/models/type';
 import { BrandService } from 'src/app/services/brand.service';
 import { CategoryService } from 'src/app/services/category.service';
+import { CpuService } from 'src/app/services/cpu.service';
+import { GpuService } from 'src/app/services/gpu.service';
 import { OptionService } from 'src/app/services/option.service';
 import { ProductService } from 'src/app/services/product.service';
 import { ProductDetailService } from 'src/app/services/productDetail.service';
+import { RamService } from 'src/app/services/ram.service';
+import { RomService } from 'src/app/services/rom.service';
 
 @Component({
   selector: 'app-product',
@@ -19,6 +23,10 @@ export class ProductComponent implements OnInit {
   categoryId: String;
   listOfCategory: Category[] = [];
   listOfBrand: Brand[] = [];
+  listOfRam: Ram[] = [];
+  listOfRom: Rom[] = [];
+  listOfCpu: Cpu[] = [];
+  listOfGpu: Gpu[] = [];
   listOfOption: Option[] = [];
   price = [0, 30000000];
   listOfData: ProductDetail[] = [];
@@ -27,6 +35,10 @@ export class ProductComponent implements OnInit {
   totalProduct: Number;
   status: String = 'default';
   paramsBrand = [];
+  paramsRam = [];
+  paramsRom = [];
+  paramsCpu = [];
+  paramsGpu = [];
   paramsOptionValue = [];
   listBrandId;
   controlArray: Map<string, any> = new Map<string, any>();
@@ -37,10 +49,10 @@ export class ProductComponent implements OnInit {
   pageProductDetail = new PageProductDetail();
   constructor(
     route: ActivatedRoute,
-    private activatedRoute: ActivatedRoute,
-    private categoryService: CategoryService,
-    private brandService: BrandService,
-    private productService: ProductService,
+    private activatedRoute: ActivatedRoute,private ramService : RamService, 
+    private categoryService: CategoryService,private cpuService :CpuService,
+    private brandService: BrandService,private gpuService: GpuService,
+    private productService: ProductService,private romService: RomService,
     private notification: NzNotificationService,
     private productDetailService: ProductDetailService,
     private optionService: OptionService
@@ -69,6 +81,10 @@ export class ProductComponent implements OnInit {
     // this.getCategories();
     this.getBrands();
     this.getOption();
+    this.getListRam();
+    this.getListRom();
+    this.getListCpu();
+    this.getListGpu();
    
     // console.log(this.listOfOption);
     // if (this.categoryId || !(this.categoryId === '')) {
@@ -165,6 +181,74 @@ export class ProductComponent implements OnInit {
     );
   }
 
+  getListRam() {
+    this.ramService.getListRam().subscribe(
+      (data) => {
+        if (data) {
+          this.listOfRam = data;
+        }
+      },
+      (error) => {
+        this.createNotification(
+          'error',
+          'Có lỗi xảy ra!',
+          'Vui lòng liên hệ quản trị viên.'
+        );
+      }
+    );
+  }
+
+  getListRom() {
+    this.romService.getListRom().subscribe(
+      (data) => {
+        if (data) {
+          this.listOfRom = data;
+        }
+      },
+      (error) => {
+        this.createNotification(
+          'error',
+          'Có lỗi xảy ra!',
+          'Vui lòng liên hệ quản trị viên.'
+        );
+      }
+    );
+  }
+
+  getListCpu() {
+    this.cpuService.getListCpu().subscribe(
+      (data) => {
+        if (data) {
+          this.listOfCpu = data;
+        }
+      },
+      (error) => {
+        this.createNotification(
+          'error',
+          'Có lỗi xảy ra!',
+          'Vui lòng liên hệ quản trị viên.'
+        );
+      }
+    );
+  }
+
+  getListGpu() {
+    this.gpuService.getListGpu().subscribe(
+      (data) => {
+        if (data) {
+          this.listOfGpu= data;
+        }
+      },
+      (error) => {
+        this.createNotification(
+          'error',
+          'Có lỗi xảy ra!',
+          'Vui lòng liên hệ quản trị viên.'
+        );
+      }
+    );
+  }
+
   getOption() {
     this.optionService.getListOption().subscribe(
       (data) => {
@@ -219,22 +303,63 @@ export class ProductComponent implements OnInit {
         });
       }
     }
-    // if(e?.target?.name == 'optionValue'){
-    //   if (e?.target?.checked) {
-    //     this.paramsOptionValue.push(id);
-    //   } else {
-    //     this.paramsOptionValue = this.paramsOptionValue.filter((item) => {
-    //       return (
-    //         item !== id 
-    //       );
-    //     });
-    //   }
-    // }
 
+    if(e?.target?.name == 'ram'){
+      if (e?.target?.checked) {
+        this.paramsRam.push(id);
+      } else {
+        this.paramsRam = this.paramsRam.filter((item) => {
+          return (
+            item !== id 
+          );
+        });
+      }
+    }
+
+    if(e?.target?.name == 'rom'){
+      if (e?.target?.checked) {
+        this.paramsRom.push(id);
+      } else {
+        this.paramsRom = this.paramsRom.filter((item) => {
+          return (
+            item !== id 
+          );
+        });
+      }
+    }
+
+    if(e?.target?.name == 'cpu'){
+      if (e?.target?.checked) {
+        this.paramsCpu.push(id);
+      } else {
+        this.paramsCpu = this.paramsCpu.filter((item) => {
+          return (
+            item !== id 
+          );
+        });
+      }
+    }
+
+    if(e?.target?.name == 'gpu'){
+      if (e?.target?.checked) {
+        this.paramsGpu.push(id);
+      } else {
+        this.paramsGpu = this.paramsGpu.filter((item) => {
+          return (
+            item !== id 
+          );
+        });
+      }
+    }
+    
     if (id) {   
       this.controlArray.set('pageIndex', 0);
       this.controlArray.set('pageSize', 9);
       this.controlArray.set('brandId', this.paramsBrand.join(','));
+      this.controlArray.set('lstRam', this.paramsRam.join(','));
+      this.controlArray.set('lstRom', this.paramsRom.join(','));
+      this.controlArray.set('lstCpu', this.paramsCpu.join(','));
+      this.controlArray.set('lstGpu', this.paramsGpu.join(','));
       // this.controlArray.set('optionValueID', this.paramsOptionValue.join(','));
       this.getProductSort(this.controlArray);
     }

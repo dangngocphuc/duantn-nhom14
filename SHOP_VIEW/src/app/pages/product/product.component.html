@@ -16,8 +16,8 @@
                     <div class="head">Danh mục sản phẩm</div>
                     <ul>
                         <li *ngFor="let item of listOfCategory" class="filter-list">
-                            <input class="pixel-radio" type="radio" (click)="filterByBrand(item?.categoryID)" id="apple" name="brand"><label
-                                for="apple"><a>
+                            <input class="pixel-radio" type="radio" (click)="filterByBrand(item?.categoryID)" id="apple"
+                                name="brand"><label for="apple"><a>
                                     {{item?.categoryName}}
                                 </a>
                             </label>
@@ -31,14 +31,71 @@
                         Brands
                     </span>
                     <ul class="filter-list">
-                        <li *ngFor="let item of listOfBrand">
-                            <div class="group-checkbox">
-                                <input type="checkbox" (click)="filterByBrand(item?.id,$event)" id="brand" name="brand">
-                                <label for="apple">
-                                    {{item?.tenHang}}
-                                    <i class='bx bx-check'></i>
-                                </label>
-                            </div>
+                        <li *ngFor="let e of listOfBrand" class="filter-list">
+                            <input class="pixel-radio" type="checkbox" id="brand" name="brand"
+                                (click)="filterByBrand(e?.id,$event)">
+                            <label for="apple"><a>{{e?.tenHang}}</a>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="box">
+                    <!-- <ng-select [items]="listOfBrand" [clearable]="false" bindLabel="tenHang">
+                    </ng-select> -->
+                    <span class="filter-header">
+                        Ram
+                    </span>
+                    <ul class="filter-list">
+                        <li *ngFor="let e of listOfRam" class="filter-list">
+                            <input class="pixel-radio" type="checkbox" id="ram" name="ram"
+                                (click)="filterByBrand(e?.id,$event)">
+                            <label for="apple"><a>{{e?.ram}}</a>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="box">
+                    <!-- <ng-select [items]="listOfBrand" [clearable]="false" bindLabel="tenHang">
+                    </ng-select> -->
+                    <span class="filter-header">
+                        Rom
+                    </span>
+                    <ul class="filter-list">
+                        <li *ngFor="let e of listOfRom" class="filter-list">
+                            <input class="pixel-radio" type="checkbox" id="rom" name="rom"
+                                (click)="filterByBrand(e?.id,$event)">
+                            <label for="apple"><a>{{e?.rom}}</a>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="box">
+                    <!-- <ng-select [items]="listOfBrand" [clearable]="false" bindLabel="tenHang">
+                    </ng-select> -->
+                    <span class="filter-header">
+                        Cpu
+                    </span>
+                    <ul class="filter-list">
+                        <li *ngFor="let e of listOfCpu" class="filter-list">
+                            <input class="pixel-radio" type="checkbox" id="cpu" name="cpu"
+                                (click)="filterByBrand(e?.id,$event)">
+                            <label for="apple"><a>{{e?.cpu}}</a>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="box">
+                    <!-- <ng-select [items]="listOfBrand" [clearable]="false" bindLabel="tenHang">
+                    </ng-select> -->
+                    <span class="filter-header">
+                        Gpu
+                    </span>
+                    <ul class="filter-list">
+                        <li *ngFor="let e of listOfGpu" class="filter-list">
+                            <input class="pixel-radio" type="checkbox" id="gpu" name="gpu"
+                                (click)="filterByBrand(e?.id,$event)">
+                            <label for="apple"><a>{{e?.gpu}}</a>
+                            </label>
                         </li>
                     </ul>
                 </div>
@@ -49,7 +106,6 @@
                                 <input type="checkbox" id="remember1" checked="checked">
                                 <label for="remember1">
                                     JBL
-
                                 </label>
                             </div>
                         </li>
@@ -92,15 +148,7 @@
                     </ul>
                 </div> -->
                 <!-- <div class="common-filter" *ngFor="let item of listOfOption">
-                    <div class="head">{{item.optionName}}</div>
-                    <ul>
-                        <li *ngFor="let e of item?.listOptionValue" class="filter-list">
-                            <input class="pixel-radio" type="checkbox" id="optionValue" name="optionValue"
-                                (click)="filterByBrand(e?.id,$event)">
-                            <label for="apple"><a>{{e?.optionValue}}</a>
-                            </label>
-                        </li>
-                    </ul>
+                    <<div class="head">{{item.optionName}}</div> 
                 </div> -->
             </div>
         </div>
@@ -132,11 +180,11 @@
                         <div class="single-product">
                             <div class="text-center">
                                 <ng-image-slider #nav [images]="item?.product?.listImage" [infinite]="true"
-                                    [autoSlide]="1" slideImage="1"
-                                    [imageSize]="{width: '100%', height: 200}"></ng-image-slider>
+                                    [autoSlide]="1" slideImage="1" [imageSize]="{width: '100%', height: auto}">
+                                </ng-image-slider>
                             </div>
                             <div class="product-details">
-                                <h5><a href="product-detail/{{item?.id}}">{{item?.productName}}</a></h5>
+                                <h6><a href="product-detail/{{item?.id}}">{{item?.productName}}</a></h6>
                                 <div class="price">
                                     <h6>{{item.productPrice | number}} VNĐ &emsp;<small>{{item?.productMarketprice |
                                             number}} VND</small></h6>

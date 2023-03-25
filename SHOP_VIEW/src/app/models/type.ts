@@ -11,7 +11,7 @@ export class User {
 
 export class Address {
   id: number;
-  user:  User;
+  user: User;
   provinceID: number;
   districtID: number;
   wardCode: String;
@@ -263,6 +263,10 @@ export class Bill {
   listBillDetail: BillDetail[];
   products: String;
   billCode: String;
+  provinceID: number;
+  districtID: number;
+  wardCode: String;
+  promotion: Promotion;
 }
 
 
@@ -375,4 +379,20 @@ export class RequestLeadTime {
   to_district_id: number;
   to_ward_code: String;
   service_id: number;
+}
+
+export class Promotion {
+  id: number;
+  code: String;
+  type: number;
+  dateFrom: Date;
+  dateTo: Date;
+  quantity: number;
+  count: number;
+  value: number;
+}
+
+export class ResponseVnpay {
+  errorCode: String;
+  errorMessage: String;
 }

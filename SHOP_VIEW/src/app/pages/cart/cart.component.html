@@ -35,8 +35,9 @@
                             <div class="quantity-select">
                                 <div (click)="minusProduct(item)" class="entry value-minus">&nbsp;</div>
                                 <div class="entry value">
-                                    <input style="width: 43px;text-align: center;border: none;" type="text" name="quanlityBuy" id="quanlityBuy" (blur)="changeQuanlity($event,i)"
-                                        [value]="item?.quanlityBuy">
+                                    <input style="width: 43px;text-align: center;border: none;" type="text"
+                                        name="quanlityBuy" id="quanlityBuy" (blur)="changeQuanlity($event,i,item)"
+                                       [(ngModel)]="item.quanlityBuy">
                                     <!-- {{item?.quanlityBuy | number}} -->
                                 </div>
                                 <div (click)="plusProduct(item)" class="entry value-plus active">&nbsp;</div>
@@ -51,20 +52,49 @@
             <div class=" ">
                 <h5 class="continue">Tổng Cộng Giỏ Hàng</h5>
                 <div class="price-details">
-                    <h3>Chi Tiết Giá</h3>
-                    <span>Tổng Cộng</span>
-                    <span class="total1">
+                    <h3>Nhập mã giảm giá</h3>
+                    <div class="form-group col-6">
+                        <div class="row">
+                            <div class="col-4">
+                                <input type="text" name="code" id="code" class="form-control" [(ngModel)]="code" trim>
+                            </div>
+                            <div class="col-2"><button (click)="addVorcher()" type="button" class="btn btn-primary">Áp dụng</button></div>
+                        </div>
+                    </div>
+                    <hr>
+                    <!-- <span>Tổng Cộng</span> -->
+                    <!-- <span class="total1">
                         Tổng giá VND
-                    </span>
-                    <span>Giảm giá</span>
-                    <span class="total1">{{salePrice | number}} VND</span>
-                    <span>Phí vận chuyển</span>
-                    <span class="total1">Miễn phí</span>
+                    </span> -->
+                    <!-- <span>Giảm giá</span> -->
+                    <!-- <span class="total1">{{salePrice | number}} VND</span> -->
+                    <!-- <span>Phí vận chuyển</span> -->
+                    <!-- <span class="total1">Miễn phí</span> -->
                     <div class="clearfix"></div>
+                    <div>Bạn được giảm {{promotion?.value}} {{promotion?.type=='0'?'%':'VNĐ'}} đơn hàng</div>
                 </div>
                 <ul class="total_price">
                     <li class="last_price">
-                        <h4>Tổng Cộng</h4>
+                        <h5>Tổng tiền</h5>
+                    </li>
+                    <li class="last_price"><span>
+                            {{sum| number}} VNĐ
+                        </span></li>
+                    <div class="clearfix"> </div>
+                </ul>
+                <ul class="total_price" *ngIf="discountPrice!=0">
+                    <li class="last_price">
+                        <h5>Giảm giá</h5>
+                    </li>
+                    <li class="last_price"><span>
+                            {{discountPrice| number}} VNĐ
+                        </span></li>
+                    <div class="clearfix"> </div>
+                </ul>
+                <hr>
+                <ul class="total_price">
+                    <li class="last_price">
+                        <h4>Tổng tiền thanh toán</h4>
                     </li>
                     <li class="last_price"><span>
                             {{totalPrice| number}} VNĐ
@@ -72,7 +102,6 @@
                     <div class="clearfix"> </div>
                 </ul>
                 <button class="btn btn-outline-success" (click)="payment()">Thanh Toán</button>
-
             </div>
         </ng-container>
         <ng-template #elseBlock>
@@ -83,7 +112,5 @@
                 </div>
             </nz-result>
         </ng-template>
-
-
     </div>
 </div>

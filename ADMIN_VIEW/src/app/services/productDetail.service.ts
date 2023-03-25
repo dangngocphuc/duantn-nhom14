@@ -26,4 +26,6 @@ export class ProductDetailService {
   getListProductDetail(params?): Observable<ProductDetail[]> {
     return this.http.get<ProductDetail[]>(`/product/detail/list`, params);
   }
+
+
 }

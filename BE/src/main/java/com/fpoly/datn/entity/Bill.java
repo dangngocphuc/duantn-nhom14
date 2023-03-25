@@ -79,6 +79,21 @@ public class Bill implements Serializable{
 	@Column(name="bill_code")
 	private String billCode;
 	
+	@Column(name = "province_id")
+    private Long provinceID;
+	
+	@Column(name = "district_id")
+    private Long districtID;
+	
+	@Column(name = "ward_code")
+    private String wardCode;
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "bill",  cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<BillDetail> listBillDetail;
+	
+	@ManyToOne
+	@JoinColumn(name = "promotion_id")
+	private Promotion promotion;
+	
 }
+

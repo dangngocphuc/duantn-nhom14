@@ -63,10 +63,13 @@ public class AutheticateController {
 			auth = commonUtils.createToken(loginRequest.getUsername(), loginRequest.getPassword(), "1");
 			Authentication authentication = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+			if (authentication.isAuthenticated()) {
+				
+			}
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			User user = (User) authentication.getPrincipal();
 			List<String> permissions = new ArrayList<>();
-			for (GrantedAuthority role : user.getAuthorities()) {
+			for (GrantedAuthority role : authentication.getAuthorities()) {
 				permissions.add(role.getAuthority());
 			}
 			UserDetail userDetail = new UserDetail();
@@ -85,6 +88,7 @@ public class AutheticateController {
 				userDetail.setAdmin(true);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<LoginResponse>(new LoginResponse("00", "Error"), HttpStatus.OK);
 		}
 		return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);

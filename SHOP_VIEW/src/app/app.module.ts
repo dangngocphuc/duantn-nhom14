@@ -39,6 +39,7 @@ import { GoogleLoginProvider } from 'angularx-social-login';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { UserLayoutComponent } from './layouts/user-layout/user-layout.component';
 import { NgImageSliderModule } from 'ng-image-slider';
+import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
 
 
 
@@ -85,7 +86,8 @@ const googleLoginOptions = {
     NgSelectModule,
     SocialLoginModule,
     NgSelectModule,
-    NgImageSliderModule
+    NgImageSliderModule,
+    NgxTrimDirectiveModule
   ],
   providers: [LoaderService,{ provide: NZ_I18N, useValue: en_US },{ provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },{
     provide: 'SocialAuthServiceConfig',

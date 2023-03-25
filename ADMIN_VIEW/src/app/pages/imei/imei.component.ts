@@ -5,6 +5,7 @@ import { Action, Common } from 'src/app/commons/common';
 import { Imei, ImeiRequest, PageImei, PagesRequest, ProductDetail } from 'src/app/models/type';
 import { ImeiService } from 'src/app/services/imei.service';
 import { ProductDetailService } from 'src/app/services/productDetail.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-imei',
@@ -21,29 +22,40 @@ export class ImeiComponent implements OnInit {
   isView = false;
   Action = Action;
   pageSizes = [5, 10, 15, 20];
-  
+
   imeiRequest = new ImeiRequest();
   pageRequest = new PagesRequest();
   pageImei = new PageImei();
   imei = new Imei();
 
-  lstProductDetail : ProductDetail[];
+  lstProductDetail: ProductDetail[];
   common: Common = new Common();
 
   lstTrangThaiImei = this.common.lstTrangThaiImei;
   lstSupplier = this.common.lstSupplier;
-  
+
   option = new Option();
   formGroup: FormGroup;
 
   controlArray: Map<string, any> = new Map<string, any>();
   isFormSubmit = false;
 
+  uploadForm: FormGroup;
+  isFormUploadSubmit = false;
+  //file
+  file: File = null;
+  lstFile = new Array<File>();
+  fileName_lb = 'Chọn File....';
+  fileListAsArray: any[] = [];
+  formData: FormData;
+  uploadModal: any;
+
   @ViewChild('myModal') myModal;
+  @ViewChild('myModalImport') myModalImport;
   private modalRef;
 
   constructor(private imeiService: ImeiService, private modalService: ModalManager, private fb: FormBuilder,
-    private productService : ProductDetailService) { }
+    private productService: ProductDetailService) { }
 
   ngOnInit(): void {
     this.getImei();
@@ -55,6 +67,10 @@ export class ImeiComponent implements OnInit {
         status: [{ value: '', }, Validators.required]
       }),
     });
+
+    this.uploadForm = this.fb.group({
+      inpUpload: ['', [Validators.required]]
+    })
   }
 
 
@@ -70,7 +86,7 @@ export class ImeiComponent implements OnInit {
           console.log(this.pageImei);
         }
       }, (error) => {
-         console.log(error);
+        console.log(error);
       }
     );
   }
@@ -107,7 +123,7 @@ export class ImeiComponent implements OnInit {
   }
 
   openModal(action) {
-    this.productService.getListProductDetail().subscribe((res)=>{
+    this.productService.getListProductDetail().subscribe((res) => {
       this.lstProductDetail = res;
     })
     this.action = action;
@@ -128,5 +144,60 @@ export class ImeiComponent implements OnInit {
     this.modalService.close(this.modalRef);
     this.isFormSubmit = false;
     this.imei = new Imei();
+  }
+
+
+  openUpload() {
+    this.isFormUploadSubmit = false;
+    this.file = null;
+    this.fileName_lb = "Chọn File....";
+    this.formData = new FormData();
+    // this.uploadModal = this.myModalImport.show();
+
+
+    this.modalRef = this.modalService.open(this.myModalImport, {
+      size: "md",
+      modalClass: 'mymodal',
+      hideCloseButton: false,
+      centered: false,
+      backdrop: true,
+      animation: true,
+      keyboard: false,
+      closeOnOutsideClick: false,
+      backdropClass: "modal-backdrop"
+    })
+  }
+
+  downloadTemplateImport() {
+
+  }
+
+  // Chọn file
+  handleFileInput(event) {
+    if (event.target.files) {
+      this.fileListAsArray = Array.from(event.target.files);
+      for (let i in this.fileListAsArray) {
+        this.formData.append("file", this.fileListAsArray[i]);
+        var resFile = this.fileListAsArray[i];
+        this.fileName_lb = resFile.name + " ," + this.fileName_lb;
+      }
+    }
+  }
+
+  errorImport: string = null;
+  doImport() {
+    this.isFormUploadSubmit = true;
+    if (this.formData.get('file') == null) {
+      Swal.fire('Bạn chưa chọn file', '', 'warning');
+      return;
+    } else {
+      this.imeiService.importExcel(this.formData).subscribe((res) => {
+        if (res.errorCode == '00') {
+          Swal.fire(res.errorMessage,'','success')
+        }else{
+          Swal.fire(res.errorMessage,'','error')
+        }
+      })
+    }
   }
 }

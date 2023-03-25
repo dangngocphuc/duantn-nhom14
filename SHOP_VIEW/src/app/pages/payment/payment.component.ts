@@ -6,12 +6,13 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ModalManager } from 'ngb-modal';
 import { ICreateOrderRequest, IPayPalConfig } from 'ngx-paypal';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, switchMap } from 'rxjs';
 // import { Bill } from 'src/app/entity/Bill';
-import { Address, Bill, BillDetail, District, ProductDetail, Province, RequestFeeSevice, RequestLeadTime, RequestSevice, ResponseFeeSevice, Service, User, Ward } from 'src/app/models/type';
+import { Address, Bill, BillDetail, District, ProductDetail, Promotion, Province, RequestFeeSevice, RequestLeadTime, RequestSevice, ResponseFeeSevice, Service, User, Ward } from 'src/app/models/type';
 import { BillService } from 'src/app/services/bill.service';
 import { GhnService } from 'src/app/services/ghn.service';
 import { UserService } from 'src/app/services/user.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-payment',
@@ -34,6 +35,7 @@ export class PaymentComponent implements OnInit {
   currentUser = new User();
   public payPalConfig?: IPayPalConfig;
   listProvince: Province[];
+
   provinceId: number;
   districtId: number;
 
@@ -53,6 +55,7 @@ export class PaymentComponent implements OnInit {
   leadTime: any;
 
   addresss = new Address();
+  promotion = new Promotion();
   // check;
   // randomUserUrl = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province';
   // optionList: string[] = [];
@@ -101,7 +104,6 @@ export class PaymentComponent implements OnInit {
         // console.log(data);
       }
     })
-
   }
 
   getListWard() {
@@ -184,10 +186,19 @@ export class PaymentComponent implements OnInit {
     // debugger;
     // this.loadMore();
     const cart = localStorage.getItem('cart') || '';
+
     // this.userId = localStorage.getItem('userId') || '';
     if (cart) {
       this.cart = JSON.parse(cart);
     }
+
+    const promotion = localStorage.getItem('promotion') || '';
+
+    // this.userId = localStorage.getItem('userId') || '';
+    if (promotion) {
+      this.promotion = JSON.parse(promotion);
+    }
+
     this.cartString = localStorage.getItem('cart') || '';
     const user = localStorage.getItem('currentUser') || '';
     if (user) {
@@ -232,16 +243,19 @@ export class PaymentComponent implements OnInit {
     }
   }
   submitForm(): void {
+    debugger;
     for (const i in this.validateForm.controls) {
       if (this.validateForm.controls.hasOwnProperty(i)) {
         this.validateForm.controls[i].markAsDirty();
         this.validateForm.controls[i].updateValueAndValidity();
       }
     }
+    
     this.userName = this.validateForm.controls.userName.value;
     this.phone = this.validateForm.controls.phone.value;
     this.address = this.validateForm.controls.address.value;
     this.payment = this.validateForm.controls.payment.value;
+
     if (this.payment == 'Live') {
       if (this.userName && this.phone && this.payment) {
         this.bill.name = this.userName;
@@ -250,6 +264,11 @@ export class PaymentComponent implements OnInit {
         this.bill.payment = this.payment;
         this.bill.total = this.total;
         this.bill.user = this.currentUser;
+        this.bill.provinceID = this.provinceId;
+        this.bill.districtID = this.districtId;
+        this.bill.wardCode = this.wardCode;
+        this.bill.address = this.validateForm.controls.specificAddress.value;
+        this.bill.promotion = this.promotion;
         let listBillDetailTemp = []
         this.cart.forEach((e) => {
           let billDetail = new BillDetail();
@@ -291,7 +310,6 @@ export class PaymentComponent implements OnInit {
     })
   }
 
-
   saveBill(bill) {
     this.billService.saveBill(bill).subscribe(
       (data) => {
@@ -299,6 +317,8 @@ export class PaymentComponent implements OnInit {
           this.router.navigate(['/pay-success']);
           localStorage.removeItem('cart');
           localStorage.removeItem('total');
+          localStorage.removeItem('promotion');
+          // window.location.reload();
         }
       },
       (error) => {
@@ -386,6 +406,11 @@ export class PaymentComponent implements OnInit {
     this.bill.payment = this.payment;
     this.bill.total = this.total;
     this.bill.user = this.currentUser;
+    this.bill.provinceID = this.provinceId;
+    this.bill.districtID = this.districtId;
+    this.bill.wardCode = this.wardCode;
+    this.bill.address = this.validateForm.controls.specificAddress.value;
+    this.bill.promotion = this.bill.promotion;
     let listBillDetailTemp = []
     this.cart.forEach((e) => {
       let billDetail = new BillDetail();
@@ -404,12 +429,20 @@ export class PaymentComponent implements OnInit {
       if (data.code == '00') {
         // this.router.navigate([data.data]);
         window.open(data.data)
+        window.close();
       }
       // this.router.navigate(['/pay-success']);
     })
   }
 
   async openModal() {
+    Swal.fire({
+      title: "Đang xử lý!",
+      html: '',
+      didOpen: () => {
+        Swal.showLoading()
+      },
+    })
     if (this.currentUser?.listAddress) {
       for (let e of this.currentUser.listAddress) {
         try {
@@ -418,6 +451,7 @@ export class PaymentComponent implements OnInit {
           const wardData = await this.ghnService.getListWard(e.districtID).toPromise();
           e.listWard = wardData.data;
           e.check = (e.defaults === 1) ? 1 : 0;
+          Swal.close();
         } catch (error) {
           console.error(error);
         }
@@ -443,16 +477,17 @@ export class PaymentComponent implements OnInit {
   }
 
   confirm() {
-    console.log(this.currentUser);
+    // console.log(this.currentUser);
     this.currentUser.listAddress.forEach((e) => {
       e.user = null;
       e.check = null;
     });
-    console.log(this.currentUser);
+    // console.log(this.currentUser);
     this.userService.updateUser(this.currentUser).subscribe((res) => {
-      console.log(res);
+      // console.log(res);
       if (res) {
         this.modalService.close(this.modalRef);
+        window.location.reload();
       }
     })
   }
@@ -471,19 +506,30 @@ export class PaymentComponent implements OnInit {
     })
   }
 
-  complete() {
+  async complete() {
+
     this.currentUser.listAddress.push(this.addresss);
     this.currentUser.listAddress.forEach((e) => {
       e.user = null;
     });
     console.log(this.currentUser);
-    this.userService.updateUser(this.currentUser).subscribe((res) => {
-      console.log(res);
+    await this.userService.updateUser(this.currentUser).subscribe((res) => {
+      // console.log(res);
       if (res) {
         this.modalService.close(this.modalRef);
+        // this.userService.getUser(this.currentUser.userID).subscribe((data) => {
+        //   // console.log(data.result);
+        //   this.currentUser = data.result;
+        //   console.log(this.currentUser);
+        //   if (this.currentUser) {
+        //     this.getUser(this.currentUser);
+        //   }
+        // })
       }
     })
   }
+
+
 
   updateSelectedOption(e) {
     console.log(e);

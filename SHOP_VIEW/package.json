@@ -36,6 +36,7 @@
     "ngb-modal": "^2.0.3",
     "ngx-cookie-service": "^13.1.2",
     "ngx-paypal": "^9.0.0",
+    "ngx-trim-directive": "^2.0.0",
     "rxjs": "^7.4.0",
     "sweetalert2": "^11.5.2",
     "tslib": "^2.4.0",

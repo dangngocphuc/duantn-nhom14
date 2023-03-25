@@ -29,6 +29,10 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,12 +49,11 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class CommonUtils {
+	
 	@Value("${privatekey_string}")
 	private String PRIVATEKEY_STRING;
 	@Value("${publickey_string}")
 	private String PUBLICKEY_STRING;
-
-	
 
 	public String createToken(String username, String password, String authRequestID) throws Exception {
 		byte[] privateKeyBytes = Base64.getDecoder().decode(PRIVATEKEY_STRING);
@@ -200,11 +203,8 @@ public class CommonUtils {
 	public static final Long LOGIN_SUCCESS = 0L;
 	public static final String ROOT_IMAGES_BACKEND = "D:/Linh_tinh/work-to-do/ki 2 nam 4/DoAnTotNghiep/do_an_code/be/src/assets/images/";
 	public static final String ROOT_IMAGES_FRONTEND = "D:/Linh_tinh/work-to-do/ki 2 nam 4/DoAnTotNghiep/do_an_code/fe/src/assets/images/";
-	public static final String THAMSO_JOB = "0";
-	
-	
-	
-	
+	public static final String THAMSO_JOB = "1";
+		
 	public static String Sha1EncryptText(String sInputText) {
 		try {
 			return DigestUtils.sha1Hex(sInputText);
@@ -318,6 +318,17 @@ public class CommonUtils {
 		Date now = new Date();
 		return DATE_FORMAT.format(now);
 	}
+	
+	public static String generatePromotionCode() {
+		Date now = new Date();
+		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		StringBuilder code = new StringBuilder();
+		for (int i = 0; i < 3; i++) {
+			int index = (int) (Math.random() * characters.length());
+			code.append(characters.charAt(index));
+		}
+		return code.toString()+DATE_FORMAT.format(now);
+	}
 
 	public static enum Demand {
 		OFFICE("1", "Văn phòng, học tập"), GAMING("2", "Gaming"), DESIGN("3", "");
@@ -367,9 +378,9 @@ public class CommonUtils {
     public static final String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
 //	public static final String vnp_Returnurl = "http://localhost:8081/datnapi/api/bill/payment/results";
 	public static final String vnp_Returnurl = "http://localhost:4200/pay-success";
-	public static final String vnp_TmnCode = "24F3A5FL";
-	public static final String vnp_HashSecret = "BWNFDYXHVSDLZKRXZYNEHUVQGHFFCIZA";
-	public static final String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/merchant.html";
+	public static final String vnp_TmnCode = "X0XQDEQJ";
+	public static final String vnp_HashSecret = "KDXGTULNPRXYNRVBVIGXYBYRNEZRZHUP";
+	public static final String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     public static String md5(String message) {
         String digest = null;
@@ -485,4 +496,53 @@ public class CommonUtils {
         }
         return map;
     }
+    
+    public static boolean checkIfRowIsEmpty(Row row) {
+		if (row == null) {
+			return true;
+		}
+		if (row.getLastCellNum() <= 0) {
+			return true;
+		}
+		for (int cellNum = row.getFirstCellNum(); cellNum < row.getLastCellNum(); cellNum++) {
+			Cell cell = row.getCell(cellNum);
+			if (cell != null && cell.getCellType() != Cell.CELL_TYPE_BLANK && StringUtils.isNotBlank(cell.toString())) {
+				return false;
+			}
+		}
+		return true;
+	}
+    
+ // Get value cell
+ 	public static Object returnCellValue(Cell cell) throws Exception {
+ 		Object objReturn = null;
+ 		try {
+ 			// Check the cell type and format accordingly
+ 			switch (cell.getCellType()) {
+ 			case Cell.CELL_TYPE_NUMERIC:
+ 				// date
+ 				if (HSSFDateUtil.isCellDateFormatted(cell)) {
+ 					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+ 					objReturn = sdf.format(cell.getDateCellValue());
+ 					break;
+ 				}
+ 				objReturn = cell.getNumericCellValue();
+ 				break;
+ 			case Cell.CELL_TYPE_STRING:
+ 				objReturn = cell.getStringCellValue();
+ 				break;
+ 			case Cell.CELL_TYPE_BOOLEAN:
+ 				objReturn = cell.getBooleanCellValue();
+ 				break;
+ 			case Cell.CELL_TYPE_ERROR:
+ 				break;
+// 				CELL_TYPE_FORMULA will never happen
+ 			case Cell.CELL_TYPE_FORMULA:
+ 				break;
+ 			}
+ 		} catch (Exception e) {
+ 			throw e;
+ 		}
+ 		return objReturn;
+ 	}
 }

@@ -23,7 +23,7 @@ export const ROUTES: RouteInfo[] = [
   { path: '/gpu', title: 'Quản lý GPU', icon: 'ni ni-controller text-brown', class: '' },
   // { path: '/option-values', title: 'Quản lý Option-values',  icon:'ni-circle-08 text-pink', class: '' },
   // { path: '/category', title: 'Quản lý category',  icon:'ni-circle-08 text-pink', class: '' },
-  // { path: '/voucher', title: 'Quản lý voucher',  icon:'ni-circle-08 text-pink', class: '' }
+  { path: '/voucher', title: 'Quản lý khuyến mại',  icon:'ni-circle-08 text-pink', class: '' }
 ];
 
 @Component({

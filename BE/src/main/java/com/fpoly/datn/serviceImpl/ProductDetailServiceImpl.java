@@ -173,7 +173,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 				if (productParam.isInventory()) {
 					predicates.add(cb.and(cb.greaterThan(root.get("productQuantily"), 0)));
 				}
-				predicates.add(cb.and(cb.equal(joinImei.get("status"), 1)));
+//				predicates.add(cb.and(cb.equal(joinImei.get("status"), 1)));
 				return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 		}, pageable);

@@ -92,10 +92,13 @@ public class UserController {
 	public ResponseEntity<Response<UserDetail>> getUser(@PathVariable(name = "id") Long id) {
 		User user = userService.findUserById(id);
 		UserDetail userDetail = new UserDetail();
-		userDetail.setUsername(user.getUsername());
-		userDetail.setUserID(user.getUserID());
-		userDetail.setPhoneNumber(user.getUserPhone().toString());
-		userDetail.setListAddress(user.getListAddress());
+		if(user != null) {
+			userDetail.setUsername(user.getUsername()!=null?user.getUsername():"");
+			userDetail.setUserID(user.getUserID());
+			userDetail.setPhoneNumber(user.getUserPhone());
+			userDetail.setListAddress(user.getListAddress()!=null?user.getListAddress():null);
+		}
+	
 		return new ResponseEntity<Response<UserDetail>>(new Response<UserDetail>(userDetail), HttpStatus.OK);
 	}
 

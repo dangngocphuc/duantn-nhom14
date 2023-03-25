@@ -85,8 +85,8 @@
               <th nzColumnKey="total" [nzSortFn]="true" style="text-align: center">Tổng hóa đơn</th>
               <th style="text-align: center">Thanh toán</th>
               <th nzColumnKey="date" [nzSortFn]="true" style="text-align: center">Ngày bán</th>
-              <th style="text-align: center">Địa chỉ</th>
-              <!-- <th style="text-align: center">Ghi chú</th> -->
+              <!-- <th style="text-align: center">Địa chỉ</th> -->
+              <th style="text-align: center">Thanh toán</th>
               <th style="text-align: center">Tình trạng</th>
               <th style="text-align: center">Thao tác</th>
             </tr>
@@ -98,8 +98,8 @@
               <td>{{data?.total| number}}</td>
               <td>{{data?.payment}}</td>
               <td>{{data?.date|date:'dd/MM/yyyy'}}</td>
-              <td>{{data?.address}}</td>
-              <!-- <td>{{data?.note}}</td> -->
+              <!-- <td>{{data?.address}}</td> -->
+              <td>{{data?.paymentStatus=='00'?'Đã thanh toán':'Chưa thanh toán'}}</td>
               <td>
                 <nz-select *ngIf=" data.status != 'Cancel'; else elseBlock" ngModel="{{data.status}}"
                   (ngModelChange)="changeStatus($event,data)">
@@ -117,7 +117,7 @@
               </td>
               <td>
                 <button (click)="showModal(data)" class="btn btn-primary">Xem </button>
-                <button (click)="openModal(data)" class="btn btn-info">Đổi hàng</button>
+                <!-- <button (click)="openModal(data)" class="btn btn-info">Đổi hàng</button> -->
                 <nz-divider nzType="vertical"></nz-divider>
                 <button *ngIf=" data.status != 'Cancel'" (click)="cancelBill(data)" class="btn btn-danger" nzDanger>Hủy
                   đơn</button>
@@ -129,13 +129,38 @@
       </div>
     </div>
   </div>
-
   <nz-modal [nzStyle]="{ top: '20px',width:'100%' }" [(nzVisible)]="isVisible" nzTitle="Xem chi tiết">
     <ng-container *nzModalContent>
       <div class="m-container" id="print-section">
-        <div>
-          <h2>Mã đơn: </h2>
-          <h2>{{this.billCode}}</h2>
+        <div class="row">
+          <div class="col-md-6">
+            <div>
+              <h2>Mã đơn: {{this.billCode}}</h2>
+            </div>
+            <div>
+              <h4>Khách hàng: {{this.bill?.name}}</h4>
+              <!-- <h4></h2> -->
+            </div>
+            <div>Địa chỉ: {{this.bill?.address}}</div>
+            <div>
+              <label for="">Tỉnh/thành phố</label>
+              <ng-select [items]="listProvince" bindLabel="ProvinceName" bindValue="ProvinceID" name="province"
+                style="width: 100%;" [(ngModel)]="bill.provinceID" [disabled]="true">
+              </ng-select>
+            </div>
+            <div>
+              <label for="">Quận/Huyện</label>
+              <ng-select [items]="listDistrict" bindLabel="DistrictName" bindValue="DistrictID" name="district"
+                style="width: 100%;" [hideSelected]="true" [(ngModel)]="bill.districtID" [disabled]="true">
+              </ng-select>
+            </div>
+            <div>
+              <label for="">Phường/Xã</label>
+              <ng-select [items]="listWard" bindLabel="WardName" bindValue="WardCode" name="ward" style="width: 100%;"
+                [(ngModel)]="bill.wardCode" [disabled]="true">
+              </ng-select>
+            </div>
+          </div>
         </div>
         <nz-divider nzPlain nzText="Chi tiết"></nz-divider>
         <nz-table nzTemplateMode>
@@ -163,6 +188,13 @@
             </tr>
           </tbody>
         </nz-table>
+        <div class="row">Giảm Giá: {{bill?.promotion?.value}} {{bill?.promotion?.type=='0'?'%':'VNĐ'}} cho đơn hàng
+          {{this.billCode}}</div>
+        <div style="float: right;">Tổng Tiền: {{sum|number}} VNĐ</div>
+        <br>
+        <div class="row" style="float: right;">Số tiền được giảm: {{discountPrice| number}} VNĐ</div>
+        <hr>
+        <div class="row" style="float: right;">Tổng tiền Thanh toán: {{bill?.total| number}} VNĐ</div>
       </div>
     </ng-container>
     <div *nzModalFooter>
@@ -319,7 +351,7 @@
     <button class="btn btn-primary" (click)="closeModal()">close</button> -->
     </modal-footer>
   </modal>
- <modal #Modal>
+  <modal #Modal>
     <modal-header>
       <!-- <h4 *ngIf="action == Action.THEMMOI">Thêm mới Option</h4>
       <h4 *ngIf="action == Action.CAPNHAT">Cập nhật Option</h4> -->

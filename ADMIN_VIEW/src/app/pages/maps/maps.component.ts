@@ -5,13 +5,14 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { ModalManager } from 'ngb-modal';
 import { Action } from 'src/app/commons/common';
-import { Bill, BillDetail, PagesRequest, ProductDetail } from 'src/app/models/type';
+import { Bill, BillDetail, District, PagesRequest, ProductDetail, Province, Ward } from 'src/app/models/type';
 import { BillService } from 'src/app/services/bill.service';
 import { ProductDetailService } from 'src/app/services/productDetail.service';
 import { ImeiService } from 'src/app/services/imei.service';
 import Swal from 'sweetalert2';
 import { catchError, concat, debounceTime, distinctUntilChanged, map, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { GhnService } from 'src/app/services/ghn.service';
 declare const google: any;
 
 @Component({
@@ -47,21 +48,21 @@ export class MapsComponent implements OnInit {
 
   disabled;
 
+  listProvince: Province[];
+  listDistrict: District[];
+  listWard: Ward[];
+  discountPrice = 0;
+  sum = 0;
   @ViewChild('myModal') myModal;
 
   @ViewChild('Modal') Modal;
 
   private modalRef;
   constructor(private fb: FormBuilder, private notification: NzNotificationService,
-    private imeiService: ImeiService, 
+    private imeiService: ImeiService, private ghnService: GhnService,
     private modal: NzModalService, private modalService: ModalManager,
     private productDetailService: ProductDetailService,
     private billService: BillService) { }
-
-
-
-  
-
 
   ngOnInit() {
     this.searchForm = this.fb.group({
@@ -77,6 +78,33 @@ export class MapsComponent implements OnInit {
     this.notification.create(type, title, message);
   }
 
+  getListDistrict(e) {
+    if (e) {
+      this.ghnService.getListDistrict(e).subscribe((data) => {
+        if (data.code == 200) {
+          this.listDistrict = data.data;
+        }
+      })
+    }
+
+  }
+  getListWard(e) {
+    if (e) {
+      this.ghnService.getListWard(e).subscribe((data) => {
+        if (data.code == 200) {
+          this.listWard = data.data;
+        }
+      })
+    }
+  }
+  getListProvince() {
+    this.ghnService.getListProvince().subscribe((data) => {
+      console.log(data);
+      if (data.code == 200) {
+        this.listProvince = data.data;
+      }
+    })
+  }
 
   search() {
     const billId = this.searchForm.controls.billID.value;
@@ -102,7 +130,7 @@ export class MapsComponent implements OnInit {
   }
 
   onQueryParamsChange(params: NzTableQueryParams): void {
-    debugger;
+    // debugger;
     const { pageSize, pageIndex, sort } = params;
     const currentSort = sort.find((item) => item.value !== null);
     const sortField = (currentSort && currentSort.key) || null;
@@ -152,21 +180,45 @@ export class MapsComponent implements OnInit {
 
 
   showModal(data): void {
-    this.isVisible = true;
+    Swal.fire({
+      title: "Đang xử lý!",
+      html: '',
+      didOpen: () => {
+        Swal.showLoading()
+      },
+    })
     this.billId = data.id;
     this.billCode = data.billCode;
     // this.getBillDetail(data.id);
+    console.log(data);
+    this.getListProvince();
+    this.getListDistrict(data.provinceID);
+    this.getListWard(data.districtID);
     this.billService.getBillById(data.id).subscribe((data) => {
-      console.log(data);
       this.bill = data;
+      if(this.bill.promotion){
+       
+        this.bill.listBillDetail.forEach((e)=>{
+          this.sum=this.sum+e.price;
+        })
+        if (this.bill.promotion.type == 0) {
+          this.discountPrice = (this.sum * this.bill.promotion.value * 0.01)
+        }
+        else {
+          this.discountPrice = this.bill.promotion.value;
+        }  
+      }
+     
       this.bill.listBillDetail.forEach((e) => {
         this.loadImei(e);
       })
-      if (!(this.bill.status == 'Process')) {
+      if (!(this.bill.status == 'Processed')) {
         this.disabled = true;
       } else {
         this.disabled = false;
       }
+      Swal.close();
+      this.isVisible = true;
     })
   }
 
@@ -193,25 +245,59 @@ export class MapsComponent implements OnInit {
   }
 
   changeStatus(e, bill) {
-    // debugger;
-    this.bill = bill;
-    this.bill.status = e;
-    this.bill.user = null;
-    this.billService.saveBill(this.bill).subscribe(
-      (data) => {
-        this.createNotification('success', 'Thay đổi thành công!', '');
-      },
-      (error) => {
+    debugger;
+    let checkStatus = true;
+    if (bill.status == 'Processed') {
+      if (e == 'Waiting') {
         this.createNotification(
-          'error',
-          'Có lỗi xảy ra!',
-          'Vui lòng liên hệ quản trị viên.'
+          'warning',
+          'Trạng thái không hợp lệ!',
+          'Vui lòng thử lại.'
         );
-      },
-      () => {
-        this.getBills(this.pageIndex, this.pageSize, null, null);
+        checkStatus = false;
       }
-    );
+    }
+    if (bill.status == 'Delivery') {
+      if (e == 'Waiting' || e == 'Processed') {
+        this.createNotification(
+          'warning',
+          'Trạng thái không hợp lệ!',
+          'Vui lòng thử lại.'
+        );
+        checkStatus = false;
+      }
+    }
+    if (bill.status == 'Đã giao hàng') {
+      if (e == 'Waiting' || e == 'Processed' || e == 'Delivery') {
+        this.createNotification(
+          'warning',
+          'Trạng thái không hợp lệ!',
+          'Vui lòng thử lại.'
+        );
+        checkStatus = false;
+      }
+    }
+    if (checkStatus) {
+      this.bill = bill;
+      this.bill.status = e;
+      this.bill.user = null;
+      this.billService.saveBill(this.bill).subscribe(
+        (data) => {
+          this.createNotification('success', 'Thay đổi thành công!', '');
+        },
+        (error) => {
+          this.createNotification(
+            'error',
+            'Có lỗi xảy ra!',
+            'Vui lòng liên hệ quản trị viên.'
+          );
+        },
+        () => {
+          this.getBills(this.pageIndex, this.pageSize, null, null);
+        }
+      );
+    }
+    this.search();
   }
 
 
@@ -234,6 +320,7 @@ export class MapsComponent implements OnInit {
 
   openModal(data) {
     // this.loadOption();
+
     // this.getListProductDetail();
     this.billId = data.id;
     this.billCode = data.billCode;
@@ -474,7 +561,7 @@ export class MapsComponent implements OnInit {
   }
 
   checkButton() {
-    if (!(this.bill.status == 'Process')) {
+    if (!(this.bill.status == 'Processed')) {
       return false;
     }
     return true;

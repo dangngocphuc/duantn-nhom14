@@ -219,6 +219,11 @@ export class Bill {
   listBillDetail: BillDetail[];
   billCode: String;
   note: String;
+  paymentStatus : String;
+  provinceID: number;
+  districtID: number;
+  wardCode: String;
+  promotion : Promotion;
 }
 export class BillDetail {
   id: number;
@@ -298,4 +303,85 @@ export class ProductDetailRequest {
   lstRom: String;
   toDate: Date;
   fromDate: Date;
+}
+
+export class Province {
+  CanUpdateCOD: boolean;
+  Code: String;
+  CountryID: number;
+  CreatedAt: number;
+  IsEnable: number;
+  NameExtension: [];
+  ProvinceID: number;
+  ProvinceName: String;
+  RegionCPN: number;
+  RegionID: number;
+  Status: number;
+  UpdatedAt: number;
+  UpdatedBy: number;
+}
+
+export class District {
+  DistrictID: number;
+  ProvinceID: number;
+  DistrictName: String;
+  Code: String;
+  Type: number;
+  SupportType: number;
+  NameExtension: [];
+  IsEnable: number;
+  UpdatedBy: number;
+  CreatedAt: Date;
+  UpdatedAt: Date;
+  CanUpdateCOD: boolean;
+  Status: number;
+  WhiteListClient: any;
+  WhiteListDistrict: any;
+  ReasonCode: String;
+  ReasonMessage: String;
+  OnDates: null;
+  UpdatedIP: String;
+  UpdatedEmployee: number;
+  UpdatedSource: String;
+  UpdatedDate: Date;
+}
+
+export class Ward {
+  CanUpdateCOD: boolean;
+  CreatedAt: Date;
+  DistrictID: number;
+  IsEnable: 1
+  NameExtension: [];
+  OnDates: null;
+  ReasonCode: String;
+  ReasonMessage: String;
+  Status: number;
+  SupportType: number;
+  UpdatedAt: Date;
+  UpdatedBy: number;
+  UpdatedDate: Date;
+  WardCode: String;
+  WardName: String;
+  WhiteListClient: any;
+  WhiteListWard: any;
+}
+
+export class Promotion{
+  id :  number;
+  code: String;
+  type: number;
+  dateFrom: Date;
+  dateTo: Date;
+  quantity: number;
+  count: number;
+  value: number;
+}
+
+export class PagePromotion{
+  content: Promotion[];
+  totalPages: number;
+  totalElements: number;
+  numberOfElements: number;
+  size: number;
+  number: number;
 }
