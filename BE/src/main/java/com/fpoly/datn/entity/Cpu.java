@@ -21,6 +21,8 @@ import lombok.Setter;
 
 public class Cpu implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@SequenceGenerator(name = "seqCpu", sequenceName = "SEQ_CPU", allocationSize = 1, initialValue = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqCpu")

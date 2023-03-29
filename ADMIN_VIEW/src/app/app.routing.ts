@@ -29,6 +29,7 @@ import { CpuComponent } from './pages/cpu/cpu.component';
 import { RamComponent } from './pages/ram/ram.component';
 import { RomComponent } from './pages/rom/rom.component';
 import { GpuComponent } from './pages/gpu/gpu.component';
+import { SalesComponent } from './pages/sales/sales.component';
 
 
 const routes: Routes = [
@@ -41,9 +42,10 @@ const routes: Routes = [
       { path: 'brand', component: BrandComponent },
       { path: 'user', component: UserProfileComponent },
       { path: 'products', component: TablesComponent },
-      // { path: 'options', component: IconsComponent },
-      { path: 'oders', component: MapsComponent },
+      { path: 'options', component: IconsComponent },
       { path: 'product-details', component: ProductDetailsComponent },
+      { path: 'oders', component: MapsComponent },
+      { path: 'sales', component: SalesComponent },
       { path: 'option-values', component: OptionValuesComponent },
       { path: 'voucher', component: VoucherComponent },
       { path: 'category', component: CategoryComponent },

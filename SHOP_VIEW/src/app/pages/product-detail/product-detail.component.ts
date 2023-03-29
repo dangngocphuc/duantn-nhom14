@@ -67,6 +67,7 @@ export class ProductDetailComponent implements OnInit {
     }
 
     // this.getCategories();
+    console.log(this.productId);
     this.getProductDetail(this.productId);
     this.controlArray2.set('pageIndex', this.pageIndex);
     this.controlArray2.set('pageSize', this.pageSize);

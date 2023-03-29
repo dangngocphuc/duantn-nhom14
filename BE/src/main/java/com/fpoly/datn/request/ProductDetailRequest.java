@@ -19,6 +19,8 @@ public class ProductDetailRequest extends BaseRequest {
 	public String lstGpu;
 
 	public String lstRom;
+	
+	public String lstProduct;
 
 	public Date toDate;
 
@@ -134,4 +136,12 @@ public class ProductDetailRequest extends BaseRequest {
 		this.productId = productId;
 	}
 
+	public String getLstProduct() {
+		return lstProduct;
+	}
+
+	public void setLstProduct(String lstProduct) {
+		this.lstProduct = lstProduct;
+	}
+	
 }

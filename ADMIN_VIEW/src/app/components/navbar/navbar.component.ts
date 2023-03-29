@@ -3,7 +3,7 @@ import { ROUTES } from '../sidebar/sidebar.component';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
-import { User } from 'src/app/models/type';
+import { User, UserLogin } from 'src/app/models/type';
 
 @Component({
   selector: 'app-navbar',
@@ -15,7 +15,7 @@ export class NavbarComponent implements OnInit {
   public listTitles: any[];
   public location: Location;
   
-  currentUser = new User();
+  currentUser = new UserLogin();
 
   constructor(location: Location, private element: ElementRef, private router: Router, private cookieService: CookieService) {
     this.location = location;

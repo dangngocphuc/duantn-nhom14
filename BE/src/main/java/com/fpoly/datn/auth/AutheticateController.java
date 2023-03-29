@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -87,9 +88,12 @@ public class AutheticateController {
 			if (loginRequest.getRemember() != null && loginRequest.getRemember() == true) {
 				userDetail.setAdmin(true);
 			}
-		} catch (Exception e) {
+		}catch(DisabledException disabledException) {
+			return new ResponseEntity<LoginResponse>(new LoginResponse("01", "Tài khoản chưa được kích hoạt"), HttpStatus.OK);
+		}
+		catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<LoginResponse>(new LoginResponse("00", "Error"), HttpStatus.OK);
+			return new ResponseEntity<LoginResponse>(new LoginResponse("01", e.getMessage()), HttpStatus.OK);
 		}
 		return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
 //		}

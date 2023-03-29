@@ -15,6 +15,7 @@ export const ROUTES: RouteInfo[] = [
   { path: '/product-details', title: 'Quản lý sản phẩm chi tiết', icon: 'ni-key-25 text-info', class: '' },
   { path: '/imei', title: 'Quản lý imei', icon: 'ni ni-bullet-list-67', class: '' },
   { path: '/oders', title: 'Quản lý đơn hàng', icon: 'ni-cart text-orange', class: '' },
+  { path: '/sales', title: 'Bán hàng tại quầy', icon: 'ni ni-satisfied', class: '' },
   { path: '/user', title: 'Quản lý người dùng', icon: 'ni-single-02 text-yellow', class: '' },
   { path: '/review', title: 'Quản lý đánh giá', icon: 'ni-diamond text-purple ', class: '' },
   { path: '/cpu', title: 'Quản lý CPU', icon: 'ni-planet text-blue', class: '' },

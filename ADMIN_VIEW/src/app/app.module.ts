@@ -14,7 +14,7 @@ import { NgbActiveModal, NgbCarouselModule, NgbDateAdapter, NgbDateNativeAdapter
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { GridModule, PDFModule, ExcelModule } from '@progress/kendo-angular-grid';
-import { IconsModule } from '@progress/kendo-angular-icons';
+import { IconModule, IconsModule } from '@progress/kendo-angular-icons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { NotificationModule } from '@progress/kendo-angular-notification';
 
@@ -50,6 +50,7 @@ import { BrandComponent } from './pages/brand/brand.component';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
 // import { ChartsModule } from 'ng2-charts';
 import {CdkStepperModule} from '@angular/cdk/stepper';
 import {NgStepperModule} from 'angular-ng-stepper';
@@ -62,6 +63,7 @@ import { GpuComponent } from './pages/gpu/gpu.component';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { NgDatepickerComponent } from './components/ng-datepicker/ng-datepicker.component';
 import { DatePipe } from '@angular/common';
+import { SalesComponent } from './pages/sales/sales.component';
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -91,7 +93,9 @@ import { DatePipe } from '@angular/common';
     NgStepperModule,
     NgImageSliderModule,
     NgxCurrencyModule,
-    NgbDatepickerModule
+    NgbDatepickerModule,
+    NzTabsModule,
+    IconModule
     // CarouselModule
     // CKEditorModule
     // ProgressbarModule.forRoot()
@@ -119,7 +123,8 @@ import { DatePipe } from '@angular/common';
     RamComponent,
     RomComponent,
     GpuComponent,
-    NgDatepickerComponent
+    NgDatepickerComponent,
+    SalesComponent
   ],
   providers: [
     NgbActiveModal,

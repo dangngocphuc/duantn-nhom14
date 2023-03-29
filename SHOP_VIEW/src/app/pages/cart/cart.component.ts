@@ -148,42 +148,47 @@ export class CartComponent implements OnInit {
     if (this.code) {
 
       if (this.code == this.promotion.code) {
-        Swal.fire('', 'Đơn hàng đã được áp dụng mã khuyến mại', 'error')
+        Swal.fire('', 'Mã không hợp lệ', 'error');
+        // this.code=null;
       } else {
         this.promotionService.getPromotionByCode(this.code).subscribe((data) => {
           if (data) {
             // console.log(data);
-            // debugger;
+            debugger;
             this.promotion = data;
-
             let date = new Date();
             let dateF = new Date(this.promotion.dateFrom);
             let dateT = new Date(this.promotion.dateTo);
             if (dateF.getTime() <= date.getTime() && date.getTime() <= dateT.getTime()) {
-              this.totalPrice = 0;
-              this.sum = 0
-              this.listOfProduct.forEach((element) => {
-                this.totalPrice += element.quanlityBuy * element.productPrice;
-                this.sum += element.quanlityBuy * element.productPrice;
-                this.salePrice += (element.productMarketprice - element.productPrice) * element.quanlityBuy;
-              });
-              if (this.promotion.type == 0) {
-
-                this.discountPrice = (this.totalPrice * this.promotion.value * 0.01)
-                this.totalPrice = this.totalPrice - this.discountPrice;
+              if (this.promotion.count >= this.promotion.quantity) {
+                Swal.fire('', 'Mã áp dụng đã hết', 'error')
+              } else {
+                this.totalPrice = 0;
+                this.sum = 0
+                this.listOfProduct.forEach((element) => {
+                  this.totalPrice += element.quanlityBuy * element.productPrice;
+                  this.sum += element.quanlityBuy * element.productPrice;
+                  this.salePrice += (element.productMarketprice - element.productPrice) * element.quanlityBuy;
+                });
+                if (this.promotion.type == 0) {
+                  this.discountPrice = (this.totalPrice * this.promotion.value * 0.01)
+                  this.totalPrice = this.totalPrice - this.discountPrice;
+                }
+                else {
+                  this.discountPrice = this.promotion.value;
+                  this.totalPrice = this.totalPrice - this.promotion.value;
+                }
+                localStorage.setItem('promotion', JSON.stringify(this.promotion));
+                localStorage.setItem('total', this.totalPrice.toString());
               }
-              else {
-                this.discountPrice = this.promotion.value;
-                this.totalPrice = this.totalPrice - this.promotion.value;
-              }
-              localStorage.setItem('promotion', JSON.stringify(this.promotion));
-              localStorage.setItem('total', this.totalPrice.toString());
             }
             else {
-              Swal.fire('', 'Mã đã hết thời gian áp dụng', 'error')
+              Swal.fire('', 'Mã đã hết thời gian áp dụng', 'error');
+              this.code=null;
             }
           } else {
-            Swal.fire('', 'Mã không hợp lệ', 'error')
+            Swal.fire('', 'Mã không hợp lệ', 'error');
+            this.code=null;
           }
         },
           (error) => {
@@ -191,7 +196,8 @@ export class CartComponent implements OnInit {
           })
       }
     } else {
-      Swal.fire('', 'vui lòng nhập mã khuyến mại', 'error')
+      Swal.fire('', 'vui lòng nhập mã khuyến mại', 'error');
+      this.code=null;
     }
   }
 }

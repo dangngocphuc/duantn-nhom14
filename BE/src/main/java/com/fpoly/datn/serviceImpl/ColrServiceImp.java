@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.fpoly.datn.entity.Colr;
+import com.fpoly.datn.entity.Gpu;
 import com.fpoly.datn.repository.ColrRepo;
 import com.fpoly.datn.service.ColrService;
 
@@ -15,6 +16,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -44,8 +46,15 @@ public class ColrServiceImp implements ColrService {
 
     @Override
     public boolean saveColor(Colr colr) {
-        colrRepo.save(colr);
-        return true;
+    	if (colr.getId() != null) {
+    		colr.setUpdateDate(new Date());
+    		colrRepo.save(colr);
+		} else {
+			colr.setCreateDate(new Date());
+//			Gpu.setStatus(1);
+			colrRepo.save(colr);
+		}
+		return true;
     }
 
     @Override
@@ -55,6 +64,15 @@ public class ColrServiceImp implements ColrService {
 
     @Override
     public List<Colr> getListColors() {
-        return colrRepo.findAll();
+    	List<Colr> list = colrRepo.findAll(new Specification<Colr>() {
+			@Override
+			public Predicate toPredicate(Root<Colr> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+				query.distinct(true);
+				List<Predicate> predicates = new ArrayList<>();
+				predicates.add(cb.and(cb.equal(root.get("status"), 1)));
+				return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+		});
+		return list;
     }
 }

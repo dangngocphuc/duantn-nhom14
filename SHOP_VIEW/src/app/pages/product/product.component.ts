@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Category } from 'src/app/entity/Category';
+// import { Product } from 'src/app/entity/Product';
 
-import { Brand, Cpu, Gpu, Option, PageProductDetail, ProductDetail, Ram, Rom } from 'src/app/models/type';
+import { Brand, Cpu, Gpu, Option, PageProductDetail, Product, ProductDetail, Ram, Rom } from 'src/app/models/type';
 import { BrandService } from 'src/app/services/brand.service';
 import { CategoryService } from 'src/app/services/category.service';
 import { CpuService } from 'src/app/services/cpu.service';
@@ -23,6 +24,7 @@ export class ProductComponent implements OnInit {
   categoryId: String;
   listOfCategory: Category[] = [];
   listOfBrand: Brand[] = [];
+  listOfProduct: Product[] = [];
   listOfRam: Ram[] = [];
   listOfRom: Rom[] = [];
   listOfCpu: Cpu[] = [];
@@ -39,6 +41,7 @@ export class ProductComponent implements OnInit {
   paramsRom = [];
   paramsCpu = [];
   paramsGpu = [];
+  paramsProduct = [];
   paramsOptionValue = [];
   listBrandId;
   controlArray: Map<string, any> = new Map<string, any>();
@@ -47,6 +50,7 @@ export class ProductComponent implements OnInit {
   compare: ProductDetail[] = [];
   lenthCompare: number ;
   pageProductDetail = new PageProductDetail();
+  productId;
   constructor(
     route: ActivatedRoute,
     private activatedRoute: ActivatedRoute,private ramService : RamService, 
@@ -58,7 +62,7 @@ export class ProductComponent implements OnInit {
     private optionService: OptionService
   ) {
     route.params.subscribe((val) => {
-      this.categoryId = this.activatedRoute.snapshot.params.category || '';
+      this.productId = this.activatedRoute.snapshot.params.category;
     });
   }
 
@@ -67,7 +71,19 @@ export class ProductComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    debugger;
+    // this.activatedRoute.parent.data.subscribe((data) => {
+    //   this.productId = data['productId'];
+    //   console.log(this.productId);
+    // });
     // declare cart 
+
+    console.log(this.productId);
+
+    if(this.productId){
+      this.filterByBrand(this.productId,null)
+    }
+
     const cart = localStorage.getItem('cart') || '';
     if (cart) {
       this.cart = JSON.parse(cart);
@@ -85,7 +101,7 @@ export class ProductComponent implements OnInit {
     this.getListRom();
     this.getListCpu();
     this.getListGpu();
-   
+    this.getListProduct();
     // console.log(this.listOfOption);
     // if (this.categoryId || !(this.categoryId === '')) {
     //   this.controlArray.set('categoryID', this.categoryId);
@@ -152,6 +168,23 @@ export class ProductComponent implements OnInit {
       (data) => {
         if (data && data.results) {
           this.listOfCategory = data.results;
+        }
+      },
+      (error) => {
+        this.createNotification(
+          'error',
+          'Có lỗi xảy ra!',
+          'Vui lòng liên hệ quản trị viên.'
+        );
+      }
+    );
+  }
+
+  getListProduct() {
+    this.productService.getListProduct().subscribe(
+      (data) => {
+        if (data) {
+          this.listOfProduct = data;
         }
       },
       (error) => {
@@ -351,6 +384,23 @@ export class ProductComponent implements OnInit {
         });
       }
     }
+    debugger;
+    if(e?.target?.name == 'product'){
+      if (e?.target?.checked) {
+        this.paramsProduct.push(id);
+      } else {
+        this.paramsProduct = this.paramsProduct.filter((item) => {
+          return (
+            item !== id 
+          );
+        });
+      }
+    }
+
+    if(!e){
+      this.paramsProduct.push(id);
+      // document.getElementById("product").checked  = false;
+    }
     
     if (id) {   
       this.controlArray.set('pageIndex', 0);
@@ -360,6 +410,7 @@ export class ProductComponent implements OnInit {
       this.controlArray.set('lstRom', this.paramsRom.join(','));
       this.controlArray.set('lstCpu', this.paramsCpu.join(','));
       this.controlArray.set('lstGpu', this.paramsGpu.join(','));
+      this.controlArray.set('productId', this.paramsProduct.join(','));
       // this.controlArray.set('optionValueID', this.paramsOptionValue.join(','));
       this.getProductSort(this.controlArray);
     }

@@ -1,6 +1,7 @@
 export enum ROLE {
   ADMIN = 'ADMIN',
-  USER = 'USER'
+  USER = 'USER',
+  STAFF = 'STAFF'
 }
 
 export enum ERROR {

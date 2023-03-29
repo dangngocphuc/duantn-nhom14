@@ -1,4 +1,4 @@
-export class User {
+export class UserLogin {
   id: number;
   username: string;
   tokenId: string;
@@ -16,7 +16,7 @@ export class LoginResponse {
   errorMessage: string;
   authenticated: string;
   authorization: string;
-  userDetail: User;
+  userDetail: UserLogin;
 }
 export class Brand {
   id: number;
@@ -208,7 +208,7 @@ export class ImeiRequest {
 }
 export class Bill {
   id: number;
-  user: User;
+  user: UserLogin;
   total: number;
   payment: string;
   address: string;
@@ -216,7 +216,7 @@ export class Bill {
   name: string;
   phone: string;
   status: string;
-  listBillDetail: BillDetail[];
+  listBillDetail: BillDetail[] = [];
   billCode: String;
   note: String;
   paymentStatus : String;
@@ -224,6 +224,7 @@ export class Bill {
   districtID: number;
   wardCode: String;
   promotion : Promotion;
+  productDetailValue: any;
 }
 export class BillDetail {
   id: number;
@@ -231,8 +232,8 @@ export class BillDetail {
   productDetail: ProductDetail;
   price: number;
   quantity: number;
-  listImei: Imei[];
-  listImeiValue : any;
+  listImei: Imei[]=[];
+  listImeiValue : Imei[] = [];
 }
 export class Review {
   id: number;
@@ -384,4 +385,26 @@ export class PagePromotion{
   numberOfElements: number;
   size: number;
   number: number;
+}
+
+export class User{
+	userID : Number;
+	userName : String;
+	userEmail : String ;
+  userPass : String;
+	userPhone :String;
+	enabled : boolean;
+	roles : Role[];
+  username: String;
+}
+
+export class Role{
+  id: number;
+  name: String;
+  // users: User [];
+}
+
+export class Tab{
+  name:String;
+  bill: Bill = new Bill();
 }
