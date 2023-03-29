@@ -48,15 +48,15 @@ export class ProductComponent implements OnInit {
   totalPrice: number = 0;
   cart: ProductDetail[] = [];
   compare: ProductDetail[] = [];
-  lenthCompare: number ;
+  lenthCompare: number;
   pageProductDetail = new PageProductDetail();
   productId;
   constructor(
     route: ActivatedRoute,
-    private activatedRoute: ActivatedRoute,private ramService : RamService, 
-    private categoryService: CategoryService,private cpuService :CpuService,
-    private brandService: BrandService,private gpuService: GpuService,
-    private productService: ProductService,private romService: RomService,
+    private activatedRoute: ActivatedRoute, private ramService: RamService,
+    private categoryService: CategoryService, private cpuService: CpuService,
+    private brandService: BrandService, private gpuService: GpuService,
+    private productService: ProductService, private romService: RomService,
     private notification: NzNotificationService,
     private productDetailService: ProductDetailService,
     private optionService: OptionService
@@ -80,8 +80,8 @@ export class ProductComponent implements OnInit {
 
     console.log(this.productId);
 
-    if(this.productId){
-      this.filterByBrand(this.productId,null)
+    if (this.productId) {
+      this.filterByBrand(this.productId, null)
     }
 
     const cart = localStorage.getItem('cart') || '';
@@ -89,11 +89,11 @@ export class ProductComponent implements OnInit {
       this.cart = JSON.parse(cart);
     }
     const compare = localStorage.getItem('compare') || '';
-     if (compare) {
-       this.compare = JSON.parse(compare);
-       this.lenthCompare =  this.compare.length;
+    if (compare) {
+      this.compare = JSON.parse(compare);
+      this.lenthCompare = this.compare.length;
       //  console.log(this.lenthCompare);
-     }
+    }
     // this.getCategories();
     this.getBrands();
     this.getOption();
@@ -269,7 +269,7 @@ export class ProductComponent implements OnInit {
     this.gpuService.getListGpu().subscribe(
       (data) => {
         if (data) {
-          this.listOfGpu= data;
+          this.listOfGpu = data;
         }
       },
       (error) => {
@@ -325,84 +325,84 @@ export class ProductComponent implements OnInit {
 
   filterByBrand(id, e) {
     debugger;
-    if(e?.target?.name == 'brand'){
+    if (e?.target?.name == 'brand') {
       if (e?.target?.checked) {
         this.paramsBrand.push(id);
       } else {
         this.paramsBrand = this.paramsBrand.filter((item) => {
           return (
-            item !== id 
+            item !== id
           );
         });
       }
     }
 
-    if(e?.target?.name == 'ram'){
+    if (e?.target?.name == 'ram') {
       if (e?.target?.checked) {
         this.paramsRam.push(id);
       } else {
         this.paramsRam = this.paramsRam.filter((item) => {
           return (
-            item !== id 
+            item !== id
           );
         });
       }
     }
 
-    if(e?.target?.name == 'rom'){
+    if (e?.target?.name == 'rom') {
       if (e?.target?.checked) {
         this.paramsRom.push(id);
       } else {
         this.paramsRom = this.paramsRom.filter((item) => {
           return (
-            item !== id 
+            item !== id
           );
         });
       }
     }
 
-    if(e?.target?.name == 'cpu'){
+    if (e?.target?.name == 'cpu') {
       if (e?.target?.checked) {
         this.paramsCpu.push(id);
       } else {
         this.paramsCpu = this.paramsCpu.filter((item) => {
           return (
-            item !== id 
+            item !== id
           );
         });
       }
     }
 
-    if(e?.target?.name == 'gpu'){
+    if (e?.target?.name == 'gpu') {
       if (e?.target?.checked) {
         this.paramsGpu.push(id);
       } else {
         this.paramsGpu = this.paramsGpu.filter((item) => {
           return (
-            item !== id 
+            item !== id
           );
         });
       }
     }
     debugger;
-    if(e?.target?.name == 'product'){
+    if (e?.target?.name == 'product') {
       if (e?.target?.checked) {
         this.paramsProduct.push(id);
       } else {
         this.paramsProduct = this.paramsProduct.filter((item) => {
           return (
-            item !== id 
+            item !== id
           );
         });
       }
     }
 
-    if(!e){
+    if (!e) {
       this.paramsProduct.push(id);
       // document.getElementById("product").checked  = false;
     }
-    
-    if (id) {   
+
+    if (id) {
       this.controlArray.set('pageIndex', 0);
       this.controlArray.set('pageSize', 9);
       this.controlArray.set('brandId', this.paramsBrand.join(','));
@@ -416,6 +416,7 @@ export class ProductComponent implements OnInit {
     }
   }
   changeStatus(e) {
+    this.pageIndex = 0;
     if (e) {
       if (e == "p-des") {
         this.getProducts(this.pageIndex, this.pageSize, 'productPrice', 'descend');
@@ -424,12 +425,13 @@ export class ProductComponent implements OnInit {
         this.getProducts(this.pageIndex, this.pageSize, 'productPrice', 'ascend');
       }
       if (e == "default") {
-        this.getProducts(this.pageIndex, this.pageSize, 'productID', 'descend');
+        this.getProducts(this.pageIndex, this.pageSize, 'id', 'descend');
       }
     }
   }
 
   addToCart(product: ProductDetail) {
+    debugger
     let duplicate = false;
     this.cart.forEach((ele) => {
       if (ele.id == product.id) {
@@ -438,6 +440,7 @@ export class ProductComponent implements OnInit {
     });
     // if no => add item
     if (!duplicate) {
+      debugger;
       product.quanlityBuy = 1;
       this.cart.push(product);
       this.updateCart();
@@ -447,33 +450,50 @@ export class ProductComponent implements OnInit {
         ''
       );
       window.location.reload();
-    } else {
-      this.createNotification(
-        'info',
-        'Sản phẩm đã có trong giỏ hàng',
-        ''
-      );
+      // window.location.href = '/mycart'
+    }
+    else {
+      this.cart.forEach((ele) => {
+        if (ele.id == product.id) {
+          if (ele.quanlityBuy == ele.quantity) {
+            this.createNotification(
+              'warning',
+              'bạn đã thêm tối đa sản phẩm',
+              ''
+            );
+          } else {
+            ele.quanlityBuy = ele.quanlityBuy + 1;
+            this.createNotification(
+              'success',
+              'Sản phẩm đã thêm vào giỏ hàng',
+              ''
+            );
+            this.updateCart();
+            window.location.reload();
+          }
+        }
+      });
     }
   }
 
-  addToCompare(product:ProductDetail){
+  addToCompare(product: ProductDetail) {
     this.lenthCompare = this.compare.length;
     let duplicate = false;
     this.compare.forEach((ele) => {
-      if (ele.id == product.id ) {
+      if (ele.id == product.id) {
         duplicate = true;
       }
     });
     // if no => add item
-    if(!duplicate){
-      if(this.lenthCompare > 1){
+    if (!duplicate) {
+      if (this.lenthCompare > 1) {
         this.createNotification(
           'info',
           'vui lòng xóa bớt sản phẩm để so sánh',
           ''
         );
         return;
-      }else{
+      } else {
         this.compare.push(product);
         this.updateCompare();
         this.createNotification(
@@ -483,7 +503,7 @@ export class ProductComponent implements OnInit {
         );
         window.location.reload();
       }
-    }else{
+    } else {
       this.createNotification(
         'info',
         'Sản phẩm đã có trong so sánh',

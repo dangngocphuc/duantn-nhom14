@@ -103,7 +103,6 @@ public class ImeiController {
 							return new ResponseEntity<ResponseVnpay>(response, HttpStatus.OK);
 						} else {
 						    imeiService.saveListImei(lst);
-						    
 						}
 					}
 					if(key.equals("ERROR") && lst.size() > 0) {

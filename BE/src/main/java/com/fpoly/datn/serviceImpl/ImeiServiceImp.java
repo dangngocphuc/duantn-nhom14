@@ -149,7 +149,9 @@ public class ImeiServiceImp implements ImeiService {
 						continue;
 					if (CommonUtils.checkIfRowIsEmpty(row)) {
 						lstError.add("Lỗi hàng thứ: " + (row.getRowNum() + 1) + ". Không được để trống.");
+						lstSuccess.removeAll(lstSuccess);
 						break;
+						
 					}
 					Imei imei = new Imei();
 					imei.setStatus(CommonUtils.TrangThai.CON.getValue());
@@ -170,6 +172,7 @@ public class ImeiServiceImp implements ImeiService {
 										bolHasError = true;
 										lstError.add("Lỗi hàng thứ: " + (row.getRowNum() + 1) + " cột thứ: "
 												+ (cell.getColumnIndex() + 1) + ". Không được để trống.");
+										lstSuccess.removeAll(lstSuccess);
 										continue;
 									}
 									boolean bolExist = false;
@@ -184,6 +187,7 @@ public class ImeiServiceImp implements ImeiService {
 											bolHasError = true;
 											lstError.add("Lỗi hàng thứ: " + (row.getRowNum() + 1) + " cột thứ: "
 													+ (cell.getColumnIndex() + 1) + ". Mã sản phẩm không tồn tại.");
+											lstSuccess.removeAll(lstSuccess);
 											continue;
 										}
 									}
@@ -191,6 +195,7 @@ public class ImeiServiceImp implements ImeiService {
 									bolHasError = true;
 									lstError.add("Lỗi hàng thứ: " + (row.getRowNum() + 1) + " cột thứ: "
 											+ (cell.getColumnIndex() + 1));
+									lstSuccess.removeAll(lstSuccess);
 									continue;
 								}
 
@@ -203,6 +208,7 @@ public class ImeiServiceImp implements ImeiService {
 										bolHasError = true;
 										lstError.add("Lỗi hàng thứ: " + (row.getRowNum() + 1) + " cột thứ: "
 												+ (cell.getColumnIndex() + 1) + ". Không được để trống.");
+										lstSuccess.removeAll(lstSuccess);
 										continue;
 									}
 									boolean bolExist = false;
@@ -215,6 +221,7 @@ public class ImeiServiceImp implements ImeiService {
 									bolHasError = true;
 									lstError.add("Lỗi hàng thứ: " + (row.getRowNum() + 1) + " cột thứ: "
 											+ (cell.getColumnIndex() + 1));
+									lstSuccess.removeAll(lstSuccess);
 									continue;
 								}
 								break;
@@ -226,6 +233,7 @@ public class ImeiServiceImp implements ImeiService {
 										bolHasError = true;
 										lstError.add("Lỗi hàng thứ: " + (row.getRowNum() + 1) + " cột thứ: "
 												+ (cell.getColumnIndex() + 1) + ". Không được để trống.");
+										lstSuccess.removeAll(lstSuccess);
 										continue;
 									}
 									boolean bolExist = false;
@@ -236,6 +244,7 @@ public class ImeiServiceImp implements ImeiService {
 											bolHasError = true;
 											lstError.add("Lỗi hàng thứ: " + (row.getRowNum() + 1) + " cột thứ: "
 													+ (cell.getColumnIndex() + 1) + ". Imei đã tồn tại.");
+											lstSuccess.removeAll(lstSuccess);
 											continue;
 										} else {
 											imei.setImei(imeis);
@@ -248,6 +257,7 @@ public class ImeiServiceImp implements ImeiService {
 									bolHasError = true;
 									lstError.add("Lỗi hàng thứ: " + (row.getRowNum() + 1) + " cột thứ: "
 											+ (cell.getColumnIndex() + 1));
+									lstSuccess.removeAll(lstSuccess);
 									continue;
 								}
 								break;

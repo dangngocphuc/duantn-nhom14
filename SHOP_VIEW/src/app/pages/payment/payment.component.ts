@@ -56,6 +56,12 @@ export class PaymentComponent implements OnInit {
 
   addresss = new Address();
   promotion = new Promotion();
+
+  totalPrice = 0;
+  sum = 0;
+  discountPrice = 0;
+  listOfProduct: ProductDetail[] = [];
+  totalProduct : number = 0; 
   // check;
   // randomUserUrl = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province';
   // optionList: string[] = [];
@@ -240,6 +246,19 @@ export class PaymentComponent implements OnInit {
           this.listService = data.data;
         }
       });
+    }
+
+    // const cart = localStorage.getItem('cart') || '';
+    if (cart) {
+      // debugger;
+      this.listOfProduct = JSON.parse(cart);
+      // console.log(this.listOfProduct);
+      this.listOfProduct.forEach((element) => {
+        this.totalPrice += element.quanlityBuy * element.productPrice;
+        // this.salePrice += (element.productMarketprice - element.productPrice) * element.quantity;
+        this.totalProduct = this.totalProduct + element.quanlityBuy;
+      });
+      this.sum = this.totalPrice;
     }
   }
   submitForm(): void {

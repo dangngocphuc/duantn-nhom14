@@ -6,9 +6,9 @@
         </ol>
     </nav>
 </div>
-<div class="login row">
-    <div class="col-md-3"></div>
-    <div class="col-md-6">
+<!-- <div class="login row"> -->
+<!-- <div class="container">
+    <div class="col-md-8">
         <form [formGroup]="validateForm" class="row">
             <div class="col-md-12 login-do1 animated wow fadeInLeft" data-wow-delay=".5s">
                 <div class="form-group">
@@ -48,7 +48,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <button (click)="openModal()" type="button" class="btn btn-primary" style="float: right;border: none;background-color: white;
-                        color: blue;">Thay đổi địa
+                            color: blue;">Thay đổi địa
                             chỉ</button>
                     </div>
                 </div>
@@ -77,7 +77,7 @@
                             src="../assets/images/Giao_Hang_Nhanh_Toan_Quoc.b7d18fe5.png" alt="">
                     </div>
                 </div>
-                <!-- <ngx-paypal [config]="payPalConfig"></ngx-paypal> -->
+                <ngx-paypal [config]="payPalConfig"></ngx-paypal> 
                 <nz-form-item>
                     <nz-form-label>Phương thức thanh toán</nz-form-label>
                     <nz-select formControlName="payment">
@@ -86,20 +86,186 @@
                     </nz-select>
                 </nz-form-item>
                 <nz-form-item class="row">
-                    <!-- <div class="col-md-8"> <button type="button" class="btn btn-outline-primary"
-                            (click)="paymentVnpay()">Thanh toán vnpay</button></div> -->
-                    <!-- <div class="col-md-4"> -->
-                    <button type="button" (click)="submitForm()" class="btn btn-outline-success">Xác nhận thanh
-                        toán</button>
-                    <!-- </div> -->
+                    <div class="col-md-8"> <button type="button" class="btn btn-outline-primary"
+                            (click)="paymentVnpay()">Thanh toán vnpay</button></div>
+                    <div class="col-md-4">
+                        <button type="button" (click)="submitForm()" class="btn btn-outline-success">Xác nhận thanh
+                            toán</button>
+                    </div>
                 </nz-form-item>
             </div>
             <div class="clearfix"> </div>
         </form>
     </div>
-    <div class="col-md-3"></div>
+    <div class="col-md-4">
+        <h5 class="continue">Tổng Cộng Giỏ Hàng</h5>
+        <ul class="total_price">
+            <li class="last_price">
+                <h5>Tổng tiền</h5>
+            </li>
+            <li class="last_price"><span>
+
+                </span></li>
+            <div class="clearfix"> </div>
+        </ul>
+        <ul class="total_price" *ngIf="discountPrice!=0">
+            <li class="last_price">
+                <h5>Giảm giá</h5>
+            </li>
+            <li class="last_price"><span>
+
+                </span></li>
+            <div class="clearfix"> </div>
+        </ul>
+        <hr>
+        <ul class="total_price">
+            <li class="last_price">
+                <h5>Tổng tiền thanh toán</h5>
+            </li>
+            <li class="last_price"><span>
+                    <h5></h5>
+                </span>
+            </li>
+            <div class="clearfix"> </div>
+        </ul>
+        <hr>
+    </div>
+</div> -->
+
+<div class="container">
+    <div class="row" style="padding-top: 5px;" >
+        <div class="col-md-1 order-md-1"></div>
+        <div class="col-md-4 order-md-2 mb-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Your cart</span>
+                <span class="badge badge-secondary badge-pill">{{totalProduct|number}}</span>
+            </h4>
+            <ul class="list-group mb-3 sticky-top">
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    <div>
+                        <h6 class="my-0">Tổng tiền</h6>
+                        <small class="text-muted">Total money</small>
+                    </div>
+                    <span class="text-muted">{{sum| number}} VNĐ</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between lh-condensed" *ngIf="discountPrice!=0">
+                    <div>
+                        <h6 class="my-0">Giảm giá</h6>
+                        <small class="text-muted">Discount</small>
+                    </div>
+                    <span class="text-muted">{{discountPrice| number}} VNĐ</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Tổng tiền thanh toán</span>
+                    <strong>{{totalPrice| number}} VNĐ</strong>
+                </li>
+            </ul>
+            <!-- <form class="card p-2">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Promo code">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-secondary">Redeem</button>
+                    </div>
+                </div>
+            </form> -->
+        </div>
+        <!-- <div class="col-md-1 order-md-1"></div> -->
+        <div class="col-md-6 order-md-1">
+            <h4 class="mb-3">Billing address</h4>
+            <form [formGroup]="validateForm" class="row">
+                <div class="col-md-12 login-do1 animated wow fadeInLeft" data-wow-delay=".5s">
+                    <div class="form-group">
+                        <label for="">Tên khách hàng</label>
+                        <input type="text" class="form-control" formControlName="userName" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">Số điện thoại</label>
+                        <input type="text" class="form-control" formControlName="phone" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">Địa chỉ nhận hàng</label>
+                        <input type="text" class="form-control" formControlName="specificAddress" />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="">Tỉnh/thành phố</label>
+                            <ng-select [items]="listProvince" bindLabel="ProvinceName" bindValue="ProvinceID"
+                                formControlName="province" style="width: 100%;" [(ngModel)]="provinceId"
+                                (change)="getListDistrict()">
+                            </ng-select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="">Quận/Huyện</label>
+                            <ng-select [items]="listDistrict" bindLabel="DistrictName" formControlName="district"
+                                bindValue="DistrictID" style="width: 100%;" [hideSelected]="true"
+                                (change)="getListWard()" [(ngModel)]="districtId">
+                            </ng-select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="">Phường/Xã</label>
+                            <ng-select [items]="listWard" bindLabel="WardName" bindValue="WardCode"
+                                formControlName="ward" style="width: 100%;" [(ngModel)]="wardCode">
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button (click)="openModal()" type="button" class="btn btn-primary" style="float: right;border: none;background-color: white;
+                                    color: blue;">Thay đổi địa
+                                chỉ</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="">Phương thức vận chuyển</label>
+                            <ng-select [items]="listService" bindLabel="short_name" bindValue="service_id"
+                                formControlName="service" style="width: 100%;" [(ngModel)]="serviceId"
+                                (change)="getFeeService()">
+                            </ng-select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for=""></label>
+                            <div style="width: 100%;">phí vận chuyển: <span
+                                    style="color: red;">{{responseFeeSevice?.total |
+                                    number }} VNĐ</span>
+                            </div>
+                            <div>
+                                Nhận hàng vào: {{leadTime| date : 'dd/MM/yyyy'}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <span style="color: blue;">Đơn vị vận chuyển:</span>
+                            <img style="height: 100px; width: 200px;"
+                                src="../assets/images/Giao_Hang_Nhanh_Toan_Quoc.b7d18fe5.png" alt="">
+                        </div>
+                    </div>
+                    <!-- <ngx-paypal [config]="payPalConfig"></ngx-paypal> -->
+                    <nz-form-item>
+                        <nz-form-label>Phương thức thanh toán</nz-form-label>
+                        <nz-select formControlName="payment">
+                            <nz-option nzValue="Live" nzLabel="Trực tiếp"></nz-option>
+                            <nz-option nzValue="Bank transfer" nzLabel="Thanh toán qua vnpay"></nz-option>
+                        </nz-select>
+                    </nz-form-item>
+                    <nz-form-item class="row">
+                        <!-- <div class="col-md-8"> <button type="button" class="btn btn-outline-primary"
+                                        (click)="paymentVnpay()">Thanh toán vnpay</button></div> -->
+                        <!-- <div class="col-md-4"> -->
+                        <button type="button" (click)="submitForm()" class="btn btn-outline-success">Xác nhận thanh
+                            toán</button>
+                        <!-- </div> -->
+                    </nz-form-item>
+                </div>
+                <!-- <div class="clearfix"> </div> -->
+            </form>
+        </div>
+    </div>
 </div>
 
+<!-- <div class="col-md-3"></div> -->
+<!-- </div> -->
 <modal #ListAddress>
     <modal-header>
         Địa chỉ của tôi
