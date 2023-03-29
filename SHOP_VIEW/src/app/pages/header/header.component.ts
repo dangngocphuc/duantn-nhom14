@@ -32,7 +32,7 @@ export class HeaderComponent implements OnInit {
   pageSize = 5;
   pageIndex = 1;
   cart: Product[] = [];
-  totalProduct : number; 
+  totalProduct : number = 0; 
 
   user = new User();
 
@@ -60,7 +60,11 @@ export class HeaderComponent implements OnInit {
     const cart = localStorage.getItem('cart') || '';
      if (cart) {
        this.cart = JSON.parse(cart);
-       this.totalProduct = this.cart.length;
+       this.cart.forEach((e)=>{
+        debugger;
+        this.totalProduct = this.totalProduct + e.quanlityBuy;
+       })
+        // = this.cart.length;
       //  console.log(this.totalProduct)
      }
   }

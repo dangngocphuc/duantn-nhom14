@@ -6,9 +6,6 @@
 </div>
 <div class="check-out">
     <div class="container">
-        <div>
-
-        </div>
         <ng-container *ngIf="listOfProduct.length > 0; else elseBlock">
             <div class="row">
                 <div class="col-8">
@@ -124,7 +121,6 @@
                     <button class="btn btn-outline-success" style="float: right;" (click)="payment()">Thanh
                         Toán</button>
                 </div>
-
             </div>
         </ng-container>
         <ng-template #elseBlock>
