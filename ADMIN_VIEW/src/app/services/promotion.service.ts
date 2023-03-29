@@ -9,7 +9,6 @@ import { HttpBaseService } from './http-base.service';
   providedIn: 'root'
 })
 export class PromotionService {
-
   constructor(private http: HttpBaseService, private authen: AuthenticationService) { }
 
   getPagePromotion(page: PagesRequest): Observable<any> {
@@ -32,4 +31,7 @@ export class PromotionService {
     return this.http.post<any>(`/promotion`, ram);
   }
 
+  getPromotionByCode(code): Observable<any> {
+    return this.http.get<any>(`/promotion/code/` + code, null);
+  }
 }

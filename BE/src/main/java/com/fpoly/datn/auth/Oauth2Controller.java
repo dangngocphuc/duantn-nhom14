@@ -59,6 +59,7 @@ public class Oauth2Controller {
 			usuario.setUserEmail(payload.getEmail());
 //			usuario.setUserRole(false);
 			usuario.setUserName(payload.getEmail());
+			usuario.setEnabled(true);
 			usuario.setUserPass(commonUtils.Sha1EncryptText(secretPsw));
 			usuario = userService.saveUser(usuario);
 		}

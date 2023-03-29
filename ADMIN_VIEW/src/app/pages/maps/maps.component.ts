@@ -5,7 +5,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { ModalManager } from 'ngb-modal';
 import { Action } from 'src/app/commons/common';
-import { Bill, BillDetail, District, PagesRequest, ProductDetail, Province, Ward } from 'src/app/models/type';
+import { Bill, BillDetail, District, PagesRequest, ProductDetail, Promotion, Province, Ward } from 'src/app/models/type';
 import { BillService } from 'src/app/services/bill.service';
 import { ProductDetailService } from 'src/app/services/productDetail.service';
 import { ImeiService } from 'src/app/services/imei.service';
@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import { catchError, concat, debounceTime, distinctUntilChanged, map, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { GhnService } from 'src/app/services/ghn.service';
+import { PromotionService } from 'src/app/services/promotion.service';
 declare const google: any;
 
 @Component({
@@ -53,6 +54,10 @@ export class MapsComponent implements OnInit {
   listWard: Ward[];
   discountPrice = 0;
   sum = 0;
+
+  code: any;
+  codeTemp: any;
+  promotion = new Promotion();
   @ViewChild('myModal') myModal;
 
   @ViewChild('Modal') Modal;
@@ -61,7 +66,7 @@ export class MapsComponent implements OnInit {
   constructor(private fb: FormBuilder, private notification: NzNotificationService,
     private imeiService: ImeiService, private ghnService: GhnService,
     private modal: NzModalService, private modalService: ModalManager,
-    private productDetailService: ProductDetailService,
+    private productDetailService: ProductDetailService, private promotionService: PromotionService,
     private billService: BillService) { }
 
   ngOnInit() {
@@ -196,19 +201,19 @@ export class MapsComponent implements OnInit {
     this.getListWard(data.districtID);
     this.billService.getBillById(data.id).subscribe((data) => {
       this.bill = data;
-      if(this.bill.promotion){
-       
-        this.bill.listBillDetail.forEach((e)=>{
-          this.sum=this.sum+e.price;
+      if (this.bill.promotion) {
+
+        this.bill.listBillDetail.forEach((e) => {
+          this.sum = this.sum + e.price;
         })
         if (this.bill.promotion.type == 0) {
           this.discountPrice = (this.sum * this.bill.promotion.value * 0.01)
         }
         else {
           this.discountPrice = this.bill.promotion.value;
-        }  
+        }
       }
-     
+
       this.bill.listBillDetail.forEach((e) => {
         this.loadImei(e);
       })
@@ -559,11 +564,66 @@ export class MapsComponent implements OnInit {
     );
     popupWin.document.close();
   }
+  
 
   checkButton() {
     if (!(this.bill.status == 'Processed')) {
       return false;
     }
     return true;
+  }
+
+  addVorcher() {
+    console.log(this.code);
+    if (this.code) {
+      if (this.code == this.promotion.code) {
+        Swal.fire('', 'Đơn hàng đã được áp dụng mã khuyến mại', 'error')
+      } else {
+        this.promotionService.getPromotionByCode(this.code).subscribe((data) => {
+          if (data) {
+            // console.log(data);
+            // debugger;
+            this.promotion = data;
+            let date = new Date();
+            let dateF = new Date(this.promotion.dateFrom);
+            let dateT = new Date(this.promotion.dateTo);
+            if (dateF.getTime() <= date.getTime() && date.getTime() <= dateT.getTime()) {
+              this.totalPrice = 0;
+              this.sum = 0
+              this.listOfProductDetail.forEach((element) => {
+                this.totalPrice += element.quanlityBuy * element.productPrice;
+                this.sum += element.quanlityBuy * element.productPrice;
+                // this.salePrice += (element.productMarketprice - element.productPrice) * element.quanlityBuy;
+              });
+              if (this.promotion.type == 0) {
+                this.discountPrice = (this.totalPrice * this.promotion.value * 0.01)
+                this.totalPrice = this.totalPrice - this.discountPrice;
+              }
+              else {
+                this.discountPrice = this.promotion.value;
+                this.totalPrice = this.totalPrice - this.promotion.value;
+              }
+              // localStorage.setItem('promotion', JSON.stringify(this.promotion));
+              // localStorage.setItem('total', this.totalPrice.toString());
+            }
+            else {
+              Swal.fire('', 'Mã đã hết thời gian áp dụng', 'error');
+              // this.promotion = null;
+            }
+          } else {
+
+            Swal.fire('', 'Mã không hợp lệ', 'error');
+            // this.promotion = null;
+          }
+        },
+          (error) => {
+            Swal.fire('', error, 'error');
+            // this.promotion = null;
+        })
+      }
+    } else {
+      Swal.fire('', 'vui lòng nhập mã khuyến mại', 'error');
+      this.promotion = null;
+    }
   }
 }

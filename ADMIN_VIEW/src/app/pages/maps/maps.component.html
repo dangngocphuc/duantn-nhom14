@@ -86,7 +86,7 @@
               <th style="text-align: center">Thanh toán</th>
               <th nzColumnKey="date" [nzSortFn]="true" style="text-align: center">Ngày bán</th>
               <!-- <th style="text-align: center">Địa chỉ</th> -->
-              <th style="text-align: center">Thanh toán</th>
+              <!-- <th style="text-align: center">Thanh toán</th> -->
               <th style="text-align: center">Tình trạng</th>
               <th style="text-align: center">Thao tác</th>
             </tr>
@@ -99,7 +99,7 @@
               <td>{{data?.payment}}</td>
               <td>{{data?.date|date:'dd/MM/yyyy'}}</td>
               <!-- <td>{{data?.address}}</td> -->
-              <td>{{data?.paymentStatus=='00'?'Đã thanh toán':'Chưa thanh toán'}}</td>
+              <!-- <td>{{data?.paymentStatus=='00'?'Đã thanh toán':'Chưa thanh toán'}}</td> -->
               <td>
                 <nz-select *ngIf=" data.status != 'Cancel'; else elseBlock" ngModel="{{data.status}}"
                   (ngModelChange)="changeStatus($event,data)">
@@ -174,7 +174,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of bill?.listBillDetail; ; let i = index">
+            <tr *ngFor="let item of bill?.listBillDetail; let i = index">
               <td style="text-align: center;">{{i+1}}</td>
               <td style="text-align: center;">{{item?.productDetail?.productName}}</td>
               <td>
@@ -214,7 +214,7 @@
         <cdk-step [stepControl]="stepOne.stepOneForm" [optional]="false">
           <ng-template cdkStepLabel>
             <div class="step-bullet">1</div>
-            <div class="step-title">Personal Details <span class="required">*</span></div>
+            <div class="step-title">Order<span class="required">*</span></div>
           </ng-template>
           <div #stepOne class="row">
             <div class="col-1"></div>
@@ -271,25 +271,55 @@
                   <div class="">
                     <h5 class="continue">Tổng Cộng Giỏ Hàng</h5>
                     <div class="price-details">
-                      <h3>Chi Tiết Giá</h3>
-                      <span>Tổng Cộng</span>
-                      <span class="total1">
+                      <h3>Nhập mã giảm giá</h3>
+                      <div class="form-group col-6">
+                        <div class="row">
+                          <div class="col-4">
+                            <input type="text" name="code" id="code" class="form-control" [(ngModel)]="code" trim>
+                          </div>
+                          <div class="col-2"><button (click)="addVorcher()" type="button" class="btn btn-primary">Áp
+                              dụng</button></div>
+                        </div>
+                      </div>
+                      <hr>
+                      <!-- <span>Tổng Cộng</span> -->
+                      <!-- <span class="total1">
                         Tổng giá VND
-                      </span>
-                      <span>Giảm giá</span>
-                      <span class="total1">{{salePrice | number}} VND</span>
-                      <span>Phí vận chuyển</span>
-                      <span class="total1">Miễn phí</span>
+                    </span> -->
+                      <!-- <span>Giảm giá</span> -->
+                      <!-- <span class="total1">{{salePrice | number}} VND</span> -->
+                      <!-- <span>Phí vận chuyển</span> -->
+                      <!-- <span class="total1">Miễn phí</span> -->
                       <div class="clearfix"></div>
+                      <div *ngIf="discountPrice!=0">Bạn được giảm {{promotion?.value}} {{promotion?.type=='0'?'%':'VNĐ'}} đơn hàng</div>
                     </div>
                     <ul class="total_price">
                       <li class="last_price">
-                        <h4>Tổng Cộng</h4>
+                        <h5>Tổng tiền</h5>
+                      </li>
+                      <li class="last_price"><span>
+                          {{sum| number}} VNĐ
+                        </span></li>
+                      <div class="clearfix"> </div>
+                    </ul>
+                    <ul class="total_price" *ngIf="discountPrice!=0">
+                      <li class="last_price">
+                        <h5>Giảm giá</h5>
+                      </li>
+                      <li class="last_price"><span>
+                          {{discountPrice| number}} VNĐ
+                        </span></li>
+                      <div class="clearfix"> </div>
+                    </ul>
+                    <hr>
+                    <ul class="total_price">
+                      <li class="last_price">
+                        <h4>Tổng tiền thanh toán</h4>
                       </li>
                       <li class="last_price"><span>
                           {{totalPrice| number}} VNĐ
                         </span></li>
-                      <div class="clearfix"></div>
+                      <div class="clearfix"> </div>
                     </ul>
                     <button class="btn btn-outline-success" cdkStepperNext>Thanh Toán</button>
                   </div>

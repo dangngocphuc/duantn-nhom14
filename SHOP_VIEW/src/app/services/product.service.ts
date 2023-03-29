@@ -21,6 +21,7 @@ export class ProductService {
     return new HttpHeaders(headers);
   }
   constructor(private http: HttpBaseService, private httpClient : HttpClient) {}
+
   getProducts(params): Observable<any> {
     return this.http.get<any>(`/product`, params);
   }
@@ -38,7 +39,26 @@ export class ProductService {
     httpOptions["params"] = params;
     return this.httpClient.get<any>(this.Url+`/product/search`, httpOptions);
   }
+
+  public ngSelect(productParam): Observable<any> {
+    let query = {};
+
+    if (productParam.pageIndex) query['page'] = productParam.pageIndex
+    if (productParam.pageSize) query['size'] = productParam.pageSize
+    query['sort'] = 'id,desc';
+    if (productParam && productParam.productName && productParam.productName != '')
+      query['productName'] = productParam.productName.toString();
+    let params = new HttpParams({ fromObject: query });
+    var httpOptions: Object = {
+    };
+    httpOptions["params"] = params;
+    return this.http.get<any>(`/product/ngselect`, httpOptions);
+  }
   getProduct(id): Observable<any> {
     return this.http.get<any>(`/product/` + id, null);
+  }
+
+  getListProduct():Observable<any> {
+    return this.http.get<any>(`/product/list`, null);
   }
 }

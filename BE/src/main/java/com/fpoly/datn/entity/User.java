@@ -114,6 +114,10 @@ public class User implements UserDetails {
 		this.enabled = true;
 	}
 
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
 	@Override
 	public boolean isAccountNonExpired() {
 		// TODO Auto-generated method stub
@@ -155,4 +159,5 @@ public class User implements UserDetails {
 	 * CascadeType.PERSIST, orphanRemoval = true) private List<Role> listRole = new
 	 * ArrayList<>();
 	 */
+	
 }

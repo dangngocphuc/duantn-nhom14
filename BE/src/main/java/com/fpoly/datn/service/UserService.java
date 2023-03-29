@@ -26,4 +26,6 @@ public interface UserService {
 	public List<User> getByEmail(String email);
 //	public boolean existsEmail(String email);
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
+	
+	public User saveUsers(User user);
 }

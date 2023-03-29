@@ -1,0 +1,125 @@
+<div class="header bg-gradient-danger pt-5 pt-md-8">
+    <div class="container-fluid">
+    </div>
+</div>
+
+<nz-tabset [(nzSelectedIndex)]="selectedIndex" nzType="editable-card" (nzAdd)="newTab()" (nzClose)="closeTab($event)">
+    <nz-tab *ngFor="let tab of listTab;let i = index" nzClosable [nzTitle]="tab?.name">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-8" style="border-right: 1px solid #ccc;">
+                    <div class="form-group">
+                        <label for="danhMuc">Danh mục Sản phẩm</label>
+                        <ng-select [items]="lstProductDetail" class="custom-ng-select" bindLabel="productName"
+                            [(ngModel)]="tab.bill.productDetailValue" name="product-detail" [hideSelected]="true">
+                        </ng-select>
+                    </div>
+                    <button class="btn btn-primary" (click)="addProduct(tab)" style="margin-bottom: 5px;">Thêm sản
+                        phẩm</button>
+                    <!-- <br /> -->
+                    <div class="form-group">
+                        <table class="table animated wow fadeInLeft" data-wow-delay=".5s">
+                            <tr>
+                                <!-- <th class="t-head">Hình ảnh</th> -->
+                                <th class="t-head">Mặt Hàng</th>
+                                <th class="t-head">Imei</th>
+                                <th class="t-head">Giá</th>
+                                <th class="t-head">Số Lượng</th>
+                                <th class="t-head" style="text-align: center;">Thao tác</th>
+                            </tr>
+                            <tr *ngFor="let item of tab.bill.listBillDetail" class="cross1">
+                                <td class="t-data" style="width:  20%;">
+                                    <h6>
+                                        {{item?.productDetail?.productName}}
+                                    </h6>
+                                </td>
+                                <td>
+                                    <ng-select [items]="item.listImeiValue" class="custom-ng-select" bindLabel="imei"
+                                        name="listImei" [multiple]="true" [hideSelected]="true" [loading]="loadlstImei"
+                                        [typeahead]=" textInput_imei$" [disabled]="disabled"
+                                        [(ngModel)]="item.listImei">
+                                    </ng-select>
+                                </td>
+                                <td class="t-data">
+                                    {{item?.price | number}} VNĐ
+                                </td>
+                                <td class="t-data">
+                                    <div class="quantity">
+                                        <div class="quantity-select">
+                                            <input type="text" class="form-control" [(ngModel)]="item.quantity"
+                                                (blur)="changeQuanlity($event,item)"
+                                                style="width: 60px;text-align: center;height: 20px;">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="t-data" style="text-align: center;">
+                                    <i (click)="delProduct(tab,item?.productDetail?.id)"
+                                        class="ni ni-fat-remove text-red"></i>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="danhMuc">Thêm khách hàng</label>
+                        <ng-select [items]="lstProductDetail" class="custom-ng-select" bindLabel="productName"
+                            [(ngModel)]="productDetail" name="product-detail" [hideSelected]="true">
+                        </ng-select>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">Số lượng sản phẩm</div>
+                        <div class="col-sm-6" style="text-align: right;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">Tổng tiền</div>
+                        <div class="col-sm-8" style="text-align: right;">{{tab?.bill?.total | number}} VNĐ</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">Giảm giá</div>
+                        <div class="col-sm-8" style="text-align: right;"></div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-8">Tổng tiền khách trả</div>
+                        <div class="col-sm-4" style="text-align: right;">{{tab?.bill?.total | number}} VNĐ</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">Tiền khách đưa</div>
+                        <div class="col-sm-8" style="text-align: right">
+                            <input type="text" name="money" currencyMask [(ngModel)]="moneyCustomer"
+                                style="border: none;outline: none;"
+                                [options]="{ suffix: '', prefix :'' , thousands: '.', align: 'right' ,precision: 0 ,allowNegative : false ,nullable : true}">
+                            VNĐ
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <!-- <div class="col-sm-8">Tiền </div> -->
+                        <div class="col-sm-4">
+                            <select name="" id="" style="border: none; outline: none;">
+                                <option value="" style="border: none; outline: none;">Tiền mặt</option>
+                                <option value="" style="border: none; outline: none;">Chuyển tiền</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">Tiền thừa</div>
+                        <div class="col-sm-8" style="text-align: right;">{{moneyCustomer-tab?.bill?.total | number}} VNĐ
+                        </div>
+                    </div>
+                    <div class="row" style="height: 50px;">
+
+                    </div>
+                    <div>
+                        <button (click)="payment(tab,i)" class="btn btn-outline-success" style="float: right;">Thanh
+                            Toán</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="height: 120px;">
+        </div>
+    </nz-tab>
+</nz-tabset>

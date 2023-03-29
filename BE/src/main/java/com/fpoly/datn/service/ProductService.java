@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.fpoly.datn.entity.Brand;
 import com.fpoly.datn.entity.Product;
 import com.fpoly.datn.request.ProductRequest;
 @Service
@@ -20,4 +21,5 @@ public interface ProductService {
 	public List<Long> getSatisticBrand();
 	public List<Long> getSatisticCategory();
 	public List<Product> ngSelect(Pageable pageable, ProductRequest request);
+	public List<Product> findAll();
 }

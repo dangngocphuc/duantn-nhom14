@@ -1,9 +1,9 @@
-<div class="container" style="margin-top:110px">
+<div class="container" style="margin-top:120px">
     <nav aria-label="breadcrumb" class="d-flex align-items-center">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/home">Trang chủ</a></li>
-            <li class="breadcrumb-item"><a href="/products">Sản phẩm</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Chi tiết sản phẩm</li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="/products">Sản phẩm</a></li>
+            <!-- <li class="breadcrumb-item active" aria-current="page">Chi tiết sản phẩm</li> -->
         </ol>
     </nav>
 </div>
@@ -15,10 +15,10 @@
                 <div class="common-filter">
                     <div class="head">Danh mục sản phẩm</div>
                     <ul>
-                        <li *ngFor="let item of listOfCategory" class="filter-list">
-                            <input class="pixel-radio" type="radio" (click)="filterByBrand(item?.categoryID)" id="apple"
-                                name="brand"><label for="apple"><a>
-                                    {{item?.categoryName}}
+                        <li *ngFor="let item of listOfProduct" class="filter-list">
+                            <input class="pixel-radio" type="checkbox" (click)="filterByBrand(item?.id,$event)" id="product"
+                                name="product"><label for="apple"><a>
+                                    {{item?.tenSanPham}}
                                 </a>
                             </label>
                         </li>

@@ -223,4 +223,28 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return true;
 	}
 
+	@Override
+	public User saveUsers(User user) {
+		if(user.getUserID()==null) {
+			user.setUserPass(encoder.encode(user.getPassword()));
+//			for(Role role: user.getRoles()) {
+//				List<User> = new Arr
+//				role.setUsers(user);
+//			}
+			return userRepo.save(user);
+		}else {
+			User us = userRepo.getById(user.getUserID());
+			if(user.getRoles()!=null && !user.getRoles().isEmpty()){
+				us.getRoles().clear();
+				us.getRoles().addAll(user.getRoles());
+			}
+			us.setEnabled(user.isEnabled());
+//			us.setUserPass(encoder.encode(user.getPassword()));
+			return userRepo.save(us);
+		}
+	}
+	
+	
+	
+
 }

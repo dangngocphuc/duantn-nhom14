@@ -3,6 +3,7 @@ package com.fpoly.datn.serviceImpl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -239,16 +240,16 @@ public class BillServiceImpl implements BillService {
 	@Transactional(rollbackFor = Exception.class)
 	public boolean paymentBill(Bill bill) {
 		try {
-			if(bill.getId() != null) {
+			if (bill.getId() != null) {
 				Bill bills = billRepo.findById(bill.getId()).orElse(null);
 				for (BillDetail billDetail : bills.getListBillDetail()) {
 					billDetail.setBill(bill);
-					for(Imei imei: billDetail.getListImei()) {
+					for (Imei imei : billDetail.getListImei()) {
 						imei.setBillDetail(null);
 //						imei.setProductDetail(billDetail.getProductDetail());
 						imei.setStatus(1);
 					}
-				}	
+				}
 				bills.getListBillDetail().clear();
 				bills.getListBillDetail().addAll(bill.getListBillDetail());
 //				products.setTenSanPham(product.getTenSanPham());
@@ -257,81 +258,105 @@ public class BillServiceImpl implements BillService {
 //				bills.getListBillDetail().clear();
 				for (BillDetail billDetail : bills.getListBillDetail()) {
 					billDetail.setBill(bill);
-					for(Imei imei: billDetail.getListImei()) {
+					for (Imei imei : billDetail.getListImei()) {
 						imei.setBillDetail(billDetail);
 						imei.setProductDetail(billDetail.getProductDetail());
 						imei.setStatus(0);
 					}
-				}		
-				
-				return true;	
-			}else {
+				}
+				return true;
+			} else {
 				Gson g = new Gson();
 				bill.setDate(new Date());
-				bill.setStatus(CommonUtils.WAITING);
-				bill.setBillCode(CommonUtils.generateBillNumber());
-				for (BillDetail billDetail : bill.getListBillDetail()) {
-					billDetail.setBill(bill);
+				if (bill.getStatus() == null) {
+					bill.setStatus(CommonUtils.WAITING);
 				}
-				if(bill.getPromotion() != null) {
+				bill.setBillCode(CommonUtils.generateBillNumber());
+				if (bill.getPromotion() != null) {
 					Promotion promotion = promotionRepo.findByCode(bill.getPromotion().getCode());
-					if(promotion.getQuantity()> (promotion.getCount()!=null?promotion.getCount():0)) {
-						promotion.setCount((promotion.getCount()!=null?promotion.getCount():0)+1);
+					if (promotion.getQuantity() > (promotion.getCount() != null ? promotion.getCount() : 0)) {
+						promotion.setCount((promotion.getCount() != null ? promotion.getCount() : 0) + 1);
 					}
 					promotionRepo.save(promotion);
 				}
-				Bill billSave = billRepo.save(bill);
-				StringBuilder content = new StringBuilder();
-				content.append("<table width=\"98%\" border=\"1\" cellpadding=\"3\" cellspacing=\"0\">\r\n"
-						+ "        <thead>\r\n"
-						+ "            <tr align=\"center\" style=\"font-weight: bold; background-color: #D6DBE9; \">\r\n"
-						+ "                <td nowrap=\"nowrap\" width=\"5%\">STT</td>\r\n"
-						+ "                <td width=\"55%\">Tên Sản phẩm</td>\r\n"
-						+ "                <td width=\"10%\">Số lượng</td>\r\n"
-						+ "                <td width=\"30%\">Giá bán</td>\r\n" + "            </tr>\r\n"
-						+ "        </thead>");
 
-//				ProductDetail[] products = g.fromJson(bill.getProducts(), ProductDetail[].class);
-				int i = 1;
-				Double total = 0D;
 				for (BillDetail billDetail : bill.getListBillDetail()) {
-//					BillDetail billDetail = new BillDetail();
-//					billDetail.setBill(billSave);
-//					billDetail.setPrice(product.getProductPrice());
-//					billDetail.setProduct(product);
-//					billDetail.setQuantity(product.getQuanlityBuy());
-					total = (billDetail.getPrice().doubleValue() * billDetail.getQuantity());
+					billDetail.setBill(bill);
+				}
 
-					content.append("<tr>" + "<td nowrap=\"nowrap\" width=\"5%\" style=\"text-align: center;\">");
-					content.append(i);
-					content.append("</td>" + "<td width=\"50%\">");
-					content.append(billDetail.getProductDetail().getProductName());
-					content.append("</td>" + "	<td width=\"10%\" style=\"text-align: center;\" >");
-					content.append(billDetail.getQuantity());
-					content.append("</td>" + "	<td width=\"30%\" style=\"text-align: right;\">");
-					content.append(total.longValue());
-					content.append("</td>" + "</tr>");
-					// save bill
-//					billDetailRepo.save(billDetail);
-					// save product
-//					product.setProductQuantily(product.getProductQuantily() - product.getQuanlityBuy());
-//					productRepo.save(product);
-					i++;
+				Bill billSave = billRepo.save(bill);
+				Bill bills = billRepo.findById(billSave.getId()).orElse(null);
+
+				for (BillDetail billDetail : bills.getListBillDetail()) {
+					billDetail.setBill(billSave);
+					if (billDetail.getListImei() != null) {
+						if (!billDetail.getListImei().isEmpty()) {
+							for (Imei imei : billDetail.getListImei()) {
+								imei.setBillDetail(billDetail);
+								imei.setProductDetail(billDetail.getProductDetail());
+								imei.setStatus(0);
+							}
+						}
+					}
 				}
-				content.append("</table>");
-				// save to email job
-				EmailJob emailJob = new EmailJob();
-				String subject = configRepo.getByName("subject").getValue().replace("__billCode__",
-						String.valueOf(billSave.getBillCode()));
-				emailJob.setSubject(subject);
-				emailJob.setUser(bill.getUser());
-				Config config = configRepo.getByName("content");
-				emailJob.setContent(config.getValue().replace("__name__", billSave.getName())
-						.replace("__total__", NumberFormat.getInstance().format(bill.getTotal()))
-						.replace("__content__", content.toString()));
+
+				billRepo.save(bills);
+
 				if (bill.getUser() != null) {
-					emailJobRepo.save(emailJob);
+					StringBuilder content = new StringBuilder();
+					content.append("<table width=\"98%\" border=\"1\" cellpadding=\"3\" cellspacing=\"0\">\r\n"
+							+ "        <thead>\r\n"
+							+ "            <tr align=\"center\" style=\"font-weight: bold; background-color: #D6DBE9; \">\r\n"
+							+ "                <td nowrap=\"nowrap\" width=\"5%\">STT</td>\r\n"
+							+ "                <td width=\"55%\">Tên Sản phẩm</td>\r\n"
+							+ "                <td width=\"10%\">Số lượng</td>\r\n"
+							+ "                <td width=\"30%\">Giá bán</td>\r\n" + "            </tr>\r\n"
+							+ "        </thead>");
+
+//					ProductDetail[] products = g.fromJson(bill.getProducts(), ProductDetail[].class);
+					int i = 1;
+					Double total = 0D;
+
+					for (BillDetail billDetail : bill.getListBillDetail()) {
+//						BillDetail billDetail = new BillDetail();
+//						billDetail.setBill(billSave);
+//						billDetail.setPrice(product.getProductPrice());
+//						billDetail.setProduct(product);
+//						billDetail.setQuantity(product.getQuanlityBuy());
+						total = (billDetail.getPrice().doubleValue() * billDetail.getQuantity());
+
+						content.append("<tr>" + "<td nowrap=\"nowrap\" width=\"5%\" style=\"text-align: center;\">");
+						content.append(i);
+						content.append("</td>" + "<td width=\"50%\">");
+						content.append(billDetail.getProductDetail().getProductName());
+						content.append("</td>" + "	<td width=\"10%\" style=\"text-align: center;\" >");
+						content.append(billDetail.getQuantity());
+						content.append("</td>" + "	<td width=\"30%\" style=\"text-align: right;\">");
+						content.append(new BigDecimal(total));
+						content.append("</td>" + "</tr>");
+						// save bill
+//						billDetailRepo.save(billDetail);
+						// save product
+//						product.setProductQuantily(product.getProductQuantily() - product.getQuanlityBuy());
+//						productRepo.save(product);
+						i++;
+					}
+					content.append("</table>");
+					// save to email job
+					EmailJob emailJob = new EmailJob();
+					String subject = configRepo.getByName("subject").getValue().replace("__billCode__",
+							String.valueOf(billSave.getBillCode()));
+					emailJob.setSubject(subject);
+					emailJob.setUser(bill.getUser());
+					Config config = configRepo.getByName("content");
+					emailJob.setContent(config.getValue().replace("__name__", billSave.getName())
+							.replace("__total__", NumberFormat.getInstance().format(bill.getTotal()))
+							.replace("__content__", content.toString()));
+					if (bill.getUser() != null) {
+						emailJobRepo.save(emailJob);
+					}
 				}
+
 			}
 //			return bill;
 		} catch (Exception e) {
@@ -347,12 +372,12 @@ public class BillServiceImpl implements BillService {
 		bills.setPaymentStatus(CommonUtils.PaymentStatus.ERROR.getValue());
 		for (BillDetail billDetail : bills.getListBillDetail()) {
 //			billDetail.setBill(bill);
-			for(Imei imei: billDetail.getListImei()) {
+			for (Imei imei : billDetail.getListImei()) {
 				imei.setBillDetail(null);
 //				imei.setProductDetail(billDetail.getProductDetail());
 				imei.setStatus(1);
 			}
-		}	
+		}
 		billRepo.save(bills);
 //		List<BillDetail> billDetails = billDetailRepo.findByBill(bill);
 //		for (BillDetail billDetail : billDetails) {

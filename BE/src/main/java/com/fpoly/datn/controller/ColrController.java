@@ -36,6 +36,4 @@ public class ColrController {
     public ResponseEntity<Boolean> saveColor(@RequestBody Colr colr) {
         return new ResponseEntity<Boolean>(colrService.saveColor(colr), HttpStatus.OK);
     }
-
-
 }

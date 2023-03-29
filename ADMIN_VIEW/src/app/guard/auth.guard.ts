@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
-import { User } from '../models/type';
+import { User, UserLogin } from '../models/type';
 import { AuthenticationService } from '../services/authentication/authentication.service';
 
 
@@ -12,7 +12,7 @@ import { AuthenticationService } from '../services/authentication/authentication
 })
 export class AuthGuard implements CanActivate {
   constructor(private authService: AuthenticationService, private router: Router,private cookieService: CookieService) { }
-  currentUser: User;
+  currentUser: UserLogin;
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
       // this.authService.getCurrentUser().subscribe(currentUser => {
       //   this.currentUser = currentUser;

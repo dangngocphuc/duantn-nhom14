@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ERROR, ROLE } from 'src/app/commons/common';
-import { LoginRequest, LoginResponse, User } from 'src/app/models/type';
+import { LoginRequest, LoginResponse, User, UserLogin } from 'src/app/models/type';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import Swal from 'sweetalert2';
 // import { isBuffer } from 'util';
@@ -23,9 +23,9 @@ export class LoginComponent implements OnInit {
   loginRequest = new LoginRequest();
   validateForm: FormGroup;
   curUrl = "/dashboard";
-  user = new User();
+  user = new UserLogin();
   loginResponse = new LoginResponse();
-  currentUser = new User();
+  currentUser = new UserLogin();
   submitForm() {
     debugger;
     // for (const i in this.validateForm.controls) {
@@ -46,11 +46,11 @@ export class LoginComponent implements OnInit {
             this.loginResponse = data;
             if (this.loginResponse.errorCode == ERROR.SUCCESS) {
               if(!this.loginResponse.authenticated){
-                Swal.fire('Tài Khoản không có quyền truy cập', '', 'error');
+                Swal.fire('Tài Khoản không có quyền truy cập', 'Liên hệ quản trị viên', 'error');
                 return;
               }
               this.currentUser = this.loginResponse.userDetail;
-              if (this.currentUser.permissions.includes(ROLE.ADMIN)) {
+              if (this.currentUser.permissions.includes(ROLE.ADMIN)||this.currentUser.permissions.includes(ROLE.STAFF)) {
                 localStorage.setItem("currentUser", JSON.stringify(this.loginResponse.userDetail));
                 localStorage.setItem("Authorization", this.loginResponse.authorization)
                 this.router.navigate([this.curUrl]);
@@ -59,21 +59,21 @@ export class LoginComponent implements OnInit {
               }
             }
             else if(this.loginResponse.errorCode == ERROR.FAILURE){
-              Swal.fire(this.loginResponse.errorMessage, '', 'error');
+              Swal.fire(this.loginResponse.errorMessage, 'Liên hệ quản trị viên', 'error');
             }
             else{
-              Swal.fire('Lỗi không xác định', '', 'error');
+              Swal.fire('Lỗi không xác định', 'Liên hệ quản trị viên', 'error');
             }
           } else {
-            Swal.fire('error', '', 'error');
+            Swal.fire('error', 'Liên hệ quản trị viên', 'error');
           }
         },
         (error: HttpErrorResponse) => {
           if (error.error instanceof ProgressEvent) {
-            Swal.fire('Lỗi kết nối', '', 'error');
+            Swal.fire('Lỗi kết nối', 'Liên hệ quản trị viên', 'error');
           } else {
             const errorResponse: HttpErrorResponse = error.error;
-            Swal.fire(errorResponse.message, '', 'error');
+            Swal.fire(errorResponse.message, 'Liên hệ quản trị viên', 'error');
           }
         }
       );

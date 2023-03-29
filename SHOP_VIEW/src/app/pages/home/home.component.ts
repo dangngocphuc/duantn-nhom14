@@ -124,7 +124,6 @@ export class HomeComponent implements OnInit {
     if (!duplicate) {
       debugger;
       product.quanlityBuy = 1;
-
       this.cart.push(product);
       this.updateCart();
       this.createNotification(

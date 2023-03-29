@@ -88,6 +88,19 @@ public class UserController {
 		return new ResponseEntity<Response<User>>(new Response<User>("loi", "10001"), HttpStatus.OK);
 	}
 	
+	@PostMapping(value = "/save")
+	public ResponseEntity<Response<User>> saveUsers(@RequestBody User user) {
+		if (user.getUserID()== null) {
+			if (userRepo.existsByUserName(user.getUsername())) {
+				return new ResponseEntity<Response<User>>(new Response<User>("10002","Username is already taken!"),HttpStatus.BAD_REQUEST);
+			}
+			if (userRepo.existsByUserEmail(user.getUserEmail())) {
+				return new ResponseEntity<Response<User>>(new Response<User>("10003","Email is already in use!"),HttpStatus.BAD_REQUEST);
+			}	
+		}
+		return new ResponseEntity<Response<User>>(new Response<User>(userService.saveUsers(user)), HttpStatus.OK);
+	}
+	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Response<UserDetail>> getUser(@PathVariable(name = "id") Long id) {
 		User user = userService.findUserById(id);

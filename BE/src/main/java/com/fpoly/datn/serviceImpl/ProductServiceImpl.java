@@ -72,7 +72,7 @@ public class ProductServiceImpl implements ProductService{
 					predicates.add(cb.and(cb.equal(root.get("brand").get("brandID"), productParam.getBrandID())));
 				}
 				if (productParam.getProductName() != null && !"".equals(productParam.getProductName())) {
-					predicates.add(cb.and(cb.like(cb.upper(root.<String>get("productName")),
+					predicates.add(cb.and(cb.like(cb.upper(root.<String>get("tenSanPham")),
 							"%" + productParam.getProductName().trim().toUpperCase() + "%")));
 				}
 				if (productParam.getPriceFrom() > 0) {
@@ -254,4 +254,8 @@ public class ProductServiceImpl implements ProductService{
 		return page.getContent();
 	}
 
+	@Override
+	public List<Product> findAll(){
+		return productRepo.findAll();
+	}
 }

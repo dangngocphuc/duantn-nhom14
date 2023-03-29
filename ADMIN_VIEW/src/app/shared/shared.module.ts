@@ -45,7 +45,7 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
     NzUploadModule,
     NzMessageModule,
     NzDatePickerModule,
-    NzAvatarModule
+    NzAvatarModule,
   ],
   exports:[
     NzLayoutModule,

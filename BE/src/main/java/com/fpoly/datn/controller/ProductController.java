@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fpoly.datn.common.CommonUtils;
+import com.fpoly.datn.entity.Brand;
 import com.fpoly.datn.entity.Option;
 import com.fpoly.datn.entity.Product;
 import com.fpoly.datn.entity.ProductDetail;
@@ -64,6 +65,13 @@ public class ProductController {
 //			
 //		}
 		return new ResponseEntity<Product>(pro, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/list")
+	public ResponseEntity<List<Product>> getBrandAll() {
+		List<Product> list = productService.findAll();
+//		Long count = (long) list.size();
+		return new ResponseEntity<List<Product>>(list, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/ngselect")
