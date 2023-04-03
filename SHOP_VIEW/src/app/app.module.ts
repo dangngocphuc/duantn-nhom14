@@ -87,7 +87,8 @@ const googleLoginOptions = {
     SocialLoginModule,
     NgSelectModule,
     NgImageSliderModule,
-    NgxTrimDirectiveModule
+    NgxTrimDirectiveModule,
+    
   ],
   providers: [LoaderService,{ provide: NZ_I18N, useValue: en_US },{ provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },{
     provide: 'SocialAuthServiceConfig',

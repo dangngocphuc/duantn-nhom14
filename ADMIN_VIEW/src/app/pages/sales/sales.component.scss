@@ -16,3 +16,14 @@ hr {
 input:focus{
     outline: none;
 }
+
+option {
+    font-weight: normal;
+    display: block;
+    white-space: nowrap;
+    min-height: 1.2em;
+    padding: 0px 2px 1px;
+    outline: none !important;
+    border: none !important;
+}
+

@@ -8,3 +8,70 @@
 .icon-del {
     text-align: right;
 }
+
+.box_chat {
+    position: fixed;
+    z-index: 9999;
+    bottom: 15px;
+    top: initial !important;
+    width: 55px;
+    text-align: center;
+    right: 15px;
+}
+
+a.sc.w {
+    border: 1px solid #03add4;
+    border-radius: 50%;
+    background: #03aed5;
+}
+
+.box_chat .sc {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+a, .text-link {
+    color: #040404;
+    text-decoration: none;
+    background: transparent;
+}
+
+img {
+    border: 0 none;
+    max-width: 100%;
+    height: auto;
+}
+
+img {
+    vertical-align: middle;
+}
+
+.phone_backtotop {
+    bottom: 30px !important;
+    left: 15px;
+}
+.phone_backtotop {
+    margin-top: 10px;
+    z-index: 999999;
+    width: 50px;
+    height: 50px;
+    line-height: 55px;
+    font-weight: 400;
+    text-align: center;
+    display: inline-block;
+    color: #fff;
+    border-radius: 50%;
+    background: #ce0000;
+    text-decoration: none;
+    transition: opacity 0.2s ease-out;
+    opacity: 1;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+    animation: play 1.5s ease infinite;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+}

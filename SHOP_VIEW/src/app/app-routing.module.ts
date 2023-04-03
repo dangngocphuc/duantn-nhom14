@@ -30,11 +30,6 @@ const routes: Routes = [
       //   component: LoginComponent,
       // },
       {
-        path: 'login/:isPay',
-        component: LoginComponent,
-      },
-      
-      {
         path: '',
         component: HomeComponent,
         pathMatch: 'full',
@@ -78,14 +73,16 @@ const routes: Routes = [
         component: OrderComponent,
         canActivate: [AuthGuard],
       },
-      
+
+
     ]
-  },{
+  }, {
     path: '',
     component: AuthLayoutComponent,
     children: [
       { path: 'login', component: LoginComponent },
-      { path: 'signup',component: SignupComponent},
+      { path: 'signup', component: SignupComponent },
+      { path: 'login/:isPay', component: LoginComponent, },
     ]
   },
 

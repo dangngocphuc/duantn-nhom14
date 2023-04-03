@@ -50,3 +50,7 @@
 .box-order-button-container button {
     cursor: pointer;
 }
+
+small{
+    text-decoration: line-through !important;
+}

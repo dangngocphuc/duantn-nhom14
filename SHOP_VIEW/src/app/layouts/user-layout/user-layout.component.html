@@ -6,6 +6,26 @@
   data-target="#exampleModalLong">
   <i class="fa fa-handshake-o" aria-hidden="true"></i> So sánh ({{this.totalProduct?this.totalProduct:0}})
 </button>
+
+<div class="box_chat">
+  <a class="sc w d-sm-none hidden-lg hidden-md hidden-sm" href="https://zalo.me/0372694179" title="Zalo">
+    <img src="//bizweb.dktcdn.net/100/408/793/themes/794454/assets/zalochat.png?1677070303038" alt="Zalo">
+  </a>
+  <a class="sc e d-sm-none hidden-lg hidden-md hidden-sm" href="https://m.me/" title="Messenger">
+    <img src="//bizweb.dktcdn.net/100/408/793/themes/794454/assets/messenger.png?1677070303038" alt="Messenger">
+  </a>
+  <a class="sc w d-none d-lg-block d-xl-block d-md-block hidden-xs" href="https://zalo.me/0372694179" title="Zalo"
+    target="_blank">
+    <img src="//bizweb.dktcdn.net/100/408/793/themes/794454/assets/zalochat.png?1677070303038" alt="Zalo">
+  </a>
+  <a class="sc e d-none d-lg-block d-xl-block d-md-block hidden-xs" href="https://m.me/" title="Messenger"
+    target="_blank">
+    <img src="//bizweb.dktcdn.net/100/408/793/themes/794454/assets/messenger.png?1677070303038" alt="Messenger">
+  </a>
+  <a class="phone_backtotop" title="Gọi ngay" href="tel:0372694179">
+    <i class="fa fa-phone"></i>
+  </a>
+</div>
 <!-- Modal -->
 <div class="modal fade bd-example-modal-lg" id="exampleModalLong" tabindex="-1" role="dialog"
   aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -32,26 +52,31 @@
                   <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
                     card's content.</p> -->
                 </div>
-                <ul class="list-group list-group-flush">
-                  <li>
-                    <table class="table">
-                      <thead>
-                        <tr>
-                          <th scope="col" width="5%">#</th>
-                          <th scope="col" width="20%">Thuộc tính</th>
-                          <th scope="col">Giá trị</th>
-                        </tr>
-                      </thead>
-                      <tbody *ngFor="let items of item?.listProductDetailValue, index as i">
-                        <tr>
-                          <td>{{i+1}}</td>
-                          <td>{{items?.option?.optionName}}:</td>
-                          <td>{{items?.optionValue?.optionValue}}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </li>
-                </ul>
+                <h6>Thông số Cấu hình & đặc điểm chi tiết</h6>
+                <div class="facts1">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex  align-items-center">
+                      <img src="../../assets/img/cpu.png" alt=""> Vi xử lý (CPU) <i class="fa fa-info-circle"
+                        aria-hidden="true"></i>
+                      <span class="badge badge-primary badge-pill">{{productDetail?.cpu?.cpu}}</span>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                      <img src="../../assets/img/ram.png" alt=""> RAM <i class="fa fa-info-circle"
+                        aria-hidden="true"></i>
+                      <span class="badge badge-primary badge-pill">{{item?.ram?.ram}}</span>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                      <img src="../../assets/img/rom.png" alt=""> Lưu trữ (ROM) <i class="fa fa-info-circle"
+                        aria-hidden="true"></i>
+                      <span class="badge badge-primary badge-pill">{{item?.rom?.rom}}</span>
+                    </li>
+                    <li class="list-group-item align-items-center">
+                      <img src="../../assets/img/gpu.png" alt=""> Card đồ họa (GPU) <i class="fa fa-info-circle"
+                        aria-hidden="true" style="color: blue;"></i>
+                      <span class="badge badge-primary badge-pill">{{item?.gpu?.gpu}}</span>
+                    </li>
+                  </ul>
+                </div>
                 <!-- <div class="card-body">
                  <a href="#" class="card-link">Card link</a>
                   <a href="#" class="card-link">Another link</a> 

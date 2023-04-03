@@ -32,10 +32,13 @@ import com.fpoly.datn.request.ReviewParam;
 
 @Component
 public class ServiceUser {
+	
 	@Autowired
 	private UserRepo userRepo;
+	
 	@Autowired
 	private ProductRepo productRepo;
+	
 	@Autowired
 	private BillRepo billRepo;
 

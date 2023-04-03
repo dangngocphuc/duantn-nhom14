@@ -64,7 +64,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public Page<User> findUser(UserRequest userParam, Pageable pageable) {
-
 		Page<User> listPage = userRepo.findAll(new Specification<User>() {
 			@Override
 			public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -128,7 +127,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		}
 		return result;
-
 	}
 
 	@Override
@@ -215,7 +213,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		if (user.getListAddress() != null) {
 			users.getListAddress().clear();
 			users.getListAddress().addAll(user.getListAddress());
-			for(Address address: users.getListAddress()) {
+			for (Address address : users.getListAddress()) {
 				address.setUser(users);
 			}
 			userRepo.save(users);
@@ -225,16 +223,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public User saveUsers(User user) {
-		if(user.getUserID()==null) {
+		if (user.getUserID() == null) {
 			user.setUserPass(encoder.encode(user.getPassword()));
 //			for(Role role: user.getRoles()) {
 //				List<User> = new Arr
 //				role.setUsers(user);
 //			}
 			return userRepo.save(user);
-		}else {
+		} else {
 			User us = userRepo.getById(user.getUserID());
-			if(user.getRoles()!=null && !user.getRoles().isEmpty()){
+			if (user.getRoles() != null && !user.getRoles().isEmpty()) {
 				us.getRoles().clear();
 				us.getRoles().addAll(user.getRoles());
 			}
@@ -243,8 +241,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			return userRepo.save(us);
 		}
 	}
-	
-	
-	
+
+	@Override
+	public List<User> getListUser() {
+		List<User> listUser = userRepo.getAll();
+		return listUser;
+	}
 
 }

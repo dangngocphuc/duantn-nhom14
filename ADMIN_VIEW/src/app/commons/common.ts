@@ -26,7 +26,7 @@ export class Common {
   ]
 
   lstDemand = [
-    { value: '1', name: 'Văn phòng, học tập ' },
+    { value: '1', name: 'Văn phòng, học tập' },
     { value: '2', name: '2D Design' },
     { value: '3', name: 'Quay dựng video' },
     { value: '4', name: '3D Design' },

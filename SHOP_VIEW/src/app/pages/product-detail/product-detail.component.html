@@ -29,25 +29,17 @@
                     <div class="row">
                     </div>
                     <div class="product__info__item">
-                        <!-- <div class="row">
-                            <div class="col-md-3 product__info__item__title">
-                                Màu sắc
-                            </div>
-                            <div class="col-md-9 product__info__item__list">
-                                <div class="product__info__item__list__item">
-                                    <div class="circle bg-red"></div>
-                                </div>
-                                <div class="product__info__item__list__item">
-                                    <div class="circle bg-blue"></div>
-                                </div>
-                            </div>
-                        </div> -->
+                        <div class="price">
+                            <h6>{{productDetail?.productPrice | number}} VNĐ &emsp;<small>{{productDetail?.productMarketprice |
+                                    number}} VND</small></h6>
+                            <span *ngIf="productDetail?.quantity == 0 " class="text-danger">Đã hết hàng</span>
+                        </div>
                     </div>
                     <div class="price_single">
                         <div class="row">
                             <div class="col-md-8">
-                                <span *ngIf="productDetail?.quantity == 0 " class="text-danger">Đã hết hàng</span>
-                                <br>
+                                <!-- <span *ngIf="productDetail?.quantity == 0 " class="text-danger">Đã hết hàng</span> -->
+                                <!-- <br> -->
                                 <!-- <span class="reducedfrom item_price"> {{product.productPrice | number}} VNĐ</span> -->
                             </div>
                             <!-- <div class="col-md-3">   
@@ -229,10 +221,9 @@
                                 <div class="price">
                                     <h6>{{item?.productPrice | number}} VNĐ &emsp;<small>{{item?.productMarketprice |
                                             number}} VND</small></h6>
-                                    <span *ngIf="item?.productQuantily == 0 " class="text-danger">Đã hết hàng</span>
+                                    <span *ngIf="item?.quantity == 0 " class="text-danger">Đã hết hàng</span>
                                 </div>
                                 <div class="prd-bottom">
-
                                     <a *ngIf="item?.productQuantily > 0 " (click)="addToCart(item)" class="social-info">
                                         <span class="ti-bag"></span>
                                         <p class="hover-text">Thêm vào giỏ</p>

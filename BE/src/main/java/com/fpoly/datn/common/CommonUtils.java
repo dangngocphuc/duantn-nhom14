@@ -203,7 +203,7 @@ public class CommonUtils {
 	public static final Long LOGIN_SUCCESS = 0L;
 	public static final String ROOT_IMAGES_BACKEND = "D:/Linh_tinh/work-to-do/ki 2 nam 4/DoAnTotNghiep/do_an_code/be/src/assets/images/";
 	public static final String ROOT_IMAGES_FRONTEND = "D:/Linh_tinh/work-to-do/ki 2 nam 4/DoAnTotNghiep/do_an_code/fe/src/assets/images/";
-	public static final String THAMSO_JOB = "1";
+	public static final String THAMSO_JOB = "0";
 		
 	public static String Sha1EncryptText(String sInputText) {
 		try {

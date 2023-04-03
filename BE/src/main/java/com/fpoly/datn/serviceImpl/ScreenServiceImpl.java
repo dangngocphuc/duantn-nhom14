@@ -12,11 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 import com.fpoly.datn.entity.Screen;
 import com.fpoly.datn.repository.ScreenRepo;
 import com.fpoly.datn.service.ScreenService;
 
+@Service
 public class ScreenServiceImpl implements ScreenService {
 
     @Autowired

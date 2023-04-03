@@ -225,6 +225,7 @@ export class Bill {
   wardCode: String;
   promotion : Promotion;
   productDetailValue: any;
+  totalProduct: number;
 }
 export class BillDetail {
   id: number;

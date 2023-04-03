@@ -64,6 +64,7 @@ import { NgxCurrencyModule } from 'ngx-currency';
 import { NgDatepickerComponent } from './components/ng-datepicker/ng-datepicker.component';
 import { DatePipe } from '@angular/common';
 import { SalesComponent } from './pages/sales/sales.component';
+import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -95,7 +96,8 @@ import { SalesComponent } from './pages/sales/sales.component';
     NgxCurrencyModule,
     NgbDatepickerModule,
     NzTabsModule,
-    IconModule
+    IconModule,
+    NgxTrimDirectiveModule
     // CarouselModule
     // CKEditorModule
     // ProgressbarModule.forRoot()

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { catchError, concat, debounceTime, distinctUntilChanged, Observable, of, Subject, switchMap, tap } from 'rxjs';
-import { Bill, BillDetail, PagesRequest, ProductDetail, Tab } from 'src/app/models/type';
+import { Bill, BillDetail, PagesRequest, ProductDetail, Tab, User } from 'src/app/models/type';
 import { BillService } from 'src/app/services/bill.service';
 import { ImeiService } from 'src/app/services/imei.service';
 import { ProductDetailService } from 'src/app/services/productDetail.service';
+import { UserService } from 'src/app/services/user.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -17,8 +18,11 @@ export class SalesComponent implements OnInit {
   bill = new Bill();
 
   lstProductDetail: ProductDetail[];
-  listOfProductDetail: ProductDetail[] = [];
+  // listOfProductDetail: ProductDetail[] = [];
   productDetail = new ProductDetail();
+
+  lstUser: User[];
+  user = new User();
 
   tab = new Tab();
   listTab: Tab[] = [];
@@ -28,7 +32,8 @@ export class SalesComponent implements OnInit {
   loadlstImei = false;
   textInput_imei$ = new Subject<string>();
 
-  constructor(private productDetailService: ProductDetailService,
+
+  constructor(private productDetailService: ProductDetailService, private userService: UserService,
     private imeiService: ImeiService, private billService: BillService) {
   }
 
@@ -51,11 +56,20 @@ export class SalesComponent implements OnInit {
       console.log(this.listTab);
     }
     this.getListProductDetail();
+    this.getListUser();
   }
 
   getListProductDetail() {
     this.productDetailService.getListProductDetail().subscribe((response) => {
       this.lstProductDetail = response;
+    })
+  }
+
+  getListUser() {
+    this.userService.getListUser().subscribe((res) => {
+      // this.lstUser = res;
+      this.lstUser = (res).map(item => ({ userID: item.userID, name: item.username, userPhone:item.userPhone }));
+      // console.log(this.lstUser);
     })
   }
 
@@ -148,8 +162,10 @@ export class SalesComponent implements OnInit {
   updateCart() {
     this.listTab.forEach((e) => {
       e.bill.total = 0;
+      e.bill.totalProduct = 0;
       e.bill.listBillDetail.forEach((element) => {
         e.bill.total += element.productDetail.quanlityBuy * element.productDetail.productPrice;
+        e.bill.totalProduct += Number(element.productDetail.quanlityBuy);
       })
     })
     localStorage.setItem('listTab', JSON.stringify(this.listTab));
@@ -215,7 +231,7 @@ export class SalesComponent implements OnInit {
     })
   }
 
-  payment(tab,i) {
+  payment(tab, i) {
     console.log(tab.bill);
     if (tab.bill.listBillDetail) {
       let check = true;
@@ -228,13 +244,16 @@ export class SalesComponent implements OnInit {
       if (check) {
         tab.bill.status = "Delivered";
         tab.bill.payment = "Live";
-        this.saveBill(tab,i);
+        this.saveBill(tab, i);
       }
 
     }
   }
 
-  saveBill(tab,index) {
+  saveBill(tab, index) {
+    debugger;
+    // tab.bill.user
+    console.log(tab.bill.user);
     this.billService.paymentBill(tab.bill).subscribe(
       (data) => {
         if (data) {
@@ -252,6 +271,18 @@ export class SalesComponent implements OnInit {
         Swal.fire('', error, 'error');
       }
     );
+  }
+
+  changeUser(tab) {
+    tab.bill.name = null;
+    tab.bill.phone = null;
+    if (tab) {
+      console.log(tab);
+      if (tab?.bill?.user) {
+        tab.bill.name = tab.bill.user.name;
+        tab.bill.phone = tab.bill.user.userPhone;
+      }
+    }
   }
 }
 

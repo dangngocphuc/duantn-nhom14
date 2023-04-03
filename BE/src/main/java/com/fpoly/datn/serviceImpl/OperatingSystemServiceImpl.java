@@ -12,11 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 import com.fpoly.datn.entity.OperatingSystem;
 import com.fpoly.datn.repository.OperatingSystemRepo;
 import com.fpoly.datn.service.OperatingSystemService;
 
+@Service
 public class OperatingSystemServiceImpl implements OperatingSystemService {
     @Autowired
     private OperatingSystemRepo oSystemRepo;

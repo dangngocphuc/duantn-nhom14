@@ -14,7 +14,7 @@ import { OptionService } from 'src/app/services/option.service';
 import { ProductService } from 'src/app/services/product.service';
 import { ProductDetailService } from 'src/app/services/productDetail.service';
 import { RamService } from 'src/app/services/Ram.service';
-import { RomService } from 'src/app/services/Rom.service';
+import { RomService } from 'src/app/services/Rom.service'; 
 import Swal from 'sweetalert2';
 @Component({
   selector: 'app-product-details',

@@ -45,7 +45,6 @@ public class UserController {
 	@Autowired
 	private ServiceUser serviceUser;
 	
-	
 	@GetMapping(value = "")
 	public ResponseEntity<Response<User>> getUsers(UserRequest userParam) {
 		int page = userParam.getPageIndex() - 1;
@@ -153,8 +152,9 @@ public class UserController {
 		return new ResponseEntity<Response<Review>>(new Response<Review>(count, lists), HttpStatus.OK);
 	}
 	
-	
-	
-	
+	@GetMapping(value = "/list")
+	public ResponseEntity<List<User>> getListUser() {
+		return new ResponseEntity<List<User>>(userService.getListUser(), HttpStatus.OK);
+	}
 	
 }

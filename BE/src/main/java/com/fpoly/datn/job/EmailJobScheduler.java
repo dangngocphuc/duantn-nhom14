@@ -28,7 +28,7 @@ public class EmailJobScheduler {
 	public void syncData() {
 		try {
 			// find list email
-			if (CommonUtils.THAMSO_JOB.equals(1)) {
+			if (CommonUtils.THAMSO_JOB.equals("1")) {
 				System.out.println(
 						"------Starting: Email job " + CommonUtils.StringFormatDate(new Date(), "dd/MM/yyy hh:MM:ss"));
 				// get tham so
