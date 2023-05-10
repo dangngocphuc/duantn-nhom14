@@ -1,7 +1,9 @@
 package com.fpoly.datn.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -49,6 +51,8 @@ public class Imei implements Serializable {
 	@Transient
 	private String productName;
 
+	@Column(name="returned_date")
+	private Date returnDate;
 	
 	public Long getId() {
 		return id;
@@ -96,6 +100,14 @@ public class Imei implements Serializable {
 
 	public void setProductName(String productName) {
 		this.productName = productName;
+	}
+
+	public Date getReturnDate() {
+		return returnDate;
+	}
+
+	public void setReturnDate(Date returnDate) {
+		this.returnDate = returnDate;
 	}
 
 }
