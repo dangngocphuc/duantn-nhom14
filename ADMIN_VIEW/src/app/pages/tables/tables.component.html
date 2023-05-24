@@ -126,7 +126,7 @@
       <fieldset formGroupName="product">
         <div class="form-group">
           <label for="ma">Mã sản phẩm</label>
-          <input type="text" class="form-control" [(ngModel)]="product.maSanPham" formControlName="code">
+          <input type="text" class="form-control" [(ngModel)]="product.maSanPham" formControlName="code" disabled="true">
         </div>
         <div class="form-group">
           <label for="ten">Tên sản phẩm</label>
@@ -153,18 +153,34 @@
         </div> -->
       </fieldset>
       <div class="form-group">
-        <!-- <img [src]="linkImage" alt="..." class="img-thumbnail">
-      <img src="" alt=""> -->
+        <label for="trangThai">Image</label>
+        <input #file type="file" accept='image/*' (change)="preview(file.files)" class="form-control" multiple
+          name="image" />
+      </div>
+      <ngb-carousel *ngIf="imgURL">
+        <ng-template ngbSlide *ngFor="let item of imgURL">
+          <div class="picsum-img-wrapper">
+            <img [src]="item" alt="Random first slide" height="100%" width="100%"/>
+          </div>
+          <!-- <div class="carousel-caption"> -->
+            <!-- <h3>First slide label</h3>
+            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p> -->
+          <!-- </div> -->
+        </ng-template>
+      </ngb-carousel>
+      <!-- <div class="form-group">
+        <img [src]="linkImage" alt="..." class="img-thumbnail">
+        <img src="" alt="">
         <label for="image">Ảnh sản phẩm</label>
         <ng-image-slider #nav [images]="imageObject" [infinite]="true" [autoSlide]="1" slideImage="1"
           [imageSize]="{width: '100%', height: 400}"></ng-image-slider>
-      </div>
-      <table class="table table-bordered">
+      </div> -->
+      <!-- <table class="table table-bordered">
         <thead>
           <tr>
             <th scope="col" width="1%">#</th>
             <th scope="col" width="40px">Link ảnh</th>
-            <!-- <th scope="col" width="40px">Giá trị</th> -->
+         <th scope="col" width="40px">Giá trị</th> 
             <td style="width:1%" class="text-center"><span (click)="addRow()"><i alt="Thêm mới" style="cursor: pointer;"
                   class="fas fa-plus-circle" title="Thêm dòng"></i></span>
           </tr>
@@ -177,7 +193,7 @@
             <td></td>
           </tr>
         </tbody>
-      </table>
+      </table>  -->
     </form>
   </modal-content>
   <modal-footer>

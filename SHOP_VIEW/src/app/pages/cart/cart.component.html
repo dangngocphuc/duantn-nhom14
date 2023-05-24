@@ -20,11 +20,18 @@
                         <tr *ngFor="let item of listOfProduct, index as i" class="cross1">
                             <td class="t-data" style="width: 25%; float: center;">
                                 <!-- <a href="product-detail/{{item?.id}}" class="at-in"> -->
-                                
 
-                                <a [href]="item?.product?.listImage?.[0].thumbImage">
-                                    <img [src]="item?.product?.listImage?.[0].thumbImage" alt="">
-                                  </a>
+                                <ngb-carousel>
+                                    <ng-template ngbSlide *ngFor="let item of item?.product?.listImage">
+                                        <div class="picsum-img-wrapper">
+                                            <img [src]="'../../assets/' + item.image" alt="Random first slide"
+                                                height="90%" width="90%" />
+                                        </div>
+                                    </ng-template>
+                                </ngb-carousel>
+                                <!-- <a [href]="item?.product?.listImage?.[0].images">
+                                    <img [src]="item?.product?.listImage?.[0].images" alt="">
+                                </a> -->
                                 <!-- {{item?.product?.listImage?.[0].thumbImage| json}} -->
                                 <!-- <ng-image-slider #nav [images]="item?.product?.listImage" [infinite]="false"
                                     [autoSlide]="1" slideImage="1"

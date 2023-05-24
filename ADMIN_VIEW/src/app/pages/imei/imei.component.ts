@@ -101,6 +101,7 @@ export class ImeiComponent implements OnInit {
   }
 
   search() {
+    this.pageRequest.page = 0;
     this.getImei();
   }
 
@@ -146,6 +147,12 @@ export class ImeiComponent implements OnInit {
     this.imei = new Imei();
   }
 
+  closeModalImport(){
+    this.modalService.close(this.modalRef);
+    this.fileName_lb = null;
+
+  }
+
 
   openUpload() {
     this.isFormUploadSubmit = false;
@@ -169,7 +176,7 @@ export class ImeiComponent implements OnInit {
   }
 
   downloadTemplateImport() {
-
+    this.imeiService.download();
   }
 
   // Chọn file

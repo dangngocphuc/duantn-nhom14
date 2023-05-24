@@ -6,9 +6,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
@@ -19,6 +25,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,12 +38,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fpoly.datn.common.CommonUtils;
-import com.fpoly.datn.entity.Brand;
-import com.fpoly.datn.entity.Option;
+import com.fpoly.datn.entity.Image;
 import com.fpoly.datn.entity.Product;
 import com.fpoly.datn.entity.ProductDetail;
-import com.fpoly.datn.entity.ProductOption;
-import com.fpoly.datn.model.OptionRequest;
 import com.fpoly.datn.model.Response;
 import com.fpoly.datn.request.ProductRequest;
 import com.fpoly.datn.service.ProductService;
@@ -44,15 +48,18 @@ import com.fpoly.datn.service.ProductService;
 @RestController
 @RequestMapping(path = "/api/product")
 public class ProductController {
-	
+
 	@Autowired
 	private ProductService productService;
-	
+
+	@Autowired
+	private ServletContext app;
+
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Product> getProduct(@PathVariable(name = "id") Long id) {
 		Product pro = productService.findById(id);
-		
-		for(ProductDetail po:  pro.getListProductDetail()) {
+
+		for (ProductDetail po : pro.getListProductDetail()) {
 			po.setProduct(null);
 //			po.getOption().getListOptionValue().clear();
 		}
@@ -66,17 +73,17 @@ public class ProductController {
 //		}
 		return new ResponseEntity<Product>(pro, HttpStatus.OK);
 	}
-	
+
 	@GetMapping(value = "/list")
 	public ResponseEntity<List<Product>> getBrandAll() {
 		List<Product> list = productService.findAll();
 //		Long count = (long) list.size();
 		return new ResponseEntity<List<Product>>(list, HttpStatus.OK);
 	}
-	
+
 	@GetMapping(value = "/ngselect")
 	public ResponseEntity<List<Product>> ngSelect(Pageable pageable, ProductRequest productRequest) {
-		List<Product> lstProduct = productService.ngSelect(pageable,productRequest);
+		List<Product> lstProduct = productService.ngSelect(pageable, productRequest);
 		return new ResponseEntity<List<Product>>(lstProduct, HttpStatus.OK);
 	}
 
@@ -99,7 +106,7 @@ public class ProductController {
 	@GetMapping(value = "/statistic-brand")
 	public ResponseEntity<Response<List<Long>>> getSatisticBrand() {
 		List<Long> statics = productService.getSatisticBrand();
-		
+
 		return new ResponseEntity<Response<List<Long>>>(new Response<List<Long>>(statics), HttpStatus.OK);
 	}
 
@@ -111,10 +118,11 @@ public class ProductController {
 
 	@GetMapping(value = "")
 //	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<Page<Product>> getProducts(Pageable pageable,ProductRequest productRequest) {
+	public ResponseEntity<Page<Product>> getProducts(Pageable pageable, ProductRequest productRequest) {
 		Page<Product> pageBrandPage = productService.findProduct(productRequest, pageable);
 		return new ResponseEntity<Page<Product>>(pageBrandPage, HttpStatus.OK);
 	}
+
 	@GetMapping(value = "/search")
 	public ResponseEntity<List<Product>> getProductSeach(ProductRequest productRequest) {
 		int page = productRequest.getPageIndex() - 1;
@@ -144,59 +152,59 @@ public class ProductController {
 		}
 		return new ResponseEntity<Boolean>(false, HttpStatus.OK);
 	}
-	
+
 	// update image
-		@RequestMapping(path = "/upload_image/{id}", method = RequestMethod.POST, consumes = { "multipart/form-data" })
-		public ResponseEntity<Response<String>> fileUpload(@PathVariable(name = "id") Long id,
-				@RequestParam("file") MultipartFile multipartFile) {
-			String rootFileUpload = CommonUtils.ROOT_IMAGES_BACKEND;
-			String rootFileUpload1 = CommonUtils.ROOT_IMAGES_FRONTEND;
+	@RequestMapping(path = "/upload_image/{id}", method = RequestMethod.POST, consumes = { "multipart/form-data" })
+	public ResponseEntity<Response<String>> fileUpload(@PathVariable(name = "id") Long id,
+			@RequestParam("file") MultipartFile multipartFile) {
+		String rootFileUpload = CommonUtils.ROOT_IMAGES_BACKEND;
+		String rootFileUpload1 = CommonUtils.ROOT_IMAGES_FRONTEND;
 //			String rootFileUpload = "/home/app/bidv_run";
-			Product product = productService.findById(id);
+		Product product = productService.findById(id);
 
-			if (product != null) {
-				String originalFilename = multipartFile.getOriginalFilename();
+		if (product != null) {
+			String originalFilename = multipartFile.getOriginalFilename();
 //				product.setProductImage("images/" + originalFilename);
-				File file = new File(rootFileUpload + originalFilename);
-				if (file.getParentFile().exists() == false) {
-					file.getParentFile().mkdirs();
-				}
-				File file1 = new File(rootFileUpload1 + originalFilename);
-				if (file1.getParentFile().exists() == false) {
-					file1.getParentFile().mkdirs();
-				}
-				try {
-					try (InputStream is = multipartFile.getInputStream()) {
-						try (OutputStream os = new FileOutputStream(file)) {
-							byte[] b = new byte[10240];
-							int size = 0;
-							while ((size = is.read(b)) != -1) {
-								os.write(b, 0, size);
-							}
-						}
-
-						is.close();
-					}
-					try (InputStream is1 = multipartFile.getInputStream()) {
-						try (OutputStream os = new FileOutputStream(file1)) {
-							byte[] b = new byte[10240];
-							int size = 0;
-							while ((size = is1.read(b)) != -1) {
-								os.write(b, 0, size);
-							}
-						}
-						is1.close();
-					}
-					// save product
-					productService.saveProduct(product);
-					return new ResponseEntity<Response<String>>(new Response<String>("Update thành công"), HttpStatus.OK);
-				} catch (IOException e) {
-					e.printStackTrace();
-					return new ResponseEntity<Response<String>>(new Response<String>("Có lỗi"), HttpStatus.BAD_REQUEST);
-				}
+			File file = new File(rootFileUpload + originalFilename);
+			if (file.getParentFile().exists() == false) {
+				file.getParentFile().mkdirs();
 			}
-			return ResponseEntity.notFound().build();
+			File file1 = new File(rootFileUpload1 + originalFilename);
+			if (file1.getParentFile().exists() == false) {
+				file1.getParentFile().mkdirs();
+			}
+			try {
+				try (InputStream is = multipartFile.getInputStream()) {
+					try (OutputStream os = new FileOutputStream(file)) {
+						byte[] b = new byte[10240];
+						int size = 0;
+						while ((size = is.read(b)) != -1) {
+							os.write(b, 0, size);
+						}
+					}
+
+					is.close();
+				}
+				try (InputStream is1 = multipartFile.getInputStream()) {
+					try (OutputStream os = new FileOutputStream(file1)) {
+						byte[] b = new byte[10240];
+						int size = 0;
+						while ((size = is1.read(b)) != -1) {
+							os.write(b, 0, size);
+						}
+					}
+					is1.close();
+				}
+				// save product
+				productService.saveProduct(product);
+				return new ResponseEntity<Response<String>>(new Response<String>("Update thành công"), HttpStatus.OK);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return new ResponseEntity<Response<String>>(new Response<String>("Có lỗi"), HttpStatus.BAD_REQUEST);
+			}
 		}
+		return ResponseEntity.notFound().build();
+	}
 
 	@DeleteMapping(value = "/delete/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
@@ -204,7 +212,58 @@ public class ProductController {
 		productService.deleteProduct(id);
 		return new ResponseEntity<Response<Product>>(new Response<Product>("xoa thanh cong", "200"), HttpStatus.OK);
 	}
-	
 
+//	public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
+
+	@PostMapping(value = "/upload", consumes = { "multipart/form-data" })
+	public ResponseEntity<Object> upLoadFile(@RequestParam("file") MultipartFile[] files) {
+		List<Image> lst = new ArrayList<>();
+		String rootFileUploadBE = CommonUtils.ROOT_IMAGES_BACKEND;
+		String rootFileUploadFE = CommonUtils.ROOT_IMAGES_FRONTEND;
+		for (MultipartFile file : files) {
+			try {
+				String originalFilename = file.getOriginalFilename();
+//				product.setProductImage("images/" + originalFilename);
+				File fl = new File(rootFileUploadBE + originalFilename);
+				if (fl.getParentFile().exists() == false) {
+					fl.getParentFile().mkdirs();
+				}
+				File file1 = new File(rootFileUploadFE + originalFilename);
+				if (file1.getParentFile().exists() == false) {
+					file1.getParentFile().mkdirs();
+				}
+				try (InputStream is = file.getInputStream()) {
+					try (OutputStream os = new FileOutputStream(fl)) {
+						byte[] b = new byte[10240];
+						int size = 0;
+						while ((size = is.read(b)) != -1) {
+							os.write(b, 0, size);
+						}
+					}
+
+					is.close();
+				}
+				try (InputStream is1 = file.getInputStream()) {
+					try (OutputStream os = new FileOutputStream(file1)) {
+						byte[] b = new byte[10240];
+						int size = 0;
+						while ((size = is1.read(b)) != -1) {
+							os.write(b, 0, size);
+						}
+					}
+					is1.close();
+				}
+				Image fileResponse = new Image();
+				fileResponse.setImg(originalFilename);
+				fileResponse.setThumbImage("images/" + originalFilename);
+				fileResponse.setImage("images/" + originalFilename);
+				lst.add(fileResponse);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new ResponseEntity<Object>(lst, HttpStatus.BAD_REQUEST);
+			}
+		}
+		return new ResponseEntity<Object>(lst, HttpStatus.OK);
+	}
 
 }

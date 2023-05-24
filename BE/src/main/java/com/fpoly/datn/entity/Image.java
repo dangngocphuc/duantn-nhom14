@@ -46,6 +46,9 @@ public class Image implements Serializable {
 	
 	@Column(name="images")
 	private String image;
+	
+	@Column(name="image")
+	private String img;
 
 
 }

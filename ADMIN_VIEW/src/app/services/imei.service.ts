@@ -1,11 +1,11 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ImeiRequest, PageImei, PagesRequest } from '../models/type';
 import { AuthenticationService } from './authentication/authentication.service';
 import { HttpBaseService } from './http-base.service';
-
+import * as FileSaver from 'file-saver';
 @Injectable({
   providedIn: 'root'
 })
@@ -39,7 +39,16 @@ export class ImeiService {
     }
     return this.httpOption
   }
-  constructor(private http: HttpBaseService, private authen: AuthenticationService,private httpClient: HttpClient) { }
+
+  getOptionForDownload() {
+    this.httpOption = {
+      responseType: 'blob' as 'json',
+      headers: this.getHeader()
+    }
+    return this.httpOption
+  }
+
+  constructor(private http: HttpBaseService, private authen: AuthenticationService, private httpClient: HttpClient) { }
 
   getImei(page: PagesRequest, request: ImeiRequest): Observable<PageImei> {
     let query = {};
@@ -79,4 +88,20 @@ export class ImeiService {
     return this.httpClient.post<any>(environment.urlServer.concat('/imei/import'), formData, this.httpOption);
   }
 
+  download() {
+    let httpOption = this.getOptionForDownload();
+
+    this.httpClient.get(environment.urlServer.concat('/imei/download-template'), httpOption).subscribe(
+      (response: Blob) => {
+        var mediaType = 'application/octet-stream';
+        var blob = new Blob([response], { type: mediaType });
+        FileSaver.saveAs(blob, "TemplateImei.xlsx");
+        //const blobUrl = URL.createObjectURL(blob);
+        //window.open(blobUrl, "_blank");
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+      });
+    //return this.http.get(this.environment.urlServer.concat(this.url + this.downloadUrl + "/" + id), {responseType: 'blob'});
+  }
 }

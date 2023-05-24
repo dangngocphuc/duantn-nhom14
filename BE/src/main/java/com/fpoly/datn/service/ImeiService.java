@@ -19,4 +19,5 @@ public interface ImeiService {
 	public boolean deleteImei(Long id);
 	@SuppressWarnings("rawtypes")
 	public Map<String, List> readFileExcel (MultipartFile[] files) throws Exception;
+	public byte[] writeExcelTemplate() throws Exception;
 }

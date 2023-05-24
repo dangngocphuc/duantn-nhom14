@@ -226,6 +226,12 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 		if (productDetail.getId() != null) {
 			ProductDetail pro = productRepo.findById(productDetail.getId()).get();
 //			pro.setProductCode(CommonUtils.generateProductCode());
+			pro.setCpu(productDetail.getCpu());
+			pro.setGpu(productDetail.getGpu());
+			pro.setRam(productDetail.getRam());
+			pro.setRom(productDetail.getRom());
+			pro.setProductMarketprice(productDetail.getProductMarketprice());
+			pro.setProductPrice(productDetail.getProductPrice());
 			pro.setUpdateDate(new Date());
 			pro.getListImei().clear();
 			pro.getListImei().addAll(productDetail.getListImei());

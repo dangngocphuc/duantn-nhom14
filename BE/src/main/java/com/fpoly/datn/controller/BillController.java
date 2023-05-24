@@ -42,6 +42,7 @@ import com.fpoly.datn.entity.BillDetail;
 import com.fpoly.datn.entity.Transactions;
 import com.fpoly.datn.model.Response;
 import com.fpoly.datn.model.ResponseVnpay;
+import com.fpoly.datn.model.ThongKeUser;
 import com.fpoly.datn.model.TransactionRequest;
 import com.fpoly.datn.repository.BillRepo;
 import com.fpoly.datn.repository.TransactionRepository;
@@ -435,5 +436,10 @@ public class BillController {
 //		}
 //		return ResponseEntity.ok(transactionRequest);
 		return new ResponseEntity<ResponseVnpay>(responseVnpay, HttpStatus.OK);
+	}
+	
+	@GetMapping("/statistic/user")
+	public ResponseEntity<List<ThongKeUser>> getTrangThaiHoSo() {
+		return new ResponseEntity<List<ThongKeUser>>(billService.statisticalUser(), HttpStatus.OK);
 	}
 }

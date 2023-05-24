@@ -23,15 +23,15 @@ export class CpuComponent implements OnInit {
   isView = false;
   Action = Action;
   pageSizes = [5, 10, 15, 20];
-  
+
   // cpuRequest = new cpuRequest();
   pageRequest = new PagesRequest();
   pageCpu = new PageCpu();
   cpu = new Cpu();
-  lstProductDetail : ProductDetail[];
+  lstProductDetail: ProductDetail[];
   common: Common = new Common();
   lstTrangThai = this.common.lstTrangThai;
-  
+
   option = new Option();
   formGroup: FormGroup;
   controlArray: Map<string, any> = new Map<string, any>();
@@ -40,13 +40,13 @@ export class CpuComponent implements OnInit {
   private modalRef;
 
   constructor(private cpuService: CpuService, private modalService: ModalManager, private fb: FormBuilder,
-    private productService : ProductDetailService) { }
+    private productService: ProductDetailService) { }
 
   ngOnInit(): void {
     this.getPagecpu();
     this.formGroup = this.fb.group({
       cpu: this.fb.group({
-        id: [{ value: '', disabled: true } ,],
+        id: [{ value: '', disabled: true },],
         cpu: [{ value: '', }, Validators.required],
         status: [{ value: '', }, Validators.required],
       }),
@@ -66,11 +66,11 @@ export class CpuComponent implements OnInit {
           console.log(this.pageCpu);
         }
       }, (error) => {
-         console.log(error);
+        console.log(error);
       }
     );
   }
-  
+
   handlePageSizeChange(event: any) {
     this.pageRequest.size = event.target.value;
     this.getPagecpu();
@@ -98,7 +98,7 @@ export class CpuComponent implements OnInit {
     if (item == 1) {
       return "Active";
     }
-    else if(item == 0){
+    else if (item == 0) {
       return "InActive";
     }
     else {
@@ -130,7 +130,7 @@ export class CpuComponent implements OnInit {
     this.cpu = new Cpu();
   }
 
-  save(){
+  save() {
     console.log(this.cpu);
     console.log(this.formGroup);
     this.isFormSubmit = true;
@@ -139,46 +139,49 @@ export class CpuComponent implements OnInit {
     }
     this.cpuService.saveCpu(this.cpu).subscribe((respone) => {
       // this.option = respone;
-      Swal.fire('','','success');
-      this.closeModal();
-      this.getPagecpu()
-      
+      if (respone) {
+        Swal.fire('', '', 'success');
+        this.closeModal();
+        this.getPagecpu()
+      } else {
+        Swal.fire('', 'error', 'error')
+      }
     }, (error) => {
-        Swal.fire('',error,'error')
+      Swal.fire('', error, 'error')
     })
   }
 
- delete(){
-  if(this.cpu.id){
-    this.cpuService.deleteCpu(this.cpu.id).subscribe((respone) => {
-      // this.option = respone;
-      Swal.fire('','','success');
-      this.closeModal();
-      this.getPagecpu()
-      
-    }, (error) => {
-        Swal.fire('',error,'error')
-    })
-  }
- }
+  delete() {
+    if (this.cpu.id) {
+      this.cpuService.deleteCpu(this.cpu.id).subscribe((respone) => {
+        // this.option = respone;
+        Swal.fire('', '', 'success');
+        this.closeModal();
+        this.getPagecpu()
 
- checkButtonDelete(){
-  if(this.cpu.status == 1){
-    return true;
+      }, (error) => {
+        Swal.fire('', error, 'error')
+      })
+    }
   }
-  return false;
- }
 
- checkButtonSave(){
-  if(!this.cpu){
-    return true;
-  }
-  if(!this.cpu.status){
-    return true;
-  }
-  if(this.cpu.status == 0){
+  checkButtonDelete() {
+    if (this.cpu.status == 1) {
+      return true;
+    }
     return false;
   }
-  return true;
- }
+
+  checkButtonSave() {
+    if (!this.cpu) {
+      return true;
+    }
+    if (!this.cpu.status) {
+      return true;
+    }
+    if (this.cpu.status == 0) {
+      return false;
+    }
+    return true;
+  }
 }

@@ -15,10 +15,17 @@
                 <div class="flexslider">
                     <!-- <ul class="slides"> -->
                     <!-- <li> -->
-                    <div class="thumb-image"> <ng-image-slider #nav [images]="productDetail?.product?.listImage"
+                    <!-- <div class="thumb-image"> <ng-image-slider #nav [images]="productDetail?.product?.listImage"
                             [infinite]="true" [autoSlide]="1" slideImage="1"
                             [imageSize]="{width: '100%', height: 200}"></ng-image-slider>
-                    </div>
+                    </div> -->
+                    <ngb-carousel>
+                        <ng-template ngbSlide *ngFor="let item of productDetail?.product?.listImage">
+                            <div class="picsum-img-wrapper">
+                                <img [src]="'../../assets/' + item.image" alt="Random first slide" height="90%" width="90%" />
+                            </div>
+                        </ng-template>
+                    </ngb-carousel>
                     <!-- </li> -->
                     <!-- </ul> -->
                 </div>
@@ -30,8 +37,10 @@
                     </div>
                     <div class="product__info__item">
                         <div class="price">
-                            <h6>{{productDetail?.productPrice | number}} VNĐ &emsp;<small>{{productDetail?.productMarketprice |
-                                    number}} VND</small></h6>
+                            <h6>{{productDetail?.productPrice | number}} VNĐ &emsp;
+                                <!-- <small>{{productDetail?.productMarketprice |
+                                    number}} VND</small> -->
+                                </h6>
                             <span *ngIf="productDetail?.quantity == 0 " class="text-danger">Đã hết hàng</span>
                         </div>
                     </div>
@@ -204,7 +213,7 @@
                 </div>
                 <div class="clearfix"> </div>
             </div>
-            <div>
+            <!-- <div>
                 <h3>SẢN PHẨM LIÊN QUAN</h3>
             </div>
             <div class="lattest-product-area pb-40 category-list">
@@ -237,7 +246,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
         <div class="col-md-1"></div>
     </div>

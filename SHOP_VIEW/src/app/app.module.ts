@@ -40,6 +40,7 @@ import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component
 import { UserLayoutComponent } from './layouts/user-layout/user-layout.component';
 import { NgImageSliderModule } from 'ng-image-slider';
 import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
+import { AddressComponent } from './pages/payment/address/address.component';
 
 
 
@@ -68,7 +69,8 @@ const googleLoginOptions = {
     OrderComponent,
     NotFoundComponent,
     AuthLayoutComponent,
-    UserLayoutComponent
+    UserLayoutComponent,
+    AddressComponent
   ],
   imports: [
     BrowserModule,

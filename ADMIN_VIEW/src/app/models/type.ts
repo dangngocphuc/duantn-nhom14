@@ -72,6 +72,7 @@ export class Image {
   // imgType : String;
   // status : boolean;
   // product : Product;
+  index :number;
   thumbImage: String;
 }
 export class Product {
@@ -408,4 +409,8 @@ export class Role{
 export class Tab{
   name:String;
   bill: Bill = new Bill();
+}
+export class ThongKeUser{
+  name:String;
+  count: Number;
 }

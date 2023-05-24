@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalDismissReasons, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ModalManager } from 'ngb-modal';
 import { ICreateOrderRequest, IPayPalConfig } from 'ngx-paypal';
@@ -13,6 +13,7 @@ import { BillService } from 'src/app/services/bill.service';
 import { GhnService } from 'src/app/services/ghn.service';
 import { UserService } from 'src/app/services/user.service';
 import Swal from 'sweetalert2';
+import { AddressComponent } from './address/address.component';
 
 @Component({
   selector: 'app-payment',
@@ -29,6 +30,7 @@ export class PaymentComponent implements OnInit {
   userId: string;
   payment: string;
   validateForm!: FormGroup;
+  formGroup!: FormGroup;
   total: number;
   cart: ProductDetail[];
   cartString: String;
@@ -61,7 +63,7 @@ export class PaymentComponent implements OnInit {
   sum = 0;
   discountPrice = 0;
   listOfProduct: ProductDetail[] = [];
-  totalProduct : number = 0; 
+  totalProduct: number = 0;
   // check;
   // randomUserUrl = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province';
   // optionList: string[] = [];
@@ -88,7 +90,7 @@ export class PaymentComponent implements OnInit {
   private modalRef;
 
   constructor(
-    private router: Router, private http: HttpClient, private ghnService: GhnService,
+    private router: Router, private http: HttpClient, private ghnService: GhnService, private modalServices: NgbModal,
     private userService: UserService, private notification: NzNotificationService, private modalService: ModalManager,
     private fb: FormBuilder, private billService: BillService
   ) { }
@@ -215,7 +217,6 @@ export class PaymentComponent implements OnInit {
         console.log(this.currentUser);
         if (this.currentUser) {
           this.getUser(this.currentUser);
-
         }
       })
     }
@@ -235,6 +236,15 @@ export class PaymentComponent implements OnInit {
       ward: [],
       service: [],
     });
+
+    this.formGroup = this.fb.group({
+      addAddresNew: ["", [Validators.required]],
+      provinces: ["", [Validators.required]],
+      districts: ["", [Validators.required]],
+      wards: ["", [Validators.required]],
+      defaults: [""],
+    });
+
 
     this.initConfig();
     if (this.districtId) {
@@ -262,14 +272,14 @@ export class PaymentComponent implements OnInit {
     }
   }
   submitForm(): void {
-    debugger;
+    // debugger;
     for (const i in this.validateForm.controls) {
       if (this.validateForm.controls.hasOwnProperty(i)) {
         this.validateForm.controls[i].markAsDirty();
         this.validateForm.controls[i].updateValueAndValidity();
       }
     }
-    
+
     this.userName = this.validateForm.controls.userName.value;
     this.phone = this.validateForm.controls.phone.value;
     this.address = this.validateForm.controls.address.value;
@@ -521,12 +531,22 @@ export class PaymentComponent implements OnInit {
       animation: true,
       keyboard: false,
       closeOnOutsideClick: true,
-      // backdropClass: "modal-backdrop"
+      backdropClass: "modal-backdrop"
     })
   }
 
-  async complete() {
+  closeResult = '';
 
+  open() {
+    this.modalServices.open(AddressComponent);
+  }
+
+  // open(content) {
+  // 	this.modalService.open(content).result.then(
+  // 	);
+  // }
+
+  async complete() {
     this.currentUser.listAddress.push(this.addresss);
     this.currentUser.listAddress.forEach((e) => {
       e.user = null;

@@ -200,4 +200,6 @@ export class CartComponent implements OnInit {
       this.code=null;
     }
   }
+
+  
 }

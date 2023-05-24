@@ -1,12 +1,14 @@
 package com.fpoly.datn.controller;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fpoly.datn.entity.Imei;
-import com.fpoly.datn.model.Response;
 import com.fpoly.datn.model.ResponseVnpay;
 import com.fpoly.datn.request.ImeiRequest;
 import com.fpoly.datn.service.ImeiService;
@@ -123,5 +124,20 @@ public class ImeiController {
 		}
 		jsonResp = msg;
 		return new ResponseEntity<ResponseVnpay>(response, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/download-template")
+	public void downLoadTemplate(HttpServletResponse response) {
+		try (OutputStream os = response.getOutputStream();) {
+			response.addHeader("Content-disposition", "attachment;filename=" + "TemplateImei.xlsx");
+			response.setContentType("application/octet-stream");
+			response.setStatus(HttpServletResponse.SC_OK);
+			os.write(imeiService.writeExcelTemplate());
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.addHeader("Content-disposition", "attachment;filename=" + "TemplateImei.xlsx");
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		}
+
 	}
 }

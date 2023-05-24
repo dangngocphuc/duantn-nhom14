@@ -11,6 +11,8 @@ import { clippingParents } from '@popperjs/core';
 import { BrandService } from 'src/app/services/brand.service';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { OwlOptions } from 'ngx-owl-carousel-o';
+import Swal from 'sweetalert2';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-tables',
@@ -42,10 +44,11 @@ export class TablesComponent implements OnInit {
   pageSizes = [5, 10, 15, 20];
 
   pageRequest = new PagesRequest();
+  imageProduct: any;
 
   private modalRef;
   constructor(private productService: ProductService, private optionService: OptionService, private brandService: BrandService, private fb: FormBuilder,
-    private modalService: ModalManager) { }
+    private modalService: ModalManager,private sanitizer: DomSanitizer) { }
 
   public Editor = ClassicEditor;
 
@@ -53,10 +56,11 @@ export class TablesComponent implements OnInit {
   loadlstOption = false;
   textInput_tenOption$ = new Subject<string>();
   myForm: any;
+  imagess:any;
   ngOnInit() {
     this.getProducts(this.pageRequest.page, this.pageRequest.size);
     this.getListBrand();
-
+    this.imagess = [944, 1011, 984].map((n) => `https://picsum.photos/id/${n}/900/500`);
     this.formGroup = this.fb.group({
       product: this.fb.group({
         code: [{ value: this.product.maSanPham, }, Validators.required],
@@ -65,7 +69,7 @@ export class TablesComponent implements OnInit {
         status: [{ value: this.product.status, }, Validators.required],
         // option: [{ value: '', }, Validators.required],
       }),
-      listImage: this.fb.array([], Validators.required),
+      // listImage: this.fb.array([], Validators.required),
     });
   }
 
@@ -79,6 +83,43 @@ export class TablesComponent implements OnInit {
       },
       (error) => { }
     );
+  }
+
+  save() {
+    // Swal.fire({
+    //   title: "Đang thực hiện",
+    //   html: '',
+    //   allowOutsideClick: false,
+    //   allowEscapeKey: false,
+    //   didOpen: () => {
+    //     Swal.showLoading()
+    //   },
+    // })
+    debugger;
+    console.log(this.formData);
+    this.imgURL = [];
+    this.productService.postImage(this.formData).subscribe((res) => {
+      this.product.listImage = res;
+      this.productService.saveProduct(this.product).subscribe((respone) => {
+        if (respone == 1) {
+          Swal.fire('success', '', 'success');
+          this.closeModal();
+          this.getProducts(this.pageRequest.page, this.pageRequest.size);   
+        }
+      });
+      // }
+    },
+      (err) => {
+        // debugger;
+        Swal.fire('err:' + err,'','error');
+      });
+
+    // debugger;
+    // console.log(this.product);
+    // this.productService.saveProduct(this.product, this.formData).subscribe((res) => {
+    //   this.closeModal();
+    //   this.getProducts();
+    // })
   }
 
   getProducts(pageIndex: number, pageSize: number) {
@@ -115,22 +156,18 @@ export class TablesComponent implements OnInit {
   }
 
   view(id) {
+    this.imgURL = [];
     this.productService.getProductById(id).subscribe((respone) => {
       debugger;
       this.product = respone;
-      // this.initForm(this.option);
-      // let listProductTemp = [];
-      // this.product.listProductOption.forEach((e) => {
-      //   listProductTemp.push(e.option);
-      // })
       if(this.product.listImage.length>0){
         this.product.listImage.forEach((e)=>{
-          this.addRow(e);
-          this.imageObject.push(e);
+          // this.addRow(e);
+          this.imgURL.push("../../assets/" + e.image);
         })
       }
       // this.listOption = listProductTemp;
-      console.log(this.listOption);
+      console.log(this.imgURL);
       console.log(this.product)
       this.openModal(Action.CAPNHAT);
     })
@@ -139,6 +176,7 @@ export class TablesComponent implements OnInit {
   closeModal() {
     this.listOption = [];
     this.imageObject = [];
+    this.imgURL = [];
     this.product = new Product();
     this.modalService.close(this.modalRef);
   }
@@ -165,47 +203,47 @@ export class TablesComponent implements OnInit {
     );
   }
 
-  save() {
-    console.log(this.product.listImage);
-    // return;
-    let listProductOptionTemp = [];
-    console.log(this.listOption);
-    debugger;
-    // this.listOption.forEach((e) => {
-    //   // debugger;
-    //   // let op = new Option();
-    //   // op.id = Number(e);
-    //   let productOption = new ProductOption();
-    //   productOption.option = e;
-    //   listProductOptionTemp.push(productOption);
-    // })
-    // this.product.listProductOption = listProductOptionTemp;
-    console.log(this.product);
-    this.productService.saveProduct(this.product).subscribe((res) => {
-      console.log(res);
-      this.closeModal();
-      this.getProducts(this.pageRequest.page, this.pageRequest.size);
-    })
-  }
+  // save() {
+  //   console.log(this.product.listImage);
+  //   // return;
+  //   let listProductOptionTemp = [];
+  //   console.log(this.listOption);
+  //   debugger;
+  //   // this.listOption.forEach((e) => {
+  //   //   // debugger;
+  //   //   // let op = new Option();
+  //   //   // op.id = Number(e);
+  //   //   let productOption = new ProductOption();
+  //   //   productOption.option = e;
+  //   //   listProductOptionTemp.push(productOption);
+  //   // })
+  //   // this.product.listProductOption = listProductOptionTemp;
+  //   console.log(this.product);
+  //   this.productService.saveProduct(this.product).subscribe((res) => {
+  //     console.log(res);
+  //     this.closeModal();
+  //     this.getProducts(this.pageRequest.page, this.pageRequest.size);
+  //   })
+  // }
 
   get f() {
     return this.myForm.controls;
   }
   
-  async addRow(item: Image = new Image()) {
-    // debugger;
-    if (!item.id) {
-      this.product.listImage.push(item);
-    }
-    await this.getListImage.push(this.fb.group({
-      image: [{ value: item?.image}],
-      thumbImage: [{ value: item?.thumbImage }],
-    }));
-  }
+  // async addRow(item: Image = new Image()) {
+  //   // debugger;
+  //   if (!item.id) {
+  //     this.product.listImage.push(item);
+  //   }
+  //   await this.getListImage.push(this.fb.group({
+  //     image: [{ value: item?.image}],
+  //     thumbImage: [{ value: item?.thumbImage }],
+  //   }));
+  // }
 
-  get getListImage() {
-    return this.formGroup.controls['listImage'] as FormArray;
-  }
+  // get getListImage() {
+  //   return this.formGroup.controls['listImage'] as FormArray;
+  // }
 
   imageObject:Array<Image> = [];
   convertImage(){
@@ -225,5 +263,79 @@ export class TablesComponent implements OnInit {
   handlePageChange(event: any) {
     this.pageRequest.page = event - 1;
     this.getProducts(this.pageRequest.page, this.pageRequest.size);
+  }
+
+  public imagePath;
+  imgURL = [];
+  public message: string;
+  formData = new FormData();
+  preview(files) {
+    this.formData = new FormData();
+    debugger;
+    this.imgURL = [];
+    if (files.length === 0)
+      return;
+    for (var file of files) {
+      var mimeType = file.type;
+      if (mimeType.match(/image\/*/) == null) {
+        // this.message = "";
+        Swal.fire('Only images are supported.', '', 'error');
+        return;
+      }
+    }
+    for (var file of files) {
+      // var reader = new FileReader();
+      // this.imagePath = files;
+      // reader.readAsDataURL(file);
+      // this.imgURL.push(reader.result);
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        console.log(e.target.result);
+        this.imgURL.push(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+    // this.formData.delete
+    Array.from(files).forEach((e: File) => {
+      this.formData.append("file", e)
+    });
+    // console.log(this.formData);
+    // console.log(this.imgURL);
+  }
+
+  viewImage(id) {
+    this.imgURL = [];
+    this.productService.viewImage(id).subscribe((response: Blob) => {
+      debugger;
+      // const bytes = new Uint8Array(response);
+      // const imageArray = [];
+      // for (let i = 0; i < bytes.length; i++) {
+      //   imageArray.push(this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64,' + btoa(String.fromCharCode(bytes[i]))));
+      // }
+      // this.imgURL = imageArray;
+      // this.imageProduct  = response;
+      // Swal.close();
+      const imageBlob = new Blob([response], { type: 'image/jpeg' });
+      const imageUrl = URL.createObjectURL(imageBlob);
+      this.imgURL.push(this.sanitizer.bypassSecurityTrustUrl(imageUrl));
+
+      // debugger;
+      var mediaType = 'image/jpeg';
+      var blob = new Blob([response], { type: mediaType });
+      var reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => {
+        var base64data = reader.result;
+        this.imageProduct = base64data;
+      };
+    }, error => {
+      debugger;
+      console.log(error);
+      // Swal.fire({
+      //   position: 'center',
+      //   icon: 'error',
+      //   title: error?.error?.messages
+      // });
+    });
   }
 }

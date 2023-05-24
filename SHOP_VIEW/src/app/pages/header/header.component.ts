@@ -61,7 +61,7 @@ export class HeaderComponent implements OnInit {
      if (cart) {
        this.cart = JSON.parse(cart);
        this.cart.forEach((e)=>{
-        debugger;
+        // debugger;
         this.totalProduct = this.totalProduct + e.quanlityBuy;
        })
         // = this.cart.length;

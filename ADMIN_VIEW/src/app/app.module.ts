@@ -9,7 +9,7 @@ import { AppComponent } from './app.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 // import { CarouselModule } from 'ngx-owl-carousel-o';
-import { NgbActiveModal, NgbCarouselModule, NgbDateAdapter, NgbDateNativeAdapter, NgbDatepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbCarouselConfig, NgbCarouselModule, NgbDateAdapter, NgbDateNativeAdapter, NgbDatepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
@@ -26,7 +26,7 @@ import { TablesComponent } from './pages/tables/tables.component';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ClipboardModule } from 'ngx-clipboard';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { CookieService } from 'ngx-cookie-service';
@@ -97,7 +97,9 @@ import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
     NgbDatepickerModule,
     NzTabsModule,
     IconModule,
-    NgxTrimDirectiveModule
+    NgxTrimDirectiveModule,
+    NgbCarouselModule,
+    // NgIf
     // CarouselModule
     // CKEditorModule
     // ProgressbarModule.forRoot()
@@ -133,6 +135,7 @@ import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
     CookieService,
     LoaderService,
     DatePipe,
+    NgbCarouselConfig,
     { provide: NgbDateAdapter, useClass: NgbDateNativeAdapter },
     { provide: NZ_I18N, useValue: en_US },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },

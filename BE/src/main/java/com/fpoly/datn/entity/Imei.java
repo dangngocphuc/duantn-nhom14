@@ -51,8 +51,8 @@ public class Imei implements Serializable {
 	@Transient
 	private String productName;
 
-	@Column(name="returned_date")
-	private Date returnDate;
+//	@Column(name="returned_date")
+//	private Date returnDate;
 	
 	public Long getId() {
 		return id;
@@ -102,12 +102,10 @@ public class Imei implements Serializable {
 		this.productName = productName;
 	}
 
-	public Date getReturnDate() {
-		return returnDate;
-	}
-
-	public void setReturnDate(Date returnDate) {
-		this.returnDate = returnDate;
-	}
+	/*
+	 * public Date getReturnDate() { return returnDate; }
+	 * 
+	 * public void setReturnDate(Date returnDate) { this.returnDate = returnDate; }
+	 */
 
 }

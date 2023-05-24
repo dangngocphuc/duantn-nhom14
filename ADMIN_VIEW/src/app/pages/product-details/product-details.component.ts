@@ -9,12 +9,12 @@ import { catchError, concat, debounceTime, distinctUntilChanged, forkJoin, lastV
 import { Action, Common } from 'src/app/commons/common';
 import { Cpu, Gpu, Imei, Option, OptionValue, PageProductDetail, PagesRequest, Product, ProductDetail, ProductDetailRequest, ProductDetailValue, ProductOption, Ram, Rom } from 'src/app/models/type';
 import { CpuService } from 'src/app/services/cpu.service';
-import { GpuService } from 'src/app/services/Gpu.service';
+import { GpuService } from 'src/app/services/gpu.service';
 import { OptionService } from 'src/app/services/option.service';
 import { ProductService } from 'src/app/services/product.service';
 import { ProductDetailService } from 'src/app/services/productDetail.service';
-import { RamService } from 'src/app/services/Ram.service';
-import { RomService } from 'src/app/services/Rom.service'; 
+import { RamService } from 'src/app/services/ram.service';
+import { RomService } from 'src/app/services/rom.service'; 
 import Swal from 'sweetalert2';
 @Component({
   selector: 'app-product-details',
@@ -60,6 +60,7 @@ export class ProductDetailsComponent implements OnInit {
   listRam : Ram[];
   listRom : Rom[];
   listGpu : Gpu[];
+  
 
   private modalRef;
 
@@ -104,6 +105,9 @@ export class ProductDetailsComponent implements OnInit {
       }),
       listImei: this.fb.array([], Validators.required),
     });
+
+    // this.getImei().disable();
+    
   }
 
   getProducts(pageIndex: number, pageSize: number) {
@@ -200,6 +204,7 @@ export class ProductDetailsComponent implements OnInit {
       closeOnOutsideClick: false,
       backdropClass: "modal-backdrop"
     })
+    this.formGroup.get("listImei").disable();
   }
 
   closeModal() {

@@ -1,5 +1,7 @@
 package com.fpoly.datn.serviceImpl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,9 +18,14 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.DataValidationConstraint;
+import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -236,9 +243,15 @@ public class ImeiServiceImp implements ImeiService {
 										lstSuccess.removeAll(lstSuccess);
 										continue;
 									}
+									if (imeis.length() !=13) {
+										bolHasError = true;
+										lstError.add("Lỗi hàng thứ: " + (row.getRowNum() + 1) + " cột thứ: "
+												+ (cell.getColumnIndex() + 1) + ". Imei phải có độ dài 13.");
+										lstSuccess.removeAll(lstSuccess);
+										continue;
+									}
 									boolean bolExist = false;
 									if (imeis != null) {
-
 										Imei imeiExist = imeiRepo.getByImei(imeis);
 										if (imeiExist != null) {
 											bolHasError = true;
@@ -286,4 +299,42 @@ public class ImeiServiceImp implements ImeiService {
 		return true;
 	}
 
+	
+	public byte[] writeExcelTemplate() {
+		try {
+			FileInputStream inputStream = new FileInputStream(CommonUtils.getTemplateFile("classpath:template/TemplateImei.xlsx"));
+			Workbook workbook = WorkbookFactory.create(inputStream);
+			Sheet shee0 = workbook.getSheetAt(0);
+			DataValidationHelper dvHelper = shee0.getDataValidationHelper();
+			Sheet sheetTenPPKN = workbook.getSheetAt(1);
+			ArrayList<ProductDetail> lstConection = productDetailRepo.getConnection();
+			if (lstConection != null) {
+				DataValidationConstraint dvConstraint = dvHelper
+						.createFormulaListConstraint("'Tên sản phẩm'!$A$2:$A$" + (lstConection.size() + 1));
+				CellRangeAddressList addressList = new CellRangeAddressList(1, 1, 1, 1);
+				DataValidation validation = dvHelper.createValidation(dvConstraint, addressList);
+				shee0.addValidationData(validation);
+				shee0.getRow(1).getCell(1).setCellValue(lstConection.get(0).getProductName());
+
+				for (int i = 0; i < lstConection.size(); i++) {
+					try {
+						Row row = sheetTenPPKN.createRow(i + 1);
+						Cell cellLabel = row.createCell(0);
+						cellLabel.setCellValue(lstConection.get(i).getProductName());
+						Cell cellId = row.createCell(1);
+						cellId.setCellValue(lstConection.get(i).getProductCode());
+					} catch (Exception e) {
+					}
+				}
+			}
+			inputStream.close();
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			workbook.write(byteArrayOutputStream);
+			workbook.close();
+			return byteArrayOutputStream.toByteArray();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

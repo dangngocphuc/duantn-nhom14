@@ -50,8 +50,9 @@ export class IconsComponent implements OnInit {
         name: [{ value: '', }, Validators.required],
         status: [{ value: '', }, Validators.required]
       }),
-      listOptinValue: this.fb.array([], Validators.required),
+      listOptinValue: this.fb.array([ {disabled: true} ], Validators.required),
     });
+    this.getListOptinValue
   }
 
   getOptions() {

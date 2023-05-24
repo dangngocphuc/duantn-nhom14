@@ -1,5 +1,7 @@
 package com.fpoly.datn.repository;
 
+import java.util.ArrayList;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,4 +24,7 @@ public interface ProductDetailRepo  extends JpaRepository<ProductDetail, Long>,J
 	
 	@Query("Select t From ProductDetail t  Where t.productCode =:code ")
 	ProductDetail getByMa(String code);
+	
+	@Query(value = "select t from ProductDetail t")
+	ArrayList<ProductDetail> getConnection();
 }

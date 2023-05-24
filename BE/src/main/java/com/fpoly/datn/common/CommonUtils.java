@@ -1,5 +1,10 @@
 package com.fpoly.datn.common;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
@@ -33,10 +38,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.util.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 
 import com.fpoly.datn.model.UserDetail;
 
@@ -545,4 +552,32 @@ public class CommonUtils {
  		}
  		return objReturn;
  	}
+ 	
+ 	public static File getTemplateFile(String path) {
+		InputStream in = null;
+		try {
+			in = ResourceUtils.getURL(path).openStream();
+			File tempFile = File.createTempFile("Temp", "import");
+			tempFile.deleteOnExit();
+			FileOutputStream out = new FileOutputStream(tempFile);
+			IOUtils.copy(in, out);
+			return tempFile;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
 }

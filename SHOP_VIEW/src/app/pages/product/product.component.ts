@@ -313,8 +313,7 @@ export class ProductComponent implements OnInit {
 
   //load product
   onPageIndexChange(value: number): void {
-    console.log(value);
-    this.controlArray.set('pageIndex', value);
+    this.controlArray.set('pageIndex', value-1);
     this.getProductSort(this.controlArray);
   }
 

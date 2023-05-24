@@ -143,3 +143,67 @@
     </div>
   </div>
 </div>
+
+<div class="container-fluid">
+  <!-- Table -->
+  <div class="row">
+      <!-- <div class="col-6">
+          <div class="card shadow">
+              <div class="card-header border-0">
+                  <div>
+                      <h3 class="mb-0">Báo cáo thống kê</h3>
+                  </div>
+                  <div>
+                    <div style="float: right;"><button 
+                      class="btn btn-sm btn-success"><i class="fa fa-download" aria-hidden="true"></i> Export excel</button>
+              </div>
+                  </div>
+              </div>
+              <div class="table-responsive">
+                  <table class="table align-items-center table-flush">
+                      <thead class="thead-light">
+                          <tr>
+                              <th scope="col">STT</th>
+                              <th scope="col">Khách hàng</th>
+                              <th scope="col">Tổng tiền</th>
+                          </tr>
+                      </thead>
+                     
+                  </table>
+              </div>
+          </div>
+      </div> -->
+      <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header border-0">
+                <div>
+                    <h3 class="mb-0">Báo cáo thống kê theo khách hàng mua </h3>
+                </div>
+                <div>
+                  <div style="float: right;"><button 
+                    class="btn btn-sm btn-success"><i class="fa fa-download" aria-hidden="true" (click)="exportExcel() "></i> Export excel</button>
+            </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-items-center table-flush">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">STT</th>
+                            <th scope="col">Khách hàng</th>
+                            <th scope="col">Tổng tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let item of lstThongKeUser; index as i">
+                      <tr>
+                        <td>{{i+1}}</td>
+                        <td>{{item?.name}}</td>
+                        <td>{{item?.count  | number:'1.0-0'}}</td>
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>

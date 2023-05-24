@@ -257,7 +257,7 @@ export class SalesComponent implements OnInit {
     this.billService.paymentBill(tab.bill).subscribe(
       (data) => {
         if (data) {
-          Swal.fire('', '', 'success');
+          Swal.fire('Xử lý thành công', '', 'success');
           this.listTab.splice(index, 1);
           this.listTab.forEach((e, index) => {
             e.name = 'Đơn ' + (index + 1);
@@ -265,6 +265,8 @@ export class SalesComponent implements OnInit {
           this.updateCart();
           // this.handleOk();
           window.location.reload();
+        }else{
+          Swal.fire('Xử lý thất bại', '', 'error');
         }
       },
       (error) => {

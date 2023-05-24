@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fpoly.datn.entity.Bill;
+import com.fpoly.datn.model.ThongKeUser;
 import com.fpoly.datn.request.BillRequest;
 
 @Service
@@ -22,4 +23,5 @@ public interface BillService {
 	public void deleteBill(Long id);
 	public Bill getById(Long id);
 	public boolean paymentBill(Bill bill);
+	public List<ThongKeUser> statisticalUser();
 }

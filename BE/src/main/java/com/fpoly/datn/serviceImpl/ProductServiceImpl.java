@@ -28,6 +28,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.fpoly.datn.common.CommonUtils;
 import com.fpoly.datn.entity.Brand;
 import com.fpoly.datn.entity.Category;
 import com.fpoly.datn.entity.Image;
@@ -119,6 +120,7 @@ public class ProductServiceImpl implements ProductService{
 //			for(ProductOption po : product.getListProductOption()) {
 //				po.setProduct(product);
 //			}
+			product.setMaSanPham(CommonUtils.generateProductCode());
 			product.setCreateDate(new Date());
 			Product pro = productRepo.save(product);
 			return true;
@@ -244,6 +246,7 @@ public class ProductServiceImpl implements ProductService{
 						));
 					}
 				}
+				predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("status"), 1)));
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 		}, pageable);

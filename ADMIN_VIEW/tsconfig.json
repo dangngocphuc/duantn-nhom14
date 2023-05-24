@@ -15,7 +15,10 @@
     ],
     "lib": [
       "es2017",
-      "dom"
-    ]
+      "dom",
+      "esnext",
+      "esnext.asynciterable"
+    ],
+    "skipLibCheck": true,
   }
 }

@@ -39,4 +39,8 @@ export class BillService {
   getBillById(id): Observable<any> {
     return this.http.get<any>(`/bill/` + id,null);
   }
+
+  getStatisticBillByUser(): Observable<any> {
+    return this.http.get<any>(`/bill/statistic/user`, null);
+  }
 }

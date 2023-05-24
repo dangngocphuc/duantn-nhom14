@@ -295,11 +295,39 @@ export const chartExample1 = {
         ticks: {
           callback: function (value) {
             if (!(value % 10)) {
-              return value / 1000 + 'k' + ' VNĐ';
+              return (value / 1000).toLocaleString("en-US", {}) + 'k' + ' VNĐ';
             }
-          }
+          },
         }
       }]
+    },
+    legend: {
+      position: 'bottom',
+      labels: {
+        fontColor: 'white'
+      }
+    },
+    plugins: {
+      datalabels: {
+        display: true,
+        color: '#fff',
+        formatter: (value) => {
+          return value.toLocaleString("en-US", {});
+        },
+      },
+      animation: {
+        delay: (context) => context.datasetIndex * 50, // delay between animations for each dataset
+      }
+    },
+    hover: {
+      mode: 'x-axis',
+      intersect: false,
+    },
+    tooltips: {
+      mode: 'x-axis',
+      formatter: (value) => {
+        return value.toLocaleString("en-US",{});
+      },
     }
   },
   data: {
@@ -318,7 +346,7 @@ export const chartExample2 = {
         {
           ticks: {
             callback: function (value) {
-              debugger;
+              // debugger;
               if (!(value % 10)) {
                 //return '$' + value + 'k'
                 return value;
@@ -344,7 +372,7 @@ export const chartExample2 = {
     }
   },
   data: {
-    labels: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+    labels: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
     datasets: [
       {
         label: "Sales",

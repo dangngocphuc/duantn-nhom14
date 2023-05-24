@@ -277,14 +277,17 @@
           </div>
         </div>
       </fieldset>
-      <table class="table table-bordered">
+      Danh sách Imei của sản phẩm
+      <div class="table-wrapper-scroll-y my-custom-scrollbar ">
+      <table class="table table-bordered table-responsive" >
         <thead>
           <tr>
             <th scope="col" width="1">#</th>
             <th scope="col" width="59%">Số Imei</th>
             <th scope="col">Trạng thái</th>
-            <td style="width:1%" class="text-center"><span (click)="addRow()"><i alt="Thêm mới" style="cursor: pointer;"
-                  class="fas fa-plus-circle" title="Thêm dòng"></i></span>
+            <td style="width:1%" class="text-center">
+              <!-- <span (click)="addRow()"><i alt="Thêm mới" style="cursor: pointer;"
+                  class="fas fa-plus-circle" title="Thêm dòng"></i></span> -->
           </tr>
         </thead>
         <tbody formArrayName="listImei" *ngFor="let item of productDetail?.listImei, index as i">
@@ -298,6 +301,7 @@
           </tr>
         </tbody>
       </table>
+    </div>
     </form>
   </modal-content>
   <modal-footer>

@@ -42,6 +42,7 @@ import com.fpoly.datn.entity.EmailJob;
 import com.fpoly.datn.entity.Imei;
 import com.fpoly.datn.entity.Promotion;
 import com.fpoly.datn.entity.User;
+import com.fpoly.datn.model.ThongKeUser;
 import com.fpoly.datn.repository.BillDetailRepo;
 import com.fpoly.datn.repository.BillRepo;
 import com.fpoly.datn.repository.ConfigRepo;
@@ -245,6 +246,10 @@ public class BillServiceImpl implements BillService {
 				for (BillDetail billDetail : bills.getListBillDetail()) {
 					billDetail.setBill(bill);
 					for (Imei imei : billDetail.getListImei()) {
+						imeiRepo.getById(imei.getId());
+						if(imeiRepo.getById(imei.getId()).getStatus().intValue() == 0) {
+							return false;
+						}
 						imei.setBillDetail(null);
 //						imei.setProductDetail(billDetail.getProductDetail());
 						imei.setStatus(1);
@@ -264,6 +269,7 @@ public class BillServiceImpl implements BillService {
 						imei.setStatus(0);
 					}
 				}
+				billRepo.save(bills);
 				return true;
 			} else {
 				Gson g = new Gson();
@@ -273,11 +279,16 @@ public class BillServiceImpl implements BillService {
 				}
 				bill.setBillCode(CommonUtils.generateBillNumber());
 				if (bill.getPromotion() != null) {
-					Promotion promotion = promotionRepo.findByCode(bill.getPromotion().getCode());
-					if (promotion.getQuantity() > (promotion.getCount() != null ? promotion.getCount() : 0)) {
-						promotion.setCount((promotion.getCount() != null ? promotion.getCount() : 0) + 1);
+					if(bill.getPromotion().getCode() !=null) {
+						Promotion promotion = promotionRepo.findByCode(bill.getPromotion().getCode());
+						if (promotion.getQuantity() > (promotion.getCount() != null ? promotion.getCount() : 0)) {
+							promotion.setCount((promotion.getCount() != null ? promotion.getCount() : 0) + 1);
+						}
+						promotionRepo.save(promotion);
+					}	
+					else {
+						bill.setPromotion(null);
 					}
-					promotionRepo.save(promotion);
 				}
 
 				for (BillDetail billDetail : bill.getListBillDetail()) {
@@ -292,6 +303,10 @@ public class BillServiceImpl implements BillService {
 					if (billDetail.getListImei() != null) {
 						if (!billDetail.getListImei().isEmpty()) {
 							for (Imei imei : billDetail.getListImei()) {
+								imeiRepo.getById(imei.getId());
+								if(imeiRepo.getById(imei.getId()).getStatus().intValue() == 0) {
+									return false;
+								}
 								imei.setBillDetail(billDetail);
 								imei.setProductDetail(billDetail.getProductDetail());
 								imei.setStatus(0);
@@ -406,5 +421,11 @@ public class BillServiceImpl implements BillService {
 	public Bill getById(Long id) {
 		Bill bills = billRepo.findById(id).get();
 		return bills;
+	}
+
+	@Override
+	public List<ThongKeUser> statisticalUser() {
+		// TODO Auto-generated method stub
+		return billRepo.getListUserBill();
 	}
 }

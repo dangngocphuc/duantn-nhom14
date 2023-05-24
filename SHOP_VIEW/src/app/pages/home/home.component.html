@@ -94,15 +94,24 @@
                     <div *ngFor="let item of pageProductDetail?.content" class="col-lg-3 col-md-4">
                         <div class="single-product">
                             <div class="text-center">
-                                <ng-image-slider #nav [images]="item?.product?.listImage" [infinite]="false"
+                                <!-- <ng-image-slider #nav [images]="item?.product?.listImage" [infinite]="false"
                                     [autoSlide]="1" slideImage="1"
-                                    [imageSize]="{width: '100%', height: 200}"></ng-image-slider>
+                                    [imageSize]="{width: '100%', height: 200}"></ng-image-slider> -->
+                                <ngb-carousel>
+                                    <ng-template ngbSlide *ngFor="let item of item?.product?.listImage">
+                                        <div class="picsum-img-wrapper">
+                                            <img [src]="'../../assets/' + item.image" alt="Random first slide" height="90%" width="90%" class="imageChange"/>
+                                        </div>
+                                    </ng-template>
+                                </ngb-carousel>
                             </div>
-                            <div class="product-details" style="margin: 5px; height: 120px;">
+                            <div class="product-details" style="margin: 5px; height: 140px;">
                                 <h6><a href="product-detail/{{item?.id}}">{{item?.productName}}</a></h6>
                                 <div class="price">
-                                    <h6>{{item?.productPrice | number}} VNĐ &emsp;<small>{{item?.productMarketprice |
-                                            number}} VND</small></h6>
+                                    <h6>{{item?.productPrice | number}} VNĐ &emsp;
+                                        <!-- <small>{{item?.productMarketprice |
+                                            number}} VND</small> -->
+                                        </h6>
                                     <span *ngIf="item?.quantity == 0 " class="text-danger">Đã hết hàng</span>
                                 </div>
                                 <div class="prd-bottom">
@@ -142,15 +151,22 @@
                     <div *ngFor="let item of listOfDataSale" class="col-lg-3 col-md-4">
                         <div class="single-product">
                             <div class="text-center">
-                                <ng-image-slider #nav [images]="item?.product?.listImage" [infinite]="true"
-                                    [autoSlide]="1" slideImage="1"
-                                    [imageSize]="{width: '100%', height: 200}"></ng-image-slider>
+                                <ngb-carousel>
+                                    <ng-template ngbSlide *ngFor="let item of item?.product?.listImage">
+                                        <div class="picsum-img-wrapper">
+                                            <img [src]="'../../assets/' + item.image" alt="Random first slide" height="90%" width="90%" />
+                                        </div>
+                                    </ng-template>
+                                </ngb-carousel>
                             </div>
                             <div class="product-details" style="margin: 5px;">
                                 <h6><a href="product-detail/{{item?.id}}">{{item?.productName}}</a></h6>
                                 <div class="price">
-                                    <h6>{{item?.productPrice | number}} VNĐ &emsp;<small>{{item?.productMarketprice |
-                                            number}} VND</small></h6>
+                                    <h6>{{item?.productPrice | number}} VNĐ &emsp;
+                                        <!-- <small>
+                                        {{item?.productMarketprice |
+                                            number}} VND</small> -->
+                                        </h6>
                                     <span *ngIf="item?.productQuantily == 0 " class="text-danger">Đã hết hàng</span>
                                 </div>
                                 <div class="prd-bottom">
@@ -210,7 +226,7 @@
 
                     <div class="single-exclusive-slider">
                         <img style="height:60%; width:60%;" class="img-fluid"
-                            src="{{productDetail?.product?.listImage[0].thumbImage}}" alt="">
+                            src="{{productDetail?.product?.listImage[0].image}}" alt="">
                         <!-- {{productDetail?.product?.listImage[0].thumbImage}}                       -->
                         <div class="product-details">
                             <div class="price">

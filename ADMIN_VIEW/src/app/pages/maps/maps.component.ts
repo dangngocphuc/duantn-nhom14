@@ -185,13 +185,13 @@ export class MapsComponent implements OnInit {
 
 
   showModal(data): void {
-    Swal.fire({
-      title: "Đang xử lý!",
-      html: '',
-      didOpen: () => {
-        Swal.showLoading()
-      },
-    })
+    // Swal.fire({
+    //   title: "Đang xử lý!",
+    //   html: '',
+    //   didOpen: () => {
+    //     Swal.showLoading()
+    //   },
+    // })
     this.billId = data.id;
     this.billCode = data.billCode;
     // this.getBillDetail(data.id);
@@ -222,7 +222,7 @@ export class MapsComponent implements OnInit {
       } else {
         this.disabled = false;
       }
-      Swal.close();
+      // Swal.close();
       this.isVisible = true;
     })
   }
@@ -534,6 +534,7 @@ export class MapsComponent implements OnInit {
         }
         else {
           this.bill.user = null;
+          console.log(this.bill);
           this.saveBill(this.bill);
         }
       })

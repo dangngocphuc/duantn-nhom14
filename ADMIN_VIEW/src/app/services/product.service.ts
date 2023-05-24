@@ -1,4 +1,4 @@
-import { HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -10,7 +10,7 @@ import { HttpBaseService } from './http-base.service';
 })
 export class ProductService {
   // Url=environment.urlServer
-  constructor(private http: HttpBaseService) {}
+  constructor(private http: HttpBaseService, private httpClient: HttpClient) {}
   getProducts(params): Observable<PageProduct> {
     return this.http.getByParams<PageProduct>(`/product`, params);
   }
@@ -23,10 +23,11 @@ export class ProductService {
   saveProduct(product): Observable<any> {
     return this.http.post<any>(`/product/save`, product);
   }
-  postImage(id: number, file: File): Observable<any> {
-    const data: FormData = new FormData();
-    data.append('file', file);
-    return this.http.postImage<any>(`/product/upload_image/${id}`, data);
+
+ postImage(file): Observable<any> {
+    // const data: FormData = new FormData();
+    // data.append('file', file);
+    return this.http.postImage<any>(`/product/upload`, file);
   }
 
   getListProductDetail(params): Observable<PageProduct> {
@@ -45,4 +46,30 @@ export class ProductService {
     // this.httpOption['params'] = params;
     return this.http.get<any>(`/product/ngselect`, params);
   }
+
+  getHeader(): HttpHeaders {
+    var headers = { 'Content-Type': 'application/json' };
+    if (localStorage) {
+      var authorization = localStorage.getItem('Authorization');
+      if (authorization) {
+        headers['Authorization'] = authorization;
+      }
+    }
+    return new HttpHeaders(headers);
+  }
+
+  viewImage(id): Observable<Blob> {
+    let httpOption = {
+      responseType: 'blob' as 'json',
+      headers: this.getHeader()
+    };
+    return this.httpClient.get<Blob>(`/api/product/view/` + id, httpOption);
+  }
+
+  uploadFile(files: FileList) {
+    let formData = new FormData();
+    Array.from(files).forEach(file => { formData.append("file", file) });
+    // return this.http.post<FileResponse[]>(`${this.urlUploadFile}`, formData,true);
+  }
+
 }

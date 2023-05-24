@@ -48,7 +48,8 @@
               "src/styles.scss",
               "src/assets/scss/argon.scss",
               "src/scss/style.scss",
-              "src/theme.less"
+              "src/theme.less",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
             "scripts": [
               "node_modules/chart.js/dist/Chart.min.js",

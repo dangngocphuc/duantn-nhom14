@@ -35,8 +35,8 @@ export class Common {
   ]
 
   lstTrangThaiImei = [
-    { value: 0, name: 'Mới'},
-    { value: 1, name: 'Đã bán' },
+    { value: 0, name: 'Đã bán'},
+    { value: 1, name: 'Mới' },
     { value: 2, name: 'Đang vận chuyển:'},
     { value: 3, name: 'Lỗi' },
     { value: 4, name: 'Hàng Demo' },
